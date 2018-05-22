@@ -3,8 +3,9 @@ project(MapDLib)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
+find_package(Boost REQUIRED QUIET)
 find_package(Thrift REQUIRED)
-include_directories(${Thrift_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIR} ${Thrift_INCLUDE_DIRS})
 
 add_custom_command(
     DEPENDS ${CMAKE_SOURCE_DIR}/mapd.thrift
