@@ -4,6 +4,7 @@ project(MapDLib)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 find_package(Thrift REQUIRED)
+include_directories(${Thrift_INCLUDE_DIRS})
 
 add_custom_command(
     DEPENDS ${CMAKE_SOURCE_DIR}/mapd.thrift
@@ -28,3 +29,5 @@ add_library(mapd_thrift
     ${CMAKE_BINARY_DIR}/gen-cpp/completion_hints_types.cpp)
 target_compile_options(mapd_thrift PRIVATE -fPIC)
 target_link_libraries(mapd_thrift ${Thrift_LIBRARIES})
+set_target_properties(mapd_thrift PROPERTIES VERSION 1.0.0)
+set_target_properties(mapd_thrift PROPERTIES SOVERSION 1)
