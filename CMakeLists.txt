@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project(mapd_thrift_bindings)
+include_directories(/usr/local/mapd-deps/include)
+add_library(mapd_thrift_bindings SHARED gen-cpp/MapD.cpp gen-cpp/MapD_server.skeleton.cpp gen-cpp/completion_hints_constants.cpp gen-cpp/completion_hints_types.cpp gen-cpp/mapd_constants.cpp gen-cpp/mapd_types.cpp)
+set_target_properties(mapd_thrift_bindings PROPERTIES VERSION 1.0.0)
+set_target_properties(mapd_thrift_bindings PROPERTIES SOVERSION 1)
