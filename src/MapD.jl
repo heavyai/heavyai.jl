@@ -84,7 +84,7 @@ export TLicenseInfo # struct
 export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect, get_server_status, get_status, get_hardware_info, get_tables, get_physical_tables, get_views, get_tables_meta, get_table_details, get_internal_table_details, get_users, get_databases, get_version, start_heap_profile, stop_heap_profile, get_heap_profile, get_memory, clear_cpu_memory, clear_gpu_memory, set_table_epoch, set_table_epoch_by_name, get_table_epoch, get_table_epoch_by_name, sql_execute, sql_execute_df, sql_execute_gdf, deallocate_df, interrupt, sql_validate, get_completion_hints, set_execution_mode, render_vega, get_result_row_for_pixel, get_frontend_view, get_frontend_views, create_frontend_view, delete_frontend_view, get_dashboard, get_dashboards, create_dashboard, replace_dashboard, delete_dashboard, share_dashboard, unshare_dashboard, get_dashboard_grantees, get_link_view, create_link, load_table_binary, load_table_binary_columnar, load_table_binary_arrow, load_table, detect_column_types, create_table, import_table, import_geo_table, import_table_status, get_first_geo_file_in_archive, get_all_files_in_archive, start_query, execute_first_step, broadcast_serialized_rows, start_render_query, execute_next_render_step, insert_data, checkpoint, get_table_descriptor, get_row_descriptor, get_roles, get_db_objects_for_grantee, get_db_object_privs, get_all_roles_for_user, set_license_key, get_license_claims # service MapD
 
 include("mapd_constants.jl")
-include("enums.jl")
+include("mapd_enums.jl")
 include("mapd_types.jl")
 include("client.jl")
 
