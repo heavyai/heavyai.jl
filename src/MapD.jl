@@ -27,7 +27,8 @@ THardwareInfo, TClusterHardwareInfo, TMemoryData, TNodeMemoryInfo, TTableMeta,
 TTableDetails, TColumnRange, TDictionaryGeneration, TTableGeneration, TPendingQuery,
 TVarLen, TDataBlockPtr, TInsertData, TPendingRenderQuery, TRenderParseResult,
 TRawRenderPassDataResult, TRawPixelData, TRenderDatum, TRenderStepResult, TDatabasePermissions,
-TTablePermissions, TDashboardPermissions, TViewPermissions, TDBObject, TDashboardGrantees, TLicenseInfo
+TTablePermissions, TDashboardPermissions, TViewPermissions, TDBObject, TDashboardGrantees,
+TLicenseInfo, MapDConnection
 
 #### generated functions ####
 export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect, get_server_status,
@@ -51,6 +52,7 @@ get_license_claims
 include("mapd_constants.jl")
 include("mapd_enums.jl")
 include("mapd_types.jl")
-include("client.jl")
+include("mapd_client.jl")
+include("misc.jl") #for hand-maintained code
 
 end # module MapD
