@@ -31,7 +31,7 @@ TTablePermissions, TDashboardPermissions, TViewPermissions, TDBObject, TDashboar
 TLicenseInfo, MapDConnection
 
 #### functions ####
-export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect, get_server_status,
+export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect,
 get_status, get_hardware_info, get_tables, get_physical_tables, get_views, get_tables_meta,
 get_table_details, get_internal_table_details, get_users, get_databases, get_version,
 start_heap_profile, stop_heap_profile, get_heap_profile, get_memory, clear_cpu_memory,
