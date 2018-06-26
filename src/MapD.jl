@@ -33,8 +33,8 @@ TLicenseInfo, MapDConnection
 #### functions ####
 export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect,
 get_status, get_hardware_info, get_tables, get_physical_tables, get_views, get_tables_meta,
-get_table_details, get_internal_table_details, get_users, get_databases, get_version,
-start_heap_profile, stop_heap_profile, get_heap_profile, get_memory, clear_cpu_memory,
+get_table_details, get_users, get_databases, get_version, start_heap_profile,
+stop_heap_profile, get_heap_profile, get_memory, clear_cpu_memory,
 clear_gpu_memory, sql_execute, sql_execute_df, sql_execute_gdf, deallocate_df,
 interrupt, sql_validate, get_completion_hints, set_execution_mode, render_vega,
 get_result_row_for_pixel, get_frontend_view, get_frontend_views, create_frontend_view,

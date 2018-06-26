@@ -44,9 +44,6 @@ get_tables_meta(conn::MapDConnection) =
 get_table_details(conn::MapDConnection, table_name::String) =
     get_table_details(conn.c, conn.session, table_name)
 
-get_internal_table_details(conn::MapDConnection, table_name::String) =
-    get_internal_table_details(conn.c, conn.session, table_name)
-
 get_users(conn::MapDConnection) =
     get_users(conn.c, conn.session)
 
