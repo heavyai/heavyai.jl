@@ -21,8 +21,11 @@ struct _enum_TDatumType
   LINESTRING::Int32
   POLYGON::Int32
   MULTIPOLYGON::Int32
+  TINYINT::Int32
+  GEOMETRY::Int32
+  GEOGRAPHY::Int32
 end
-const TDatumType = _enum_TDatumType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6), Int32(7), Int32(8), Int32(9), Int32(10), Int32(11), Int32(12), Int32(13), Int32(14), Int32(15), Int32(16))
+const TDatumType = _enum_TDatumType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6), Int32(7), Int32(8), Int32(9), Int32(10), Int32(11), Int32(12), Int32(13), Int32(14), Int32(15), Int32(16), Int32(17), Int32(18), Int32(19))
 
 struct _enum_TEncodingType
   NONE::Int32
@@ -31,8 +34,9 @@ struct _enum_TEncodingType
   DIFF::Int32
   DICT::Int32
   SPARSE::Int32
+  GEOINT::Int32
 end
-const TEncodingType = _enum_TEncodingType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5))
+const TEncodingType = _enum_TEncodingType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6))
 
 struct _enum_TExecuteMode
   HYBRID::Int32
@@ -53,6 +57,14 @@ struct _enum_TTableType
 end
 const TTableType = _enum_TTableType(Int32(0), Int32(1))
 
+struct _enum_TPartitionDetail
+  DEFAULT::Int32
+  REPLICATED::Int32
+  SHARDED::Int32
+  OTHER::Int32
+end
+const TPartitionDetail = _enum_TPartitionDetail(Int32(0), Int32(1), Int32(2), Int32(3))
+
 struct _enum_TMergeType
   UNION::Int32
   REDUCE::Int32
@@ -71,8 +83,8 @@ struct _enum_TDBObjectType
   AbstractDBObjectType::Int32
   DatabaseDBObjectType::Int32
   TableDBObjectType::Int32
-  ColumnDBObjectType::Int32
   DashboardDBObjectType::Int32
+  ViewDBObjectType::Int32
 end
 const TDBObjectType = _enum_TDBObjectType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4))
 
@@ -216,9 +228,14 @@ mutable struct TCopyParams <: Thrift.TMsg
   s3_access_key::String
   s3_secret_key::String
   s3_region::String
+  geo_coords_encoding::Int32
+  geo_coords_comp_param::Int32
+  geo_coords_type::Int32
+  geo_coords_srid::Int32
+  sanitize_column_names::Bool
   TCopyParams() = (o=new(); fillunset(o); o)
 end # mutable struct TCopyParams
-meta(t::Type{TCopyParams}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0)))
+meta(t::Type{TCopyParams}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0), :geo_coords_encoding => Int32(6), :geo_coords_comp_param => Int32(32), :geo_coords_type => Int32(18), :geo_coords_srid => Int32(4326), :sanitize_column_names => true))
 
 mutable struct TDetectResult <: Thrift.TMsg
   row_set::TRowSet
@@ -251,6 +268,7 @@ mutable struct TDashboard <: Thrift.TMsg
   dashboard_metadata::String
   dashboard_id::Int32
   dashboard_owner::String
+  is_dash_shared::Bool
   TDashboard() = (o=new(); fillunset(o); o)
 end # mutable struct TDashboard
 
@@ -356,6 +374,7 @@ mutable struct TTableDetails <: Thrift.TMsg
   shard_count::Int64
   key_metainfo::String
   is_temporary::Bool
+  partition_detail::Int32
   TTableDetails() = (o=new(); fillunset(o); o)
 end # mutable struct TTableDetails
 
@@ -462,14 +481,40 @@ mutable struct TRenderStepResult <: Thrift.TMsg
   TRenderStepResult() = (o=new(); fillunset(o); o)
 end # mutable struct TRenderStepResult
 
-mutable struct TAccessPrivileges <: Thrift.TMsg
+mutable struct TDatabasePermissions <: Thrift.TMsg
+  create_::Bool
+  delete_::Bool
+  TDatabasePermissions() = (o=new(); fillunset(o); o)
+end # mutable struct TDatabasePermissions
+
+mutable struct TTablePermissions <: Thrift.TMsg
+  create_::Bool
+  drop_::Bool
   select_::Bool
   insert_::Bool
-  create_::Bool
+  update_::Bool
+  delete_::Bool
   truncate_::Bool
-  create_dashboard_::Bool
-  TAccessPrivileges() = (o=new(); fillunset(o); o)
-end # mutable struct TAccessPrivileges
+  TTablePermissions() = (o=new(); fillunset(o); o)
+end # mutable struct TTablePermissions
+
+mutable struct TDashboardPermissions <: Thrift.TMsg
+  create_::Bool
+  delete_::Bool
+  view_::Bool
+  edit_::Bool
+  TDashboardPermissions() = (o=new(); fillunset(o); o)
+end # mutable struct TDashboardPermissions
+
+mutable struct TViewPermissions <: Thrift.TMsg
+  create_::Bool
+  drop_::Bool
+  select_::Bool
+  insert_::Bool
+  update_::Bool
+  delete_::Bool
+  TViewPermissions() = (o=new(); fillunset(o); o)
+end # mutable struct TViewPermissions
 
 mutable struct TDBObject <: Thrift.TMsg
   objectName::String
@@ -479,9 +524,16 @@ mutable struct TDBObject <: Thrift.TMsg
   TDBObject() = (o=new(); fillunset(o); o)
 end # mutable struct TDBObject
 
+mutable struct TDashboardGrantees <: Thrift.TMsg
+  name::String
+  is_user::Bool
+  permissions::TDashboardPermissions
+  TDashboardGrantees() = (o=new(); fillunset(o); o)
+end # mutable struct TDashboardGrantees
+
 mutable struct TLicenseInfo <: Thrift.TMsg
   claims::Vector{String}
   TLicenseInfo() = (o=new(); fillunset(o); o)
 end # mutable struct TLicenseInfo
 
-abstract type MapDClientBase end
+abstract type MapD______ClientBase end
