@@ -8,7 +8,6 @@ end
 #wrap in ifexists before using on Travis
 include("credentials.jl")
 
-
 ######################################## connection, admin
 #connect to database
 conn = MapD.connect(host, port , user, passwd, dbname)
@@ -46,69 +45,96 @@ databases = get_databases(conn)
 version = get_version(conn)
 @test typeof(version) == String
 
-#start_heap_profile
-#stop_heap_profile
-#get_heap_profile
-
 mem = get_memory(conn, "cpu")
 @test typeof(mem) == Vector{MapD.TNodeMemoryInfo}
 
 clear_cpu = clear_cpu_memory(conn)
+@test typeof(clear_cpu) == Void
+
 clear_gpu = clear_gpu_memory(conn)
+@test typeof(clear_gpu) == Void
 
 ######################################## query, render
 
-#sql_execute
+#se = sql_execute(conn, "select count(*) as records from fordgobike_tripdata_v2", false, 100, 100)
+
 #sql_execute_df
-sdf = sql_execute_df(conn, "select count(*) as records from fordgobike_tripdata_v2", 0, 0, 1000)
+
 #sql_execute_gdf
+
 #deallocate_df
+
 #interrupt
 
 sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata_v2")
 @test typeof(sqlval) == Dict{String,MapD.TColumnType}
 
-#get_completion_hints
 #set_execution_mode(conn, GPU)
+
 #render_vega
-#get_result_row_for_pixel
 
 ######################################## dashboard
 
-#get_dashboard
-#get_dashboards
+#make this test conditional on taking a value from get_dashboards?
+#would need to reverse order of tests so that getdbs exists first
+getdash = get_dashboard(conn, 1)
+@test typeof(getdash) == MapD.TDashboard
+
+getdbs = get_dashboards(conn)
+@test typeof(getdbs) == Vector{MapD.TDashboard}
+
 #create_dashboard
+
 #replace_dashboard
+
 #delete_dashboard
+
 #share_dashboard
+
 #unshare_dashboard
-#get_dashboard_grantees
 
-######################################## dashboard links
-
-#get_link_view
-#create_link
+getdashgrant = get_dashboard_grantees(conn, 1)
 
 ######################################## import
 
 #load_table_binary
+
 #load_table_binary_columnar
+
 #load_table_binary_arrow
+
 #load_table
+
+#detect_column_types
+
+#create_table
+
+#import_table
+
+#import_geo_table
+
+#import_table_status
 
 ######################################## object privileges
 
-#get_roles
-#get_db_objects_for_grantee
+gr = get_roles(conn)
+@test typeof(gr) == Vector{MapD.TDashboard}
+
+#get_db_objects_for_grantee(conn, "mapd")
+
 #get_db_object_privs
-#get_all_roles_for_user
+
+roleuser = get_all_roles_for_user(conn, "mapd")
+@test typeof(roleuser) == Vector{String}
 
 ######################################## licensing
 
-#set_license_key
-#get_license_claims
+slc = set_license_key(conn, "hello, world!") #not real license key :)
+@test typeof(slc) == MapD.TLicenseInfo
 
-
+glc = get_license_claims(conn)
+@test typeof(glc) == MapD.TLicenseInfo
 
 #disconnect from database
 disc = disconnect(conn)
+@test typeof(disc) == Void

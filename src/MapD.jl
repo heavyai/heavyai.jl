@@ -7,7 +7,8 @@ import Thrift: process, meta, distribute
 import Base: connect, interrupt
 
 #### enums ####
-# export meta, TDatumType, TEncodingType, TExecuteMode, TDeviceType, TTableType,
+export TExecuteMode
+# export meta, TDatumType, TEncodingType, , TDeviceType, TTableType,
 # TPartitionDetail, TMergeType, TExpressionRangeType, TDBObjectType
 
 #### typealiases ####
@@ -33,14 +34,13 @@ TLicenseInfo, MapDConnection
 #### functions ####
 export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect,
 get_status, get_hardware_info, get_tables, get_physical_tables, get_views, get_tables_meta,
-get_table_details, get_users, get_databases, get_version, start_heap_profile,
-stop_heap_profile, get_heap_profile, get_memory, clear_cpu_memory,
+get_table_details, get_users, get_databases, get_version, get_memory, clear_cpu_memory,
 clear_gpu_memory, sql_execute, sql_execute_df, sql_execute_gdf, deallocate_df,
-interrupt, sql_validate, get_completion_hints, set_execution_mode, render_vega,
-get_result_row_for_pixel, get_frontend_view, get_frontend_views, create_frontend_view,
-delete_frontend_view, get_dashboard, get_dashboards, create_dashboard, replace_dashboard,
-delete_dashboard, share_dashboard, unshare_dashboard, get_dashboard_grantees, get_link_view,
-create_link, load_table_binary, load_table_binary_columnar, load_table_binary_arrow,
+interrupt, sql_validate, set_execution_mode, render_vega, get_frontend_view,
+get_frontend_views, create_frontend_view, delete_frontend_view, get_dashboard,
+get_dashboards, create_dashboard, replace_dashboard, delete_dashboard, 
+share_dashboard, unshare_dashboard, get_dashboard_grantees,
+load_table_binary, load_table_binary_columnar, load_table_binary_arrow,
 load_table, detect_column_types, create_table, import_table, import_geo_table,
 import_table_status, get_roles, get_db_objects_for_grantee, get_db_object_privs,
 get_all_roles_for_user, set_license_key, get_license_claims

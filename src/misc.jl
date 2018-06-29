@@ -16,7 +16,7 @@ function connect(host::String, port::Int, user::String, passwd::String, dbname::
 
     Thrift.set_field!(socket, :io, tcp)
     #transport = TBufferedTransport(socket) # https://github.com/tanmaykm/Thrift.jl/issues/12
-    proto = TBinaryProtocol(socket)
+    proto = TBinaryProtocol(socket, false, true)
     c = MapD.MapDClient(proto)
 
     session = MapD.connect(c, user, passwd, dbname)
@@ -59,15 +59,6 @@ get_databases(conn::MapDConnection) =
 get_version(conn::MapDConnection) =
     get_version(conn.c)
 
-start_heap_profile(conn::MapDConnection) =
-    start_heap_profile(conn.c, conn.session)
-
-stop_heap_profile(conn::MapDConnection) =
-    stop_heap_profile(conn.c, conn.session)
-
-get_heap_profile(conn::MapDConnection) =
-    get_heap_profile(conn.c, conn.session)
-
 get_memory(conn::MapDConnection, memory_level::String) =
     get_memory(conn.c, conn.session, memory_level)
 
@@ -79,8 +70,8 @@ clear_gpu_memory(conn::MapDConnection) =
 
 ######################################## query, render
 
-sql_execute(conn::MapDConnection, query::String, column_format::Bool, nonce::String, first_n::Int, at_most_n::Int) =
-    sql_execute(conn.c, conn.session, query, column_format, nonce, Int32(first_n), Int32(at_most_n))
+sql_execute(conn::MapDConnection, query::String, column_format::Bool, first_n::Int, at_most_n::Int) =
+    sql_execute(conn.c, conn.session, query, column_format, randstring(32), Int32(first_n), Int32(at_most_n))
 
 sql_execute_df(conn::MapDConnection, query::String, device_type::Int, device_id::Int, first_n::Int) =
     sql_execute_df(conn.c, conn.session, query, Int32(device_type), Int32(device_id), Int32(first_n))
@@ -99,17 +90,11 @@ interrupt(conn::MapDConnection) =
 sql_validate(conn::MapDConnection, query::String) =
     sql_validate(conn.c, conn.session, query)
 
-get_completion_hints(conn::MapDConnection, sql::String, cursor::Int) =
-    get_completion_hints(conn.c, conn.session, sql, Int32(cursor))
-
 set_execution_mode(conn::MapDConnection, mode::Int) =
     set_execution_mode(conn.c, conn.session, Int32(mode))
 
-render_vega(conn::MapDConnection, widget_id::Int, vega_json::String, compression_level::Int, nonce::String) =
-    render_vega(conn.c, conn.session, Int64(widget_id), vega_json, Int32(compression_level), nonce)
-
-get_result_row_for_pixel(conn::MapDConnection, widget_id::Int, pixel::TPixel, table_col_names::Dict{String,Vector{String}}, column_format::Bool, pixelRadius::Int, nonce::String) =
-    get_result_row_for_pixel(conn.c, conn.session, Int64(widget_id), pixel, table_col_names, column_format, Int32(pixelRadius), nonce)
+render_vega(conn::MapDConnection, widget_id::Int, vega_json::String, compression_level::Int) =
+    render_vega(conn.c, conn.session, Int64(widget_id), vega_json, Int32(compression_level), randstring(32))
 
 ######################################## dashboard
 
@@ -136,14 +121,6 @@ unshare_dashboard(conn::MapDConnection, dashboard_id::Int, groups::Vector{String
 
 get_dashboard_grantees(conn::MapDConnection, dashboard_id::Int) =
     get_dashboard_grantees(conn.c, conn.session, Int32(dashboard_id))
-
-######################################## dashboard links
-
-get_link_view(conn::MapDConnection, link::String) =
-    get_link_view(conn.c, conn.session, link)
-
-create_link(conn::MapDConnection, view_state::String, view_metadata::String) =
-    create_link(conn.c, conn.session, view_state, view_metadata)
 
 ######################################## import
 
@@ -190,8 +167,8 @@ get_all_roles_for_user(conn::MapDConnection, userName::String) =
 
 ######################################## licensing
 
-set_license_key(conn::MapDConnection, key::String, nonce::String) =
-    set_license_key(conn.c, conn.session, key, nonce)
+set_license_key(conn::MapDConnection, key::String) =
+    set_license_key(conn.c, conn.session, key, randstring(32))
 
-get_license_claims(conn::MapDConnection, nonce::String) =
-    get_license_claims(conn.c, conn.session, nonce)
+get_license_claims(conn::MapDConnection) =
+    get_license_claims(conn.c, conn.session, randstring(32))
