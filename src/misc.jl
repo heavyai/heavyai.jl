@@ -8,7 +8,13 @@ end
 function connect(host::String, port::Int, user::String, passwd::String, dbname::String)
 
     socket = TSocket(host, port)
-    Thrift.set_field!(socket, :io, Base.connect(host, port))
+
+    #create libuv socket and keep-alive
+    tcp = Base.connect(host, port)
+    err = ccall(:uv_tcp_keepalive, Cint, (Ptr{Nothing}, Cint, Cuint), tcp.handle, 1, 1)
+    err != 0 && error("error setting keepalive on socket")
+
+    Thrift.set_field!(socket, :io, tcp)
     #transport = TBufferedTransport(socket) # https://github.com/tanmaykm/Thrift.jl/issues/12
     proto = TBinaryProtocol(socket)
     c = MapD.MapDClient(proto)
@@ -88,6 +94,8 @@ deallocate_df(conn::MapDConnection, df::TDataFrame, device_type::Int32, device_i
 interrupt(conn::MapDConnection) =
     interrupt(conn.c, conn.session)
 
+#need a try/catch with this? either returns data or exception
+#seems almost like a true/false or internal function
 sql_validate(conn::MapDConnection, query::String) =
     sql_validate(conn.c, conn.session, query)
 
