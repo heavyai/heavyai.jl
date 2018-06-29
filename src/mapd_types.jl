@@ -916,7 +916,7 @@ mutable struct get_completion_hints_args <: Thrift.TMsg
 end # mutable struct get_completion_hints_args
 
 mutable struct get_completion_hints_result
-  success::Vector{TCompletionHint}
+  success::AbstractVector
   e::TMapDException
   get_completion_hints_result() = (o=new(); fillunset(o); o)
   get_completion_hints_result(success) = (o=new(); fillset(o, :success); o.success=success; o)

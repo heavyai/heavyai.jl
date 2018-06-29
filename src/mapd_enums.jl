@@ -1,103 +1,46 @@
-struct _enum_TDatumType
-  SMALLINT::Int32
-  INT::Int32
-  BIGINT::Int32
-  FLOAT::Int32
-  DECIMAL::Int32
-  DOUBLE::Int32
-  STR::Int32
-  TIME::Int32
-  TIMESTAMP::Int32
-  DATE::Int32
-  BOOL::Int32
-  INTERVAL_DAY_TIME::Int32
-  INTERVAL_YEAR_MONTH::Int32
-  POINT::Int32
-  LINESTRING::Int32
-  POLYGON::Int32
-  MULTIPOLYGON::Int32
-  TINYINT::Int32
-  GEOMETRY::Int32
-  GEOGRAPHY::Int32
+#https://discourse.julialang.org/t/encapsulating-enum-access-via-dot-syntax/11785/3
+# @scopedenum Fruit APPLE=1 PEAR=2 BANANA=3
+# Fruit.APPLE
+# Fruit.PEAR
+# # access enum value
+# Fruit.APPLE.value
+# # make an APPLE from string
+# Fruit.Enum("APPLE")
+# # restricting type signatures
+# f(x::Fruit.Enum) = # do stuff w/ x
+macro scopedenum(T, args...)
+    defs = Expr(:block)
+    append!(defs.args, collect(:(const $(x.args[1]) = Enum($(x.args[2]))) for x in args))
+    names = Dict(x.args[2]=>String(x.args[1]) for x in args)
+    str2val = Dict(String(x.args[1])=>x.args[2] for x in args)
+    push!(defs.args, quote
+        function name(e::Enum)
+            nms = $names
+            return nms[e.value]
+        end
+        Enum(str::String) = Enum($(str2val)[str])
+        Base.show(io::IO, e::E) where {E <: Enum} = print(io, "$(Base.datatype_module(E)).$(name(e)) = $(e.value)")
+    end)
+    blk = esc(:(module $T; struct Enum{T}; value::T; end; Enum{T}(e::Enum{T}) where {T} = e; $defs; end))
+    return Expr(:toplevel, blk)
 end
-const TDatumType = _enum_TDatumType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6), Int32(7), Int32(8), Int32(9), Int32(10), Int32(11), Int32(12), Int32(13), Int32(14), Int32(15), Int32(16), Int32(17), Int32(18), Int32(19))
 
-struct _enum_TEncodingType
-  NONE::Int32
-  FIXED::Int32
-  RL::Int32
-  DIFF::Int32
-  DICT::Int32
-  SPARSE::Int32
-  GEOINT::Int32
-end
-const TEncodingType = _enum_TEncodingType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6))
 
-struct _enum_TExecuteMode
-  HYBRID::Int32
-  GPU::Int32
-  CPU::Int32
-end
-const TExecuteMode = _enum_TExecuteMode(Int32(0), Int32(1), Int32(2))
+#translated from auto-generated Thrift.jl to more ergonomic enum usage via macro
+@scopedenum TDatumType SMALLINT=Int32(0) INT=Int32(1) BIGINT=Int32(2) FLOAT=Int32(3) DECIMAL=Int32(4) DOUBLE=Int32(5) STR=Int32(6) TIME=Int32(7) TIMESTAMP=Int32(8) DATE=Int32(9) BOOL=Int32(10) INTERVAL_DAY_TIME=Int32(11) INTERVAL_YEAR_MONTH=Int32(12) POINT=Int32(13) LINESTRING=Int32(14) POLYGON=Int32(15) MULTIPOLYGON=Int32(16) TINYINT=Int32(17) GEOMETRY=Int32(18) GEOGRAPHY=Int32(19)
 
-struct _enum_TDeviceType
-  CPU::Int32
-  GPU::Int32
-end
-const TDeviceType = _enum_TDeviceType(Int32(0), Int32(1))
+@scopedenum TEncodingType NONE=Int32(0) FIXED=Int32(1) RL=Int32(2) DIFF=Int32(3) DICT=Int32(4) SPARSE=Int32(5) GEOINT=Int32(6)
 
-struct _enum_TTableType
-  DELIMITED::Int32
-  POLYGON::Int32
-end
-const TTableType = _enum_TTableType(Int32(0), Int32(1))
+@scopedenum TExecuteMode HYBRID=Int32(0) GPU=Int32(1) CPU=Int32(2)
 
-struct _enum_TPartitionDetail
-  DEFAULT::Int32
-  REPLICATED::Int32
-  SHARDED::Int32
-  OTHER::Int32
-end
-const TPartitionDetail = _enum_TPartitionDetail(Int32(0), Int32(1), Int32(2), Int32(3))
+@scopedenum TDeviceType CPU=Int32(0) GPU=Int32(1)
 
-struct _enum_TMergeType
-  UNION::Int32
-  REDUCE::Int32
-end
-const TMergeType = _enum_TMergeType(Int32(0), Int32(1))
+@scopedenum TTableType DELIMITED=Int32(0) POLYGON=Int32(1)
 
-struct _enum_TExpressionRangeType
-  INVALID::Int32
-  INTEGER::Int32
-  FLOAT::Int32
-  DOUBLE::Int32
-end
-const TExpressionRangeType = _enum_TExpressionRangeType(Int32(0), Int32(1), Int32(2), Int32(3))
+@scopedenum TPartitionDetail DEFAULT=Int32(0) REPLICATED=Int32(1) SHARDED=Int32(2) OTHER=Int32(3)
 
-struct _enum_TDBObjectType
-  AbstractDBObjectType::Int32
-  DatabaseDBObjectType::Int32
-  TableDBObjectType::Int32
-  DashboardDBObjectType::Int32
-  ViewDBObjectType::Int32
-end
-const TDBObjectType = _enum_TDBObjectType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4))
+@scopedenum TMergeType UNION=Int32(0) REDUCE=Int32(1)
 
-struct _enum_TCompletionHintType
-  COLUMN::Int32
-  TABLE::Int32
-  VIEW::Int32
-  SCHEMA::Int32
-  CATALOG::Int32
-  REPOSITORY::Int32
-  FUNCTION::Int32
-  KEYWORD::Int32
-end
-const TCompletionHintType = _enum_TCompletionHintType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6), Int32(7))
+@scopedenum TExpressionRangeType INVALID=Int32(0) INTEGER=Int32(1) FLOAT=Int32(2) DOUBLE=Int32(3)
 
-mutable struct TCompletionHint <: Thrift.TMsg
-  _type::Int32
-  hints::Vector{String}
-  replaced::String
-  TCompletionHint() = (o=new(); fillunset(o); o)
-end # mutable struct TCompletionHint
+@scopedenum TDBObjectType AbstractDBObjectType=Int32(0) DatabaseDBObjectType=Int32(1) TableDBObjectType=Int32(2) DashboardDBObjectType=Int32(3) ViewDBObjectType=Int32(4)

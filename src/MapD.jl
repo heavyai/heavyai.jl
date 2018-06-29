@@ -7,9 +7,8 @@ import Thrift: process, meta, distribute
 import Base: connect, interrupt
 
 #### enums ####
-export TExecuteMode
-# export meta, TDatumType, TEncodingType, , TDeviceType, TTableType,
-# TPartitionDetail, TMergeType, TExpressionRangeType, TDBObjectType
+export TDatumType, TExecuteMode, TEncodingType, TDeviceType, TTableType, TPartitionDetail,
+TMergeType, TExpressionRangeType, TDBObjectType
 
 #### typealiases ####
 export TRowDescriptor # typealias for Vector{TColumnType}
@@ -38,7 +37,7 @@ get_table_details, get_users, get_databases, get_version, get_memory, clear_cpu_
 clear_gpu_memory, sql_execute, sql_execute_df, sql_execute_gdf, deallocate_df,
 interrupt, sql_validate, set_execution_mode, render_vega, get_frontend_view,
 get_frontend_views, create_frontend_view, delete_frontend_view, get_dashboard,
-get_dashboards, create_dashboard, replace_dashboard, delete_dashboard, 
+get_dashboards, create_dashboard, replace_dashboard, delete_dashboard,
 share_dashboard, unshare_dashboard, get_dashboard_grantees,
 load_table_binary, load_table_binary_columnar, load_table_binary_arrow,
 load_table, detect_column_types, create_table, import_table, import_geo_table,
