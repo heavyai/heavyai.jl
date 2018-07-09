@@ -5,6 +5,7 @@ end
 
 #connect function to abstract away needing to build MapDClient
 #user passes MapDConnection created from connect instead of individual pieces
+#not strictly part of the mapd.thrift generated code
 function connect(host::String, port::Int, user::String, passwd::String, dbname::String)
 
     socket = TSocket(host, port)
@@ -22,6 +23,25 @@ function connect(host::String, port::Int, user::String, passwd::String, dbname::
     session = MapD.connect(c, user, passwd, dbname)
 
     return MapDConnection(session, c)
+
+end
+
+function load_buffer(handle::Vector{UInt8}, size::Int)
+
+    # get key as UInt32, then get string value instead of len 1 array
+    shmkey = reinterpret(UInt32, handle)[1]
+
+    # use <sys/ipc.h> from C standard library to get shared memory id
+    # validate that shmget returns a valid id
+    shmid = ccall((:shmget, "libc"), Cint, (Cuint, Int32, Int32), shmkey, size, 0)
+    shmid == -1 ? error("Invalid shared memory key: $shmkey"): nothing
+
+    # with shmid, get shared memory start address
+    ptr = ccall((:shmat, "libc"), Ptr{Void}, (Cint, Ptr{Void}, Cint), shmid, C_NULL, 0)
+
+    # makes a zero-copy reference to memory, true gives ownership to julia
+    # validate that memory no longer needs to be released using MapD methods
+    return unsafe_wrap(Vector, convert(Ptr{UInt8}, ptr), size, true)
 
 end
 
@@ -90,8 +110,8 @@ interrupt(conn::MapDConnection) =
 sql_validate(conn::MapDConnection, query::String) =
     sql_validate(conn.c, conn.session, query)
 
-set_execution_mode(conn::MapDConnection, mode::Int) =
-    set_execution_mode(conn.c, conn.session, Int32(mode))
+set_execution_mode(conn::MapDConnection, mode::TExecuteMode.Enum) =
+    set_execution_mode(conn.c, conn.session, mode.value)
 
 render_vega(conn::MapDConnection, widget_id::Int, vega_json::String, compression_level::Int) =
     render_vega(conn.c, conn.session, Int64(widget_id), vega_json, Int32(compression_level), randstring(32))
@@ -139,8 +159,8 @@ load_table(conn::MapDConnection, table_name::String, rows::Vector{TStringRow}) =
 detect_column_types(conn::MapDConnection, file_name::String, copy_params::TCopyParams) =
     detect_column_types(conn.c, conn.session, file_name, copy_params)
 
-create_table(conn::MapDConnection, table_name::String, row_desc::TRowDescriptor, table_type::Int) =
-    create_table(conn.c, conn.session, table_name, row_desc, Int32(table_type))
+create_table(conn::MapDConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
+    create_table(conn.c, conn.session, table_name, row_desc, table_type.value)
 
 import_table(conn::MapDConnection, table_name::String, file_name::String, copy_params::TCopyParams) =
     import_table(conn.c, conn.session, table_name, file_name, copy_params)
