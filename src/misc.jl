@@ -41,7 +41,7 @@ function load_buffer(handle::Vector{UInt8}, size::Int)
 
     # makes a zero-copy reference to memory, true gives ownership to julia
     # validate that memory no longer needs to be released using MapD methods
-    return unsafe_wrap(Vector, convert(Ptr{UInt8}, ptr), size, true)
+    return unsafe_wrap(Vector, convert(Ptr{UInt8}, ptr), size, own = true)
 
 end
 
