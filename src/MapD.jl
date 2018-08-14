@@ -2,7 +2,7 @@ __precompile__()
 
 module MapD
 
-using Compat, Thrift
+using Compat, Thrift, Sockets, Distributed
 import Thrift: process, meta, distribute
 import Base: connect, interrupt
 
