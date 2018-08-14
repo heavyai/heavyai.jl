@@ -1,5 +1,6 @@
 using MapD
 using Test
+using Dates
 
 #wrap in ifexists before using on Travis
 include("credentials.jl")
