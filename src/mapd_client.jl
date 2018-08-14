@@ -1176,7 +1176,7 @@ function detect_column_types(c::MapDClient, session::TSessionId, file_name::Stri
 end # function detect_column_types
 
 # Client callable method for create_table
-function create_table(c::MapDClient, session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32)
+function create_table(c::MapDClient, session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32, create_params::TCreateParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "create_table", Thrift.MessageType.CALL, c.seqid)
@@ -1185,6 +1185,7 @@ function create_table(c::MapDClient, session::TSessionId, table_name::String, ro
   Thrift.set_field!(inp, :table_name, table_name)
   Thrift.set_field!(inp, :row_desc, row_desc)
   Thrift.set_field!(inp, :table_type, table_type)
+  Thrift.set_field!(inp, :create_params, create_params)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)

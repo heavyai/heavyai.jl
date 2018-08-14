@@ -1295,6 +1295,7 @@ mutable struct create_table_args <: Thrift.TMsg
   table_name::String
   row_desc::TRowDescriptor
   table_type::Int32
+  create_params::TCreateParams
   create_table_args() = (o=new(); fillunset(o); o)
 end # mutable struct create_table_args
 meta(t::Type{create_table_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0)))
