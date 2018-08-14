@@ -377,10 +377,10 @@ mutable struct TRenderDatum <: Thrift.TMsg
   TRenderDatum() = (o=new(); fillunset(o); o)
 end # mutable struct TRenderDatum
 
-const TRenderDataAggMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 
 mutable struct TRenderStepResult <: Thrift.TMsg
-  merge_data::TRenderDataAggMap
+  merge_data::TRenderAggDataMap
   raw_pixel_data::TRawPixelData
   execution_time_ms::Int64
   render_time_ms::Int64
@@ -1451,7 +1451,7 @@ meta(t::Type{start_render_query_result}) = meta(t, Symbol[:success, :e], Int[0, 
 
 mutable struct execute_next_render_step_args <: Thrift.TMsg
   pending_render::TPendingRenderQuery
-  merged_data::TRenderDataAggMap
+  merged_data::TRenderAggDataMap
   execute_next_render_step_args() = (o=new(); fillunset(o); o)
 end # mutable struct execute_next_render_step_args
 

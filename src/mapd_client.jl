@@ -1404,7 +1404,7 @@ function start_render_query(c::MapDClient, session::TSessionId, widget_id::Int64
 end # function start_render_query
 
 # Client callable method for execute_next_render_step
-function execute_next_render_step(c::MapDClient, pending_render::TPendingRenderQuery, merged_data::TRenderDataAggMap)
+function execute_next_render_step(c::MapDClient, pending_render::TPendingRenderQuery, merged_data::TRenderAggDataMap)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "execute_next_render_step", Thrift.MessageType.CALL, c.seqid)

@@ -17,7 +17,7 @@ export TTableDescriptor # typealias for Dict{String,TColumnType}
 export TSessionId # typealias for String
 export TQueryId # typealias for Int64
 export TRenderPassMap # typealias for Dict{Int32,TRawRenderPassDataResult}
-export TRenderDataAggMap # typealias for Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+export TRenderAggDataMap # typealias for Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 
 #### types ####
 export TDatumVal, TDatum, TStringValue, TTypeInfo, TColumnType, TRow, TColumnData,
