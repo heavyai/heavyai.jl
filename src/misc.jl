@@ -11,7 +11,7 @@ function connect(host::String, port::Int, user::String, passwd::String, dbname::
     socket = TSocket(host, port)
 
     #create libuv socket and keep-alive
-    tcp = Base.connect(host, port)
+    tcp = connect(host, port)
     err = ccall(:uv_tcp_keepalive, Cint, (Ptr{Nothing}, Cint, Cuint), tcp.handle, 1, 1)
     err != 0 && error("error setting keepalive on socket")
 
@@ -34,10 +34,10 @@ function load_buffer(handle::Vector{UInt8}, size::Int)
     # use <sys/ipc.h> from C standard library to get shared memory id
     # validate that shmget returns a valid id
     shmid = ccall((:shmget, "libc"), Cint, (Cuint, Int32, Int32), shmkey, size, 0)
-    shmid == -1 ? error("Invalid shared memory key: $shmkey"): nothing
+    shmid == -1 ? error("Invalid shared memory key: $shmkey") : nothing
 
     # with shmid, get shared memory start address
-    ptr = ccall((:shmat, "libc"), Ptr{Void}, (Cint, Ptr{Void}, Cint), shmid, C_NULL, 0)
+    ptr = ccall((:shmat, "libc"), Ptr{Nothing}, (Cint, Ptr{Nothing}, Cint), shmid, C_NULL, 0)
 
     # makes a zero-copy reference to memory, true gives ownership to julia
     # validate that memory no longer needs to be released using MapD methods
