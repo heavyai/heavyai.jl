@@ -98,7 +98,7 @@ const TQueryId = Int64
 
 const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
 
-const TRenderDataAggMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 
 
 mutable struct TDatumVal <: Thrift.TMsg
@@ -129,9 +129,10 @@ mutable struct TTypeInfo <: Thrift.TMsg
   precision::Int32
   scale::Int32
   comp_param::Int32
+  size::Int32
   TTypeInfo() = (o=new(); fillunset(o); o)
 end # mutable struct TTypeInfo
-meta(t::Type{TTypeInfo}) = meta(t, Symbol[], Int[1,4,2,3,5,6,7], Dict{Symbol,Any}())
+meta(t::Type{TTypeInfo}) = meta(t, Symbol[:size], Int[1,4,2,3,5,6,7,8], Dict{Symbol,Any}(:size => Int32(-1)))
 
 mutable struct TColumnType <: Thrift.TMsg
   col_name::String
@@ -236,6 +237,11 @@ mutable struct TCopyParams <: Thrift.TMsg
   TCopyParams() = (o=new(); fillunset(o); o)
 end # mutable struct TCopyParams
 meta(t::Type{TCopyParams}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0), :geo_coords_encoding => Int32(6), :geo_coords_comp_param => Int32(32), :geo_coords_type => Int32(18), :geo_coords_srid => Int32(4326), :sanitize_column_names => true))
+
+mutable struct TCreateParams <: Thrift.TMsg
+  is_replicated::Bool
+  TCreateParams() = (o=new(); fillunset(o); o)
+end # mutable struct TCreateParams
 
 mutable struct TDetectResult <: Thrift.TMsg
   row_set::TRowSet
@@ -473,7 +479,7 @@ mutable struct TRenderDatum <: Thrift.TMsg
 end # mutable struct TRenderDatum
 
 mutable struct TRenderStepResult <: Thrift.TMsg
-  merge_data::TRenderDataAggMap
+  merge_data::TRenderAggDataMap
   raw_pixel_data::TRawPixelData
   execution_time_ms::Int64
   render_time_ms::Int64
@@ -536,4 +542,4 @@ mutable struct TLicenseInfo <: Thrift.TMsg
   TLicenseInfo() = (o=new(); fillunset(o); o)
 end # mutable struct TLicenseInfo
 
-abstract type MapD______ClientBase end
+abstract type MapDClientBase end

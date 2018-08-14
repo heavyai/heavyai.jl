@@ -849,6 +849,7 @@ mutable struct create_table_args <: Thrift.TMsg
   table_name::String
   row_desc::TRowDescriptor
   table_type::Int32
+  create_params::TCreateParams
   create_table_args() = (o=new(); fillunset(o); o)
 end # mutable struct create_table_args
 meta(t::Type{create_table_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0)))
@@ -1011,7 +1012,7 @@ meta(t::Type{start_render_query_result}) = meta(t, Symbol[:success, :e], Int[0, 
 
 mutable struct execute_next_render_step_args <: Thrift.TMsg
   pending_render::TPendingRenderQuery
-  merged_data::TRenderDataAggMap
+  merged_data::TRenderAggDataMap
   execute_next_render_step_args() = (o=new(); fillunset(o); o)
 end # mutable struct execute_next_render_step_args
 
@@ -1185,10 +1186,10 @@ meta(t::Type{get_license_claims_result}) = meta(t, Symbol[:success, :e], Int[0, 
 
 
 
-# Processor for MapD______ service (to be used in server implementation)
-mutable struct MapD______Processor <: TProcessor
+# Processor for MapD service (to be used in server implementation)
+mutable struct MapDProcessor <: TProcessor
   tp::ThriftProcessor
-  function MapD______Processor()
+  function MapDProcessor()
     p = new(ThriftProcessor())
     handle(p.tp, ThriftHandler("connect", _connect, connect_args, connect_result))
     handle(p.tp, ThriftHandler("disconnect", _disconnect, disconnect_args, disconnect_result))
@@ -1266,731 +1267,731 @@ mutable struct MapD______Processor <: TProcessor
     handle(p.tp, ThriftHandler("get_license_claims", _get_license_claims, get_license_claims_args, get_license_claims_result))
     p
   end
-  function _connect(inp::connect_args)
-    try
-      result = connect(inp.user, inp.passwd, inp.dbname)
-      return connect_result(result)
-    catch ex
-      exret = connect_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _connect
-  function _disconnect(inp::disconnect_args)
-    try
-      disconnect(inp.session)
-      return disconnect_result()
-    catch ex
-      exret = disconnect_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _disconnect
-  function _get_server_status(inp::get_server_status_args)
-    try
-      result = get_server_status(inp.session)
-      return get_server_status_result(result)
-    catch ex
-      exret = get_server_status_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_server_status
-  function _get_status(inp::get_status_args)
-    try
-      result = get_status(inp.session)
-      return get_status_result(result)
-    catch ex
-      exret = get_status_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_status
-  function _get_hardware_info(inp::get_hardware_info_args)
-    try
-      result = get_hardware_info(inp.session)
-      return get_hardware_info_result(result)
-    catch ex
-      exret = get_hardware_info_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_hardware_info
-  function _get_tables(inp::get_tables_args)
-    try
-      result = get_tables(inp.session)
-      return get_tables_result(result)
-    catch ex
-      exret = get_tables_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_tables
-  function _get_physical_tables(inp::get_physical_tables_args)
-    try
-      result = get_physical_tables(inp.session)
-      return get_physical_tables_result(result)
-    catch ex
-      exret = get_physical_tables_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_physical_tables
-  function _get_views(inp::get_views_args)
-    try
-      result = get_views(inp.session)
-      return get_views_result(result)
-    catch ex
-      exret = get_views_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_views
-  function _get_tables_meta(inp::get_tables_meta_args)
-    try
-      result = get_tables_meta(inp.session)
-      return get_tables_meta_result(result)
-    catch ex
-      exret = get_tables_meta_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_tables_meta
-  function _get_table_details(inp::get_table_details_args)
-    try
-      result = get_table_details(inp.session, inp.table_name)
-      return get_table_details_result(result)
-    catch ex
-      exret = get_table_details_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_table_details
-  function _get_internal_table_details(inp::get_internal_table_details_args)
-    try
-      result = get_internal_table_details(inp.session, inp.table_name)
-      return get_internal_table_details_result(result)
-    catch ex
-      exret = get_internal_table_details_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_internal_table_details
-  function _get_users(inp::get_users_args)
-    try
-      result = get_users(inp.session)
-      return get_users_result(result)
-    catch ex
-      exret = get_users_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_users
-  function _get_databases(inp::get_databases_args)
-    try
-      result = get_databases(inp.session)
-      return get_databases_result(result)
-    catch ex
-      exret = get_databases_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_databases
-  function _get_version(inp::get_version_args)
-    try
-      result = get_version()
-      return get_version_result(result)
-    catch ex
-      exret = get_version_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_version
-  function _start_heap_profile(inp::start_heap_profile_args)
-    try
-      start_heap_profile(inp.session)
-      return start_heap_profile_result()
-    catch ex
-      exret = start_heap_profile_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _start_heap_profile
-  function _stop_heap_profile(inp::stop_heap_profile_args)
-    try
-      stop_heap_profile(inp.session)
-      return stop_heap_profile_result()
-    catch ex
-      exret = stop_heap_profile_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _stop_heap_profile
-  function _get_heap_profile(inp::get_heap_profile_args)
-    try
-      result = get_heap_profile(inp.session)
-      return get_heap_profile_result(result)
-    catch ex
-      exret = get_heap_profile_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_heap_profile
-  function _get_memory(inp::get_memory_args)
-    try
-      result = get_memory(inp.session, inp.memory_level)
-      return get_memory_result(result)
-    catch ex
-      exret = get_memory_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_memory
-  function _clear_cpu_memory(inp::clear_cpu_memory_args)
-    try
-      clear_cpu_memory(inp.session)
-      return clear_cpu_memory_result()
-    catch ex
-      exret = clear_cpu_memory_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _clear_cpu_memory
-  function _clear_gpu_memory(inp::clear_gpu_memory_args)
-    try
-      clear_gpu_memory(inp.session)
-      return clear_gpu_memory_result()
-    catch ex
-      exret = clear_gpu_memory_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _clear_gpu_memory
-  function _set_table_epoch(inp::set_table_epoch_args)
-    try
-      set_table_epoch(inp.session, inp.db_id, inp.table_id, inp.new_epoch)
-      return set_table_epoch_result()
-    catch ex
-      exret = set_table_epoch_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_table_epoch
-  function _set_table_epoch_by_name(inp::set_table_epoch_by_name_args)
-    try
-      set_table_epoch_by_name(inp.session, inp.table_name, inp.new_epoch)
-      return set_table_epoch_by_name_result()
-    catch ex
-      exret = set_table_epoch_by_name_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_table_epoch_by_name
-  _get_table_epoch(inp::get_table_epoch_args) = get_table_epoch_result(get_table_epoch(inp.session, inp.db_id, inp.table_id))
-  _get_table_epoch_by_name(inp::get_table_epoch_by_name_args) = get_table_epoch_by_name_result(get_table_epoch_by_name(inp.session, inp.table_name))
-  function _sql_execute(inp::sql_execute_args)
-    try
-      result = sql_execute(inp.session, inp.query, inp.column_format, inp.nonce, inp.first_n, inp.at_most_n)
-      return sql_execute_result(result)
-    catch ex
-      exret = sql_execute_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_execute
-  function _sql_execute_df(inp::sql_execute_df_args)
-    try
-      result = sql_execute_df(inp.session, inp.query, inp.device_type, inp.device_id, inp.first_n)
-      return sql_execute_df_result(result)
-    catch ex
-      exret = sql_execute_df_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_execute_df
-  function _sql_execute_gdf(inp::sql_execute_gdf_args)
-    try
-      result = sql_execute_gdf(inp.session, inp.query, inp.device_id, inp.first_n)
-      return sql_execute_gdf_result(result)
-    catch ex
-      exret = sql_execute_gdf_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_execute_gdf
-  function _deallocate_df(inp::deallocate_df_args)
-    try
-      deallocate_df(inp.session, inp.df, inp.device_type, inp.device_id)
-      return deallocate_df_result()
-    catch ex
-      exret = deallocate_df_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _deallocate_df
-  function _interrupt(inp::interrupt_args)
-    try
-      interrupt(inp.session)
-      return interrupt_result()
-    catch ex
-      exret = interrupt_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _interrupt
-  function _sql_validate(inp::sql_validate_args)
-    try
-      result = sql_validate(inp.session, inp.query)
-      return sql_validate_result(result)
-    catch ex
-      exret = sql_validate_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_validate
-  function _get_completion_hints(inp::get_completion_hints_args)
-    try
-      result = get_completion_hints(inp.session, inp.sql, inp.cursor)
-      return get_completion_hints_result(result)
-    catch ex
-      exret = get_completion_hints_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_completion_hints
-  function _set_execution_mode(inp::set_execution_mode_args)
-    try
-      set_execution_mode(inp.session, inp.mode)
-      return set_execution_mode_result()
-    catch ex
-      exret = set_execution_mode_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_execution_mode
-  function _render_vega(inp::render_vega_args)
-    try
-      result = render_vega(inp.session, inp.widget_id, inp.vega_json, inp.compression_level, inp.nonce)
-      return render_vega_result(result)
-    catch ex
-      exret = render_vega_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _render_vega
-  function _get_result_row_for_pixel(inp::get_result_row_for_pixel_args)
-    try
-      result = get_result_row_for_pixel(inp.session, inp.widget_id, inp.pixel, inp.table_col_names, inp.column_format, inp.pixelRadius, inp.nonce)
-      return get_result_row_for_pixel_result(result)
-    catch ex
-      exret = get_result_row_for_pixel_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_result_row_for_pixel
-  function _get_frontend_view(inp::get_frontend_view_args)
-    try
-      result = get_frontend_view(inp.session, inp.view_name)
-      return get_frontend_view_result(result)
-    catch ex
-      exret = get_frontend_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_frontend_view
-  function _get_frontend_views(inp::get_frontend_views_args)
-    try
-      result = get_frontend_views(inp.session)
-      return get_frontend_views_result(result)
-    catch ex
-      exret = get_frontend_views_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_frontend_views
-  function _create_frontend_view(inp::create_frontend_view_args)
-    try
-      create_frontend_view(inp.session, inp.view_name, inp.view_state, inp.image_hash, inp.view_metadata)
-      return create_frontend_view_result()
-    catch ex
-      exret = create_frontend_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_frontend_view
-  function _delete_frontend_view(inp::delete_frontend_view_args)
-    try
-      delete_frontend_view(inp.session, inp.view_name)
-      return delete_frontend_view_result()
-    catch ex
-      exret = delete_frontend_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _delete_frontend_view
-  function _get_dashboard(inp::get_dashboard_args)
-    try
-      result = get_dashboard(inp.session, inp.dashboard_id)
-      return get_dashboard_result(result)
-    catch ex
-      exret = get_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_dashboard
-  function _get_dashboards(inp::get_dashboards_args)
-    try
-      result = get_dashboards(inp.session)
-      return get_dashboards_result(result)
-    catch ex
-      exret = get_dashboards_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_dashboards
-  function _create_dashboard(inp::create_dashboard_args)
-    try
-      result = create_dashboard(inp.session, inp.dashboard_name, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
-      return create_dashboard_result(result)
-    catch ex
-      exret = create_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_dashboard
-  function _replace_dashboard(inp::replace_dashboard_args)
-    try
-      replace_dashboard(inp.session, inp.dashboard_id, inp.dashboard_name, inp.dashboard_owner, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
-      return replace_dashboard_result()
-    catch ex
-      exret = replace_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _replace_dashboard
-  function _delete_dashboard(inp::delete_dashboard_args)
-    try
-      delete_dashboard(inp.session, inp.dashboard_id)
-      return delete_dashboard_result()
-    catch ex
-      exret = delete_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _delete_dashboard
-  function _share_dashboard(inp::share_dashboard_args)
-    try
-      share_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
-      return share_dashboard_result()
-    catch ex
-      exret = share_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _share_dashboard
-  function _unshare_dashboard(inp::unshare_dashboard_args)
-    try
-      unshare_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
-      return unshare_dashboard_result()
-    catch ex
-      exret = unshare_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _unshare_dashboard
-  function _get_dashboard_grantees(inp::get_dashboard_grantees_args)
-    try
-      result = get_dashboard_grantees(inp.session, inp.dashboard_id)
-      return get_dashboard_grantees_result(result)
-    catch ex
-      exret = get_dashboard_grantees_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_dashboard_grantees
-  function _get_link_view(inp::get_link_view_args)
-    try
-      result = get_link_view(inp.session, inp.link)
-      return get_link_view_result(result)
-    catch ex
-      exret = get_link_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_link_view
-  function _create_link(inp::create_link_args)
-    try
-      result = create_link(inp.session, inp.view_state, inp.view_metadata)
-      return create_link_result(result)
-    catch ex
-      exret = create_link_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_link
-  function _load_table_binary(inp::load_table_binary_args)
-    try
-      load_table_binary(inp.session, inp.table_name, inp.rows)
-      return load_table_binary_result()
-    catch ex
-      exret = load_table_binary_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table_binary
-  function _load_table_binary_columnar(inp::load_table_binary_columnar_args)
-    try
-      load_table_binary_columnar(inp.session, inp.table_name, inp.cols)
-      return load_table_binary_columnar_result()
-    catch ex
-      exret = load_table_binary_columnar_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table_binary_columnar
-  function _load_table_binary_arrow(inp::load_table_binary_arrow_args)
-    try
-      load_table_binary_arrow(inp.session, inp.table_name, inp.arrow_stream)
-      return load_table_binary_arrow_result()
-    catch ex
-      exret = load_table_binary_arrow_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table_binary_arrow
-  function _load_table(inp::load_table_args)
-    try
-      load_table(inp.session, inp.table_name, inp.rows)
-      return load_table_result()
-    catch ex
-      exret = load_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table
-  function _detect_column_types(inp::detect_column_types_args)
-    try
-      result = detect_column_types(inp.session, inp.file_name, inp.copy_params)
-      return detect_column_types_result(result)
-    catch ex
-      exret = detect_column_types_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _detect_column_types
-  function _create_table(inp::create_table_args)
-    try
-      create_table(inp.session, inp.table_name, inp.row_desc, inp.table_type)
-      return create_table_result()
-    catch ex
-      exret = create_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_table
-  function _import_table(inp::import_table_args)
-    try
-      import_table(inp.session, inp.table_name, inp.file_name, inp.copy_params)
-      return import_table_result()
-    catch ex
-      exret = import_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _import_table
-  function _import_geo_table(inp::import_geo_table_args)
-    try
-      import_geo_table(inp.session, inp.table_name, inp.file_name, inp.copy_params, inp.row_desc)
-      return import_geo_table_result()
-    catch ex
-      exret = import_geo_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _import_geo_table
-  function _import_table_status(inp::import_table_status_args)
-    try
-      result = import_table_status(inp.session, inp.import_id)
-      return import_table_status_result(result)
-    catch ex
-      exret = import_table_status_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _import_table_status
-  function _get_first_geo_file_in_archive(inp::get_first_geo_file_in_archive_args)
-    try
-      result = get_first_geo_file_in_archive(inp.session, inp.archive_path, inp.copy_params)
-      return get_first_geo_file_in_archive_result(result)
-    catch ex
-      exret = get_first_geo_file_in_archive_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_first_geo_file_in_archive
-  function _get_all_files_in_archive(inp::get_all_files_in_archive_args)
-    try
-      result = get_all_files_in_archive(inp.session, inp.archive_path, inp.copy_params)
-      return get_all_files_in_archive_result(result)
-    catch ex
-      exret = get_all_files_in_archive_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_all_files_in_archive
-  function _start_query(inp::start_query_args)
-    try
-      result = start_query(inp.session, inp.query_ra, inp.just_explain)
-      return start_query_result(result)
-    catch ex
-      exret = start_query_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _start_query
-  function _execute_first_step(inp::execute_first_step_args)
-    try
-      result = execute_first_step(inp.pending_query)
-      return execute_first_step_result(result)
-    catch ex
-      exret = execute_first_step_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _execute_first_step
-  function _broadcast_serialized_rows(inp::broadcast_serialized_rows_args)
-    try
-      broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.query_id)
-      return broadcast_serialized_rows_result()
-    catch ex
-      exret = broadcast_serialized_rows_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _broadcast_serialized_rows
-  function _start_render_query(inp::start_render_query_args)
-    try
-      result = start_render_query(inp.session, inp.widget_id, inp.node_idx, inp.vega_json)
-      return start_render_query_result(result)
-    catch ex
-      exret = start_render_query_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _start_render_query
-  function _execute_next_render_step(inp::execute_next_render_step_args)
-    try
-      result = execute_next_render_step(inp.pending_render, inp.merged_data)
-      return execute_next_render_step_result(result)
-    catch ex
-      exret = execute_next_render_step_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _execute_next_render_step
-  function _insert_data(inp::insert_data_args)
-    try
-      insert_data(inp.session, inp.insert_data)
-      return insert_data_result()
-    catch ex
-      exret = insert_data_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _insert_data
-  function _checkpoint(inp::checkpoint_args)
-    try
-      checkpoint(inp.session, inp.db_id, inp.table_id)
-      return checkpoint_result()
-    catch ex
-      exret = checkpoint_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _checkpoint
-  function _get_table_descriptor(inp::get_table_descriptor_args)
-    try
-      result = get_table_descriptor(inp.session, inp.table_name)
-      return get_table_descriptor_result(result)
-    catch ex
-      exret = get_table_descriptor_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_table_descriptor
-  function _get_row_descriptor(inp::get_row_descriptor_args)
-    try
-      result = get_row_descriptor(inp.session, inp.table_name)
-      return get_row_descriptor_result(result)
-    catch ex
-      exret = get_row_descriptor_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_row_descriptor
-  function _get_roles(inp::get_roles_args)
-    try
-      result = get_roles(inp.session)
-      return get_roles_result(result)
-    catch ex
-      exret = get_roles_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_roles
-  function _get_db_objects_for_grantee(inp::get_db_objects_for_grantee_args)
-    try
-      result = get_db_objects_for_grantee(inp.session, inp.roleName)
-      return get_db_objects_for_grantee_result(result)
-    catch ex
-      exret = get_db_objects_for_grantee_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_db_objects_for_grantee
-  function _get_db_object_privs(inp::get_db_object_privs_args)
-    try
-      result = get_db_object_privs(inp.session, inp.objectName, inp._type)
-      return get_db_object_privs_result(result)
-    catch ex
-      exret = get_db_object_privs_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_db_object_privs
-  function _get_all_roles_for_user(inp::get_all_roles_for_user_args)
-    try
-      result = get_all_roles_for_user(inp.session, inp.userName)
-      return get_all_roles_for_user_result(result)
-    catch ex
-      exret = get_all_roles_for_user_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_all_roles_for_user
-  function _set_license_key(inp::set_license_key_args)
-    try
-      result = set_license_key(inp.session, inp.key, inp.nonce)
-      return set_license_key_result(result)
-    catch ex
-      exret = set_license_key_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_license_key
-  function _get_license_claims(inp::get_license_claims_args)
-    try
-      result = get_license_claims(inp.session, inp.nonce)
-      return get_license_claims_result(result)
-    catch ex
-      exret = get_license_claims_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_license_claims
-end # mutable struct MapD______Processor
-process(p::MapD______Processor, inp::TProtocol, outp::TProtocol) = process(p.tp, inp, outp)
-distribute(p::MapD______Processor) = distribute(p.tp)
+end # mutable struct MapDProcessor
+function _connect(inp::connect_args)
+  try
+    result = connect(inp.user, inp.passwd, inp.dbname)
+    return connect_result(result)
+  catch ex
+    exret = connect_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _connect
+function _disconnect(inp::disconnect_args)
+  try
+    disconnect(inp.session)
+    return disconnect_result()
+  catch ex
+    exret = disconnect_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _disconnect
+function _get_server_status(inp::get_server_status_args)
+  try
+    result = get_server_status(inp.session)
+    return get_server_status_result(result)
+  catch ex
+    exret = get_server_status_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_server_status
+function _get_status(inp::get_status_args)
+  try
+    result = get_status(inp.session)
+    return get_status_result(result)
+  catch ex
+    exret = get_status_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_status
+function _get_hardware_info(inp::get_hardware_info_args)
+  try
+    result = get_hardware_info(inp.session)
+    return get_hardware_info_result(result)
+  catch ex
+    exret = get_hardware_info_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_hardware_info
+function _get_tables(inp::get_tables_args)
+  try
+    result = get_tables(inp.session)
+    return get_tables_result(result)
+  catch ex
+    exret = get_tables_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_tables
+function _get_physical_tables(inp::get_physical_tables_args)
+  try
+    result = get_physical_tables(inp.session)
+    return get_physical_tables_result(result)
+  catch ex
+    exret = get_physical_tables_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_physical_tables
+function _get_views(inp::get_views_args)
+  try
+    result = get_views(inp.session)
+    return get_views_result(result)
+  catch ex
+    exret = get_views_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_views
+function _get_tables_meta(inp::get_tables_meta_args)
+  try
+    result = get_tables_meta(inp.session)
+    return get_tables_meta_result(result)
+  catch ex
+    exret = get_tables_meta_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_tables_meta
+function _get_table_details(inp::get_table_details_args)
+  try
+    result = get_table_details(inp.session, inp.table_name)
+    return get_table_details_result(result)
+  catch ex
+    exret = get_table_details_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_table_details
+function _get_internal_table_details(inp::get_internal_table_details_args)
+  try
+    result = get_internal_table_details(inp.session, inp.table_name)
+    return get_internal_table_details_result(result)
+  catch ex
+    exret = get_internal_table_details_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_internal_table_details
+function _get_users(inp::get_users_args)
+  try
+    result = get_users(inp.session)
+    return get_users_result(result)
+  catch ex
+    exret = get_users_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_users
+function _get_databases(inp::get_databases_args)
+  try
+    result = get_databases(inp.session)
+    return get_databases_result(result)
+  catch ex
+    exret = get_databases_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_databases
+function _get_version(inp::get_version_args)
+  try
+    result = get_version()
+    return get_version_result(result)
+  catch ex
+    exret = get_version_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_version
+function _start_heap_profile(inp::start_heap_profile_args)
+  try
+    start_heap_profile(inp.session)
+    return start_heap_profile_result()
+  catch ex
+    exret = start_heap_profile_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _start_heap_profile
+function _stop_heap_profile(inp::stop_heap_profile_args)
+  try
+    stop_heap_profile(inp.session)
+    return stop_heap_profile_result()
+  catch ex
+    exret = stop_heap_profile_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _stop_heap_profile
+function _get_heap_profile(inp::get_heap_profile_args)
+  try
+    result = get_heap_profile(inp.session)
+    return get_heap_profile_result(result)
+  catch ex
+    exret = get_heap_profile_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_heap_profile
+function _get_memory(inp::get_memory_args)
+  try
+    result = get_memory(inp.session, inp.memory_level)
+    return get_memory_result(result)
+  catch ex
+    exret = get_memory_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_memory
+function _clear_cpu_memory(inp::clear_cpu_memory_args)
+  try
+    clear_cpu_memory(inp.session)
+    return clear_cpu_memory_result()
+  catch ex
+    exret = clear_cpu_memory_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _clear_cpu_memory
+function _clear_gpu_memory(inp::clear_gpu_memory_args)
+  try
+    clear_gpu_memory(inp.session)
+    return clear_gpu_memory_result()
+  catch ex
+    exret = clear_gpu_memory_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _clear_gpu_memory
+function _set_table_epoch(inp::set_table_epoch_args)
+  try
+    set_table_epoch(inp.session, inp.db_id, inp.table_id, inp.new_epoch)
+    return set_table_epoch_result()
+  catch ex
+    exret = set_table_epoch_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _set_table_epoch
+function _set_table_epoch_by_name(inp::set_table_epoch_by_name_args)
+  try
+    set_table_epoch_by_name(inp.session, inp.table_name, inp.new_epoch)
+    return set_table_epoch_by_name_result()
+  catch ex
+    exret = set_table_epoch_by_name_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _set_table_epoch_by_name
+_get_table_epoch(inp::get_table_epoch_args) = get_table_epoch_result(get_table_epoch(inp.session, inp.db_id, inp.table_id))
+_get_table_epoch_by_name(inp::get_table_epoch_by_name_args) = get_table_epoch_by_name_result(get_table_epoch_by_name(inp.session, inp.table_name))
+function _sql_execute(inp::sql_execute_args)
+  try
+    result = sql_execute(inp.session, inp.query, inp.column_format, inp.nonce, inp.first_n, inp.at_most_n)
+    return sql_execute_result(result)
+  catch ex
+    exret = sql_execute_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _sql_execute
+function _sql_execute_df(inp::sql_execute_df_args)
+  try
+    result = sql_execute_df(inp.session, inp.query, inp.device_type, inp.device_id, inp.first_n)
+    return sql_execute_df_result(result)
+  catch ex
+    exret = sql_execute_df_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _sql_execute_df
+function _sql_execute_gdf(inp::sql_execute_gdf_args)
+  try
+    result = sql_execute_gdf(inp.session, inp.query, inp.device_id, inp.first_n)
+    return sql_execute_gdf_result(result)
+  catch ex
+    exret = sql_execute_gdf_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _sql_execute_gdf
+function _deallocate_df(inp::deallocate_df_args)
+  try
+    deallocate_df(inp.session, inp.df, inp.device_type, inp.device_id)
+    return deallocate_df_result()
+  catch ex
+    exret = deallocate_df_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _deallocate_df
+function _interrupt(inp::interrupt_args)
+  try
+    interrupt(inp.session)
+    return interrupt_result()
+  catch ex
+    exret = interrupt_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _interrupt
+function _sql_validate(inp::sql_validate_args)
+  try
+    result = sql_validate(inp.session, inp.query)
+    return sql_validate_result(result)
+  catch ex
+    exret = sql_validate_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _sql_validate
+function _get_completion_hints(inp::get_completion_hints_args)
+  try
+    result = get_completion_hints(inp.session, inp.sql, inp.cursor)
+    return get_completion_hints_result(result)
+  catch ex
+    exret = get_completion_hints_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_completion_hints
+function _set_execution_mode(inp::set_execution_mode_args)
+  try
+    set_execution_mode(inp.session, inp.mode)
+    return set_execution_mode_result()
+  catch ex
+    exret = set_execution_mode_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _set_execution_mode
+function _render_vega(inp::render_vega_args)
+  try
+    result = render_vega(inp.session, inp.widget_id, inp.vega_json, inp.compression_level, inp.nonce)
+    return render_vega_result(result)
+  catch ex
+    exret = render_vega_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _render_vega
+function _get_result_row_for_pixel(inp::get_result_row_for_pixel_args)
+  try
+    result = get_result_row_for_pixel(inp.session, inp.widget_id, inp.pixel, inp.table_col_names, inp.column_format, inp.pixelRadius, inp.nonce)
+    return get_result_row_for_pixel_result(result)
+  catch ex
+    exret = get_result_row_for_pixel_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_result_row_for_pixel
+function _get_frontend_view(inp::get_frontend_view_args)
+  try
+    result = get_frontend_view(inp.session, inp.view_name)
+    return get_frontend_view_result(result)
+  catch ex
+    exret = get_frontend_view_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_frontend_view
+function _get_frontend_views(inp::get_frontend_views_args)
+  try
+    result = get_frontend_views(inp.session)
+    return get_frontend_views_result(result)
+  catch ex
+    exret = get_frontend_views_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_frontend_views
+function _create_frontend_view(inp::create_frontend_view_args)
+  try
+    create_frontend_view(inp.session, inp.view_name, inp.view_state, inp.image_hash, inp.view_metadata)
+    return create_frontend_view_result()
+  catch ex
+    exret = create_frontend_view_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _create_frontend_view
+function _delete_frontend_view(inp::delete_frontend_view_args)
+  try
+    delete_frontend_view(inp.session, inp.view_name)
+    return delete_frontend_view_result()
+  catch ex
+    exret = delete_frontend_view_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _delete_frontend_view
+function _get_dashboard(inp::get_dashboard_args)
+  try
+    result = get_dashboard(inp.session, inp.dashboard_id)
+    return get_dashboard_result(result)
+  catch ex
+    exret = get_dashboard_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_dashboard
+function _get_dashboards(inp::get_dashboards_args)
+  try
+    result = get_dashboards(inp.session)
+    return get_dashboards_result(result)
+  catch ex
+    exret = get_dashboards_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_dashboards
+function _create_dashboard(inp::create_dashboard_args)
+  try
+    result = create_dashboard(inp.session, inp.dashboard_name, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
+    return create_dashboard_result(result)
+  catch ex
+    exret = create_dashboard_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _create_dashboard
+function _replace_dashboard(inp::replace_dashboard_args)
+  try
+    replace_dashboard(inp.session, inp.dashboard_id, inp.dashboard_name, inp.dashboard_owner, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
+    return replace_dashboard_result()
+  catch ex
+    exret = replace_dashboard_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _replace_dashboard
+function _delete_dashboard(inp::delete_dashboard_args)
+  try
+    delete_dashboard(inp.session, inp.dashboard_id)
+    return delete_dashboard_result()
+  catch ex
+    exret = delete_dashboard_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _delete_dashboard
+function _share_dashboard(inp::share_dashboard_args)
+  try
+    share_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
+    return share_dashboard_result()
+  catch ex
+    exret = share_dashboard_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _share_dashboard
+function _unshare_dashboard(inp::unshare_dashboard_args)
+  try
+    unshare_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
+    return unshare_dashboard_result()
+  catch ex
+    exret = unshare_dashboard_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _unshare_dashboard
+function _get_dashboard_grantees(inp::get_dashboard_grantees_args)
+  try
+    result = get_dashboard_grantees(inp.session, inp.dashboard_id)
+    return get_dashboard_grantees_result(result)
+  catch ex
+    exret = get_dashboard_grantees_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_dashboard_grantees
+function _get_link_view(inp::get_link_view_args)
+  try
+    result = get_link_view(inp.session, inp.link)
+    return get_link_view_result(result)
+  catch ex
+    exret = get_link_view_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_link_view
+function _create_link(inp::create_link_args)
+  try
+    result = create_link(inp.session, inp.view_state, inp.view_metadata)
+    return create_link_result(result)
+  catch ex
+    exret = create_link_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _create_link
+function _load_table_binary(inp::load_table_binary_args)
+  try
+    load_table_binary(inp.session, inp.table_name, inp.rows)
+    return load_table_binary_result()
+  catch ex
+    exret = load_table_binary_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _load_table_binary
+function _load_table_binary_columnar(inp::load_table_binary_columnar_args)
+  try
+    load_table_binary_columnar(inp.session, inp.table_name, inp.cols)
+    return load_table_binary_columnar_result()
+  catch ex
+    exret = load_table_binary_columnar_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _load_table_binary_columnar
+function _load_table_binary_arrow(inp::load_table_binary_arrow_args)
+  try
+    load_table_binary_arrow(inp.session, inp.table_name, inp.arrow_stream)
+    return load_table_binary_arrow_result()
+  catch ex
+    exret = load_table_binary_arrow_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _load_table_binary_arrow
+function _load_table(inp::load_table_args)
+  try
+    load_table(inp.session, inp.table_name, inp.rows)
+    return load_table_result()
+  catch ex
+    exret = load_table_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _load_table
+function _detect_column_types(inp::detect_column_types_args)
+  try
+    result = detect_column_types(inp.session, inp.file_name, inp.copy_params)
+    return detect_column_types_result(result)
+  catch ex
+    exret = detect_column_types_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _detect_column_types
+function _create_table(inp::create_table_args)
+  try
+    create_table(inp.session, inp.table_name, inp.row_desc, inp.table_type, inp.create_params)
+    return create_table_result()
+  catch ex
+    exret = create_table_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _create_table
+function _import_table(inp::import_table_args)
+  try
+    import_table(inp.session, inp.table_name, inp.file_name, inp.copy_params)
+    return import_table_result()
+  catch ex
+    exret = import_table_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _import_table
+function _import_geo_table(inp::import_geo_table_args)
+  try
+    import_geo_table(inp.session, inp.table_name, inp.file_name, inp.copy_params, inp.row_desc)
+    return import_geo_table_result()
+  catch ex
+    exret = import_geo_table_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _import_geo_table
+function _import_table_status(inp::import_table_status_args)
+  try
+    result = import_table_status(inp.session, inp.import_id)
+    return import_table_status_result(result)
+  catch ex
+    exret = import_table_status_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _import_table_status
+function _get_first_geo_file_in_archive(inp::get_first_geo_file_in_archive_args)
+  try
+    result = get_first_geo_file_in_archive(inp.session, inp.archive_path, inp.copy_params)
+    return get_first_geo_file_in_archive_result(result)
+  catch ex
+    exret = get_first_geo_file_in_archive_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_first_geo_file_in_archive
+function _get_all_files_in_archive(inp::get_all_files_in_archive_args)
+  try
+    result = get_all_files_in_archive(inp.session, inp.archive_path, inp.copy_params)
+    return get_all_files_in_archive_result(result)
+  catch ex
+    exret = get_all_files_in_archive_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_all_files_in_archive
+function _start_query(inp::start_query_args)
+  try
+    result = start_query(inp.session, inp.query_ra, inp.just_explain)
+    return start_query_result(result)
+  catch ex
+    exret = start_query_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _start_query
+function _execute_first_step(inp::execute_first_step_args)
+  try
+    result = execute_first_step(inp.pending_query)
+    return execute_first_step_result(result)
+  catch ex
+    exret = execute_first_step_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _execute_first_step
+function _broadcast_serialized_rows(inp::broadcast_serialized_rows_args)
+  try
+    broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.query_id)
+    return broadcast_serialized_rows_result()
+  catch ex
+    exret = broadcast_serialized_rows_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _broadcast_serialized_rows
+function _start_render_query(inp::start_render_query_args)
+  try
+    result = start_render_query(inp.session, inp.widget_id, inp.node_idx, inp.vega_json)
+    return start_render_query_result(result)
+  catch ex
+    exret = start_render_query_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _start_render_query
+function _execute_next_render_step(inp::execute_next_render_step_args)
+  try
+    result = execute_next_render_step(inp.pending_render, inp.merged_data)
+    return execute_next_render_step_result(result)
+  catch ex
+    exret = execute_next_render_step_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _execute_next_render_step
+function _insert_data(inp::insert_data_args)
+  try
+    insert_data(inp.session, inp.insert_data)
+    return insert_data_result()
+  catch ex
+    exret = insert_data_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _insert_data
+function _checkpoint(inp::checkpoint_args)
+  try
+    checkpoint(inp.session, inp.db_id, inp.table_id)
+    return checkpoint_result()
+  catch ex
+    exret = checkpoint_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _checkpoint
+function _get_table_descriptor(inp::get_table_descriptor_args)
+  try
+    result = get_table_descriptor(inp.session, inp.table_name)
+    return get_table_descriptor_result(result)
+  catch ex
+    exret = get_table_descriptor_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_table_descriptor
+function _get_row_descriptor(inp::get_row_descriptor_args)
+  try
+    result = get_row_descriptor(inp.session, inp.table_name)
+    return get_row_descriptor_result(result)
+  catch ex
+    exret = get_row_descriptor_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_row_descriptor
+function _get_roles(inp::get_roles_args)
+  try
+    result = get_roles(inp.session)
+    return get_roles_result(result)
+  catch ex
+    exret = get_roles_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_roles
+function _get_db_objects_for_grantee(inp::get_db_objects_for_grantee_args)
+  try
+    result = get_db_objects_for_grantee(inp.session, inp.roleName)
+    return get_db_objects_for_grantee_result(result)
+  catch ex
+    exret = get_db_objects_for_grantee_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_db_objects_for_grantee
+function _get_db_object_privs(inp::get_db_object_privs_args)
+  try
+    result = get_db_object_privs(inp.session, inp.objectName, inp._type)
+    return get_db_object_privs_result(result)
+  catch ex
+    exret = get_db_object_privs_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_db_object_privs
+function _get_all_roles_for_user(inp::get_all_roles_for_user_args)
+  try
+    result = get_all_roles_for_user(inp.session, inp.userName)
+    return get_all_roles_for_user_result(result)
+  catch ex
+    exret = get_all_roles_for_user_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_all_roles_for_user
+function _set_license_key(inp::set_license_key_args)
+  try
+    result = set_license_key(inp.session, inp.key, inp.nonce)
+    return set_license_key_result(result)
+  catch ex
+    exret = set_license_key_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _set_license_key
+function _get_license_claims(inp::get_license_claims_args)
+  try
+    result = get_license_claims(inp.session, inp.nonce)
+    return get_license_claims_result(result)
+  catch ex
+    exret = get_license_claims_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_license_claims
+process(p::MapDProcessor, inp::TProtocol, outp::TProtocol) = process(p.tp, inp, outp)
+distribute(p::MapDProcessor) = distribute(p.tp)
 
 
 # Server side methods to be defined by user:
@@ -2151,7 +2152,7 @@ distribute(p::MapD______Processor) = distribute(p.tp)
 # function detect_column_types(session::TSessionId, file_name::String, copy_params::TCopyParams)
 #     # returns TDetectResult
 #     # throws e::TMapDException
-# function create_table(session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32)
+# function create_table(session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32, create_params::TCreateParams)
 #     # returns nothing
 #     # throws e::TMapDException
 # function import_table(session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams)
@@ -2181,7 +2182,7 @@ distribute(p::MapD______Processor) = distribute(p.tp)
 # function start_render_query(session::TSessionId, widget_id::Int64, node_idx::Int16, vega_json::String)
 #     # returns TPendingRenderQuery
 #     # throws e::TMapDException
-# function execute_next_render_step(pending_render::TPendingRenderQuery, merged_data::TRenderDataAggMap)
+# function execute_next_render_step(pending_render::TPendingRenderQuery, merged_data::TRenderAggDataMap)
 #     # returns TRenderStepResult
 #     # throws e::TMapDException
 # function insert_data(session::TSessionId, insert_data::TInsertData)
@@ -2216,15 +2217,15 @@ distribute(p::MapD______Processor) = distribute(p.tp)
 #     # throws e::TMapDException
 
 
-# Client implementation for MapD______ service
-mutable struct MapD______Client <: MapD______ClientBase
+# Client implementation for MapD service
+mutable struct MapDClient <: MapDClientBase
   p::TProtocol
   seqid::Int32
-  MapD______Client(p::TProtocol) = new(p, 0)
-end # mutable struct MapD______Client
+  MapDClient(p::TProtocol) = new(p, 0)
+end # mutable struct MapDClient
 
 # Client callable method for connect
-function connect(c::MapD______ClientBase, user::String, passwd::String, dbname::String)
+function connect(c::MapDClientBase, user::String, passwd::String, dbname::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "connect", Thrift.MessageType.CALL, c.seqid)
@@ -2235,7 +2236,7 @@ function connect(c::MapD______ClientBase, user::String, passwd::String, dbname::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, connect_result())
@@ -2247,7 +2248,7 @@ function connect(c::MapD______ClientBase, user::String, passwd::String, dbname::
 end # function connect
 
 # Client callable method for disconnect
-function disconnect(c::MapD______ClientBase, session::TSessionId)
+function disconnect(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "disconnect", Thrift.MessageType.CALL, c.seqid)
@@ -2256,7 +2257,7 @@ function disconnect(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, disconnect_result())
@@ -2267,7 +2268,7 @@ function disconnect(c::MapD______ClientBase, session::TSessionId)
 end # function disconnect
 
 # Client callable method for get_server_status
-function get_server_status(c::MapD______ClientBase, session::TSessionId)
+function get_server_status(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_server_status", Thrift.MessageType.CALL, c.seqid)
@@ -2276,7 +2277,7 @@ function get_server_status(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_server_status_result())
@@ -2288,7 +2289,7 @@ function get_server_status(c::MapD______ClientBase, session::TSessionId)
 end # function get_server_status
 
 # Client callable method for get_status
-function get_status(c::MapD______ClientBase, session::TSessionId)
+function get_status(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_status", Thrift.MessageType.CALL, c.seqid)
@@ -2297,7 +2298,7 @@ function get_status(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_status_result())
@@ -2309,7 +2310,7 @@ function get_status(c::MapD______ClientBase, session::TSessionId)
 end # function get_status
 
 # Client callable method for get_hardware_info
-function get_hardware_info(c::MapD______ClientBase, session::TSessionId)
+function get_hardware_info(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_hardware_info", Thrift.MessageType.CALL, c.seqid)
@@ -2318,7 +2319,7 @@ function get_hardware_info(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_hardware_info_result())
@@ -2330,7 +2331,7 @@ function get_hardware_info(c::MapD______ClientBase, session::TSessionId)
 end # function get_hardware_info
 
 # Client callable method for get_tables
-function get_tables(c::MapD______ClientBase, session::TSessionId)
+function get_tables(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_tables", Thrift.MessageType.CALL, c.seqid)
@@ -2339,7 +2340,7 @@ function get_tables(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_tables_result())
@@ -2351,7 +2352,7 @@ function get_tables(c::MapD______ClientBase, session::TSessionId)
 end # function get_tables
 
 # Client callable method for get_physical_tables
-function get_physical_tables(c::MapD______ClientBase, session::TSessionId)
+function get_physical_tables(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_physical_tables", Thrift.MessageType.CALL, c.seqid)
@@ -2360,7 +2361,7 @@ function get_physical_tables(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_physical_tables_result())
@@ -2372,7 +2373,7 @@ function get_physical_tables(c::MapD______ClientBase, session::TSessionId)
 end # function get_physical_tables
 
 # Client callable method for get_views
-function get_views(c::MapD______ClientBase, session::TSessionId)
+function get_views(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_views", Thrift.MessageType.CALL, c.seqid)
@@ -2381,7 +2382,7 @@ function get_views(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_views_result())
@@ -2393,7 +2394,7 @@ function get_views(c::MapD______ClientBase, session::TSessionId)
 end # function get_views
 
 # Client callable method for get_tables_meta
-function get_tables_meta(c::MapD______ClientBase, session::TSessionId)
+function get_tables_meta(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_tables_meta", Thrift.MessageType.CALL, c.seqid)
@@ -2402,7 +2403,7 @@ function get_tables_meta(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_tables_meta_result())
@@ -2414,7 +2415,7 @@ function get_tables_meta(c::MapD______ClientBase, session::TSessionId)
 end # function get_tables_meta
 
 # Client callable method for get_table_details
-function get_table_details(c::MapD______ClientBase, session::TSessionId, table_name::String)
+function get_table_details(c::MapDClientBase, session::TSessionId, table_name::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_table_details", Thrift.MessageType.CALL, c.seqid)
@@ -2424,7 +2425,7 @@ function get_table_details(c::MapD______ClientBase, session::TSessionId, table_n
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_details_result())
@@ -2436,7 +2437,7 @@ function get_table_details(c::MapD______ClientBase, session::TSessionId, table_n
 end # function get_table_details
 
 # Client callable method for get_internal_table_details
-function get_internal_table_details(c::MapD______ClientBase, session::TSessionId, table_name::String)
+function get_internal_table_details(c::MapDClientBase, session::TSessionId, table_name::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_internal_table_details", Thrift.MessageType.CALL, c.seqid)
@@ -2446,7 +2447,7 @@ function get_internal_table_details(c::MapD______ClientBase, session::TSessionId
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_internal_table_details_result())
@@ -2458,7 +2459,7 @@ function get_internal_table_details(c::MapD______ClientBase, session::TSessionId
 end # function get_internal_table_details
 
 # Client callable method for get_users
-function get_users(c::MapD______ClientBase, session::TSessionId)
+function get_users(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_users", Thrift.MessageType.CALL, c.seqid)
@@ -2467,7 +2468,7 @@ function get_users(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_users_result())
@@ -2479,7 +2480,7 @@ function get_users(c::MapD______ClientBase, session::TSessionId)
 end # function get_users
 
 # Client callable method for get_databases
-function get_databases(c::MapD______ClientBase, session::TSessionId)
+function get_databases(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_databases", Thrift.MessageType.CALL, c.seqid)
@@ -2488,7 +2489,7 @@ function get_databases(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_databases_result())
@@ -2500,7 +2501,7 @@ function get_databases(c::MapD______ClientBase, session::TSessionId)
 end # function get_databases
 
 # Client callable method for get_version
-function get_version(c::MapD______ClientBase)
+function get_version(c::MapDClientBase)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_version", Thrift.MessageType.CALL, c.seqid)
@@ -2508,7 +2509,7 @@ function get_version(c::MapD______ClientBase)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_version_result())
@@ -2520,7 +2521,7 @@ function get_version(c::MapD______ClientBase)
 end # function get_version
 
 # Client callable method for start_heap_profile
-function start_heap_profile(c::MapD______ClientBase, session::TSessionId)
+function start_heap_profile(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "start_heap_profile", Thrift.MessageType.CALL, c.seqid)
@@ -2529,7 +2530,7 @@ function start_heap_profile(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, start_heap_profile_result())
@@ -2540,7 +2541,7 @@ function start_heap_profile(c::MapD______ClientBase, session::TSessionId)
 end # function start_heap_profile
 
 # Client callable method for stop_heap_profile
-function stop_heap_profile(c::MapD______ClientBase, session::TSessionId)
+function stop_heap_profile(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "stop_heap_profile", Thrift.MessageType.CALL, c.seqid)
@@ -2549,7 +2550,7 @@ function stop_heap_profile(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, stop_heap_profile_result())
@@ -2560,7 +2561,7 @@ function stop_heap_profile(c::MapD______ClientBase, session::TSessionId)
 end # function stop_heap_profile
 
 # Client callable method for get_heap_profile
-function get_heap_profile(c::MapD______ClientBase, session::TSessionId)
+function get_heap_profile(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_heap_profile", Thrift.MessageType.CALL, c.seqid)
@@ -2569,7 +2570,7 @@ function get_heap_profile(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_heap_profile_result())
@@ -2581,7 +2582,7 @@ function get_heap_profile(c::MapD______ClientBase, session::TSessionId)
 end # function get_heap_profile
 
 # Client callable method for get_memory
-function get_memory(c::MapD______ClientBase, session::TSessionId, memory_level::String)
+function get_memory(c::MapDClientBase, session::TSessionId, memory_level::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_memory", Thrift.MessageType.CALL, c.seqid)
@@ -2591,7 +2592,7 @@ function get_memory(c::MapD______ClientBase, session::TSessionId, memory_level::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_memory_result())
@@ -2603,7 +2604,7 @@ function get_memory(c::MapD______ClientBase, session::TSessionId, memory_level::
 end # function get_memory
 
 # Client callable method for clear_cpu_memory
-function clear_cpu_memory(c::MapD______ClientBase, session::TSessionId)
+function clear_cpu_memory(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "clear_cpu_memory", Thrift.MessageType.CALL, c.seqid)
@@ -2612,7 +2613,7 @@ function clear_cpu_memory(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, clear_cpu_memory_result())
@@ -2623,7 +2624,7 @@ function clear_cpu_memory(c::MapD______ClientBase, session::TSessionId)
 end # function clear_cpu_memory
 
 # Client callable method for clear_gpu_memory
-function clear_gpu_memory(c::MapD______ClientBase, session::TSessionId)
+function clear_gpu_memory(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "clear_gpu_memory", Thrift.MessageType.CALL, c.seqid)
@@ -2632,7 +2633,7 @@ function clear_gpu_memory(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, clear_gpu_memory_result())
@@ -2643,7 +2644,7 @@ function clear_gpu_memory(c::MapD______ClientBase, session::TSessionId)
 end # function clear_gpu_memory
 
 # Client callable method for set_table_epoch
-function set_table_epoch(c::MapD______ClientBase, session::TSessionId, db_id::Int32, table_id::Int32, new_epoch::Int32)
+function set_table_epoch(c::MapDClientBase, session::TSessionId, db_id::Int32, table_id::Int32, new_epoch::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "set_table_epoch", Thrift.MessageType.CALL, c.seqid)
@@ -2655,7 +2656,7 @@ function set_table_epoch(c::MapD______ClientBase, session::TSessionId, db_id::In
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_table_epoch_result())
@@ -2666,7 +2667,7 @@ function set_table_epoch(c::MapD______ClientBase, session::TSessionId, db_id::In
 end # function set_table_epoch
 
 # Client callable method for set_table_epoch_by_name
-function set_table_epoch_by_name(c::MapD______ClientBase, session::TSessionId, table_name::String, new_epoch::Int32)
+function set_table_epoch_by_name(c::MapDClientBase, session::TSessionId, table_name::String, new_epoch::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "set_table_epoch_by_name", Thrift.MessageType.CALL, c.seqid)
@@ -2677,7 +2678,7 @@ function set_table_epoch_by_name(c::MapD______ClientBase, session::TSessionId, t
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_table_epoch_by_name_result())
@@ -2688,7 +2689,7 @@ function set_table_epoch_by_name(c::MapD______ClientBase, session::TSessionId, t
 end # function set_table_epoch_by_name
 
 # Client callable method for get_table_epoch
-function get_table_epoch(c::MapD______ClientBase, session::TSessionId, db_id::Int32, table_id::Int32)
+function get_table_epoch(c::MapDClientBase, session::TSessionId, db_id::Int32, table_id::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_table_epoch", Thrift.MessageType.CALL, c.seqid)
@@ -2699,7 +2700,7 @@ function get_table_epoch(c::MapD______ClientBase, session::TSessionId, db_id::In
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_epoch_result())
@@ -2710,7 +2711,7 @@ function get_table_epoch(c::MapD______ClientBase, session::TSessionId, db_id::In
 end # function get_table_epoch
 
 # Client callable method for get_table_epoch_by_name
-function get_table_epoch_by_name(c::MapD______ClientBase, session::TSessionId, table_name::String)
+function get_table_epoch_by_name(c::MapDClientBase, session::TSessionId, table_name::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_table_epoch_by_name", Thrift.MessageType.CALL, c.seqid)
@@ -2720,7 +2721,7 @@ function get_table_epoch_by_name(c::MapD______ClientBase, session::TSessionId, t
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_epoch_by_name_result())
@@ -2731,7 +2732,7 @@ function get_table_epoch_by_name(c::MapD______ClientBase, session::TSessionId, t
 end # function get_table_epoch_by_name
 
 # Client callable method for sql_execute
-function sql_execute(c::MapD______ClientBase, session::TSessionId, query::String, column_format::Bool, nonce::String, first_n::Int32, at_most_n::Int32)
+function sql_execute(c::MapDClientBase, session::TSessionId, query::String, column_format::Bool, nonce::String, first_n::Int32, at_most_n::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "sql_execute", Thrift.MessageType.CALL, c.seqid)
@@ -2745,7 +2746,7 @@ function sql_execute(c::MapD______ClientBase, session::TSessionId, query::String
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_execute_result())
@@ -2757,7 +2758,7 @@ function sql_execute(c::MapD______ClientBase, session::TSessionId, query::String
 end # function sql_execute
 
 # Client callable method for sql_execute_df
-function sql_execute_df(c::MapD______ClientBase, session::TSessionId, query::String, device_type::Int32, device_id::Int32, first_n::Int32)
+function sql_execute_df(c::MapDClientBase, session::TSessionId, query::String, device_type::Int32, device_id::Int32, first_n::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "sql_execute_df", Thrift.MessageType.CALL, c.seqid)
@@ -2770,7 +2771,7 @@ function sql_execute_df(c::MapD______ClientBase, session::TSessionId, query::Str
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_execute_df_result())
@@ -2782,7 +2783,7 @@ function sql_execute_df(c::MapD______ClientBase, session::TSessionId, query::Str
 end # function sql_execute_df
 
 # Client callable method for sql_execute_gdf
-function sql_execute_gdf(c::MapD______ClientBase, session::TSessionId, query::String, device_id::Int32, first_n::Int32)
+function sql_execute_gdf(c::MapDClientBase, session::TSessionId, query::String, device_id::Int32, first_n::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "sql_execute_gdf", Thrift.MessageType.CALL, c.seqid)
@@ -2794,7 +2795,7 @@ function sql_execute_gdf(c::MapD______ClientBase, session::TSessionId, query::St
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_execute_gdf_result())
@@ -2806,7 +2807,7 @@ function sql_execute_gdf(c::MapD______ClientBase, session::TSessionId, query::St
 end # function sql_execute_gdf
 
 # Client callable method for deallocate_df
-function deallocate_df(c::MapD______ClientBase, session::TSessionId, df::TDataFrame, device_type::Int32, device_id::Int32)
+function deallocate_df(c::MapDClientBase, session::TSessionId, df::TDataFrame, device_type::Int32, device_id::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "deallocate_df", Thrift.MessageType.CALL, c.seqid)
@@ -2818,7 +2819,7 @@ function deallocate_df(c::MapD______ClientBase, session::TSessionId, df::TDataFr
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, deallocate_df_result())
@@ -2829,7 +2830,7 @@ function deallocate_df(c::MapD______ClientBase, session::TSessionId, df::TDataFr
 end # function deallocate_df
 
 # Client callable method for interrupt
-function interrupt(c::MapD______ClientBase, session::TSessionId)
+function interrupt(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "interrupt", Thrift.MessageType.CALL, c.seqid)
@@ -2838,7 +2839,7 @@ function interrupt(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, interrupt_result())
@@ -2849,7 +2850,7 @@ function interrupt(c::MapD______ClientBase, session::TSessionId)
 end # function interrupt
 
 # Client callable method for sql_validate
-function sql_validate(c::MapD______ClientBase, session::TSessionId, query::String)
+function sql_validate(c::MapDClientBase, session::TSessionId, query::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "sql_validate", Thrift.MessageType.CALL, c.seqid)
@@ -2859,7 +2860,7 @@ function sql_validate(c::MapD______ClientBase, session::TSessionId, query::Strin
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_validate_result())
@@ -2871,7 +2872,7 @@ function sql_validate(c::MapD______ClientBase, session::TSessionId, query::Strin
 end # function sql_validate
 
 # Client callable method for get_completion_hints
-function get_completion_hints(c::MapD______ClientBase, session::TSessionId, sql::String, cursor::Int32)
+function get_completion_hints(c::MapDClientBase, session::TSessionId, sql::String, cursor::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_completion_hints", Thrift.MessageType.CALL, c.seqid)
@@ -2882,7 +2883,7 @@ function get_completion_hints(c::MapD______ClientBase, session::TSessionId, sql:
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_completion_hints_result())
@@ -2894,7 +2895,7 @@ function get_completion_hints(c::MapD______ClientBase, session::TSessionId, sql:
 end # function get_completion_hints
 
 # Client callable method for set_execution_mode
-function set_execution_mode(c::MapD______ClientBase, session::TSessionId, mode::Int32)
+function set_execution_mode(c::MapDClientBase, session::TSessionId, mode::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "set_execution_mode", Thrift.MessageType.CALL, c.seqid)
@@ -2904,7 +2905,7 @@ function set_execution_mode(c::MapD______ClientBase, session::TSessionId, mode::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_execution_mode_result())
@@ -2915,7 +2916,7 @@ function set_execution_mode(c::MapD______ClientBase, session::TSessionId, mode::
 end # function set_execution_mode
 
 # Client callable method for render_vega
-function render_vega(c::MapD______ClientBase, session::TSessionId, widget_id::Int64, vega_json::String, compression_level::Int32, nonce::String)
+function render_vega(c::MapDClientBase, session::TSessionId, widget_id::Int64, vega_json::String, compression_level::Int32, nonce::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "render_vega", Thrift.MessageType.CALL, c.seqid)
@@ -2928,7 +2929,7 @@ function render_vega(c::MapD______ClientBase, session::TSessionId, widget_id::In
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, render_vega_result())
@@ -2940,7 +2941,7 @@ function render_vega(c::MapD______ClientBase, session::TSessionId, widget_id::In
 end # function render_vega
 
 # Client callable method for get_result_row_for_pixel
-function get_result_row_for_pixel(c::MapD______ClientBase, session::TSessionId, widget_id::Int64, pixel::TPixel, table_col_names::Dict{String,Vector{String}}, column_format::Bool, pixelRadius::Int32, nonce::String)
+function get_result_row_for_pixel(c::MapDClientBase, session::TSessionId, widget_id::Int64, pixel::TPixel, table_col_names::Dict{String,Vector{String}}, column_format::Bool, pixelRadius::Int32, nonce::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_result_row_for_pixel", Thrift.MessageType.CALL, c.seqid)
@@ -2955,7 +2956,7 @@ function get_result_row_for_pixel(c::MapD______ClientBase, session::TSessionId, 
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_result_row_for_pixel_result())
@@ -2967,7 +2968,7 @@ function get_result_row_for_pixel(c::MapD______ClientBase, session::TSessionId, 
 end # function get_result_row_for_pixel
 
 # Client callable method for get_frontend_view
-function get_frontend_view(c::MapD______ClientBase, session::TSessionId, view_name::String)
+function get_frontend_view(c::MapDClientBase, session::TSessionId, view_name::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_frontend_view", Thrift.MessageType.CALL, c.seqid)
@@ -2977,7 +2978,7 @@ function get_frontend_view(c::MapD______ClientBase, session::TSessionId, view_na
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_frontend_view_result())
@@ -2989,7 +2990,7 @@ function get_frontend_view(c::MapD______ClientBase, session::TSessionId, view_na
 end # function get_frontend_view
 
 # Client callable method for get_frontend_views
-function get_frontend_views(c::MapD______ClientBase, session::TSessionId)
+function get_frontend_views(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_frontend_views", Thrift.MessageType.CALL, c.seqid)
@@ -2998,7 +2999,7 @@ function get_frontend_views(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_frontend_views_result())
@@ -3010,7 +3011,7 @@ function get_frontend_views(c::MapD______ClientBase, session::TSessionId)
 end # function get_frontend_views
 
 # Client callable method for create_frontend_view
-function create_frontend_view(c::MapD______ClientBase, session::TSessionId, view_name::String, view_state::String, image_hash::String, view_metadata::String)
+function create_frontend_view(c::MapDClientBase, session::TSessionId, view_name::String, view_state::String, image_hash::String, view_metadata::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "create_frontend_view", Thrift.MessageType.CALL, c.seqid)
@@ -3023,7 +3024,7 @@ function create_frontend_view(c::MapD______ClientBase, session::TSessionId, view
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_frontend_view_result())
@@ -3034,7 +3035,7 @@ function create_frontend_view(c::MapD______ClientBase, session::TSessionId, view
 end # function create_frontend_view
 
 # Client callable method for delete_frontend_view
-function delete_frontend_view(c::MapD______ClientBase, session::TSessionId, view_name::String)
+function delete_frontend_view(c::MapDClientBase, session::TSessionId, view_name::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "delete_frontend_view", Thrift.MessageType.CALL, c.seqid)
@@ -3044,7 +3045,7 @@ function delete_frontend_view(c::MapD______ClientBase, session::TSessionId, view
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, delete_frontend_view_result())
@@ -3055,7 +3056,7 @@ function delete_frontend_view(c::MapD______ClientBase, session::TSessionId, view
 end # function delete_frontend_view
 
 # Client callable method for get_dashboard
-function get_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_id::Int32)
+function get_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_dashboard", Thrift.MessageType.CALL, c.seqid)
@@ -3065,7 +3066,7 @@ function get_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_i
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_dashboard_result())
@@ -3077,7 +3078,7 @@ function get_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_i
 end # function get_dashboard
 
 # Client callable method for get_dashboards
-function get_dashboards(c::MapD______ClientBase, session::TSessionId)
+function get_dashboards(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_dashboards", Thrift.MessageType.CALL, c.seqid)
@@ -3086,7 +3087,7 @@ function get_dashboards(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_dashboards_result())
@@ -3098,7 +3099,7 @@ function get_dashboards(c::MapD______ClientBase, session::TSessionId)
 end # function get_dashboards
 
 # Client callable method for create_dashboard
-function create_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_name::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
+function create_dashboard(c::MapDClientBase, session::TSessionId, dashboard_name::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "create_dashboard", Thrift.MessageType.CALL, c.seqid)
@@ -3111,7 +3112,7 @@ function create_dashboard(c::MapD______ClientBase, session::TSessionId, dashboar
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_dashboard_result())
@@ -3123,7 +3124,7 @@ function create_dashboard(c::MapD______ClientBase, session::TSessionId, dashboar
 end # function create_dashboard
 
 # Client callable method for replace_dashboard
-function replace_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_id::Int32, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
+function replace_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "replace_dashboard", Thrift.MessageType.CALL, c.seqid)
@@ -3138,7 +3139,7 @@ function replace_dashboard(c::MapD______ClientBase, session::TSessionId, dashboa
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, replace_dashboard_result())
@@ -3149,7 +3150,7 @@ function replace_dashboard(c::MapD______ClientBase, session::TSessionId, dashboa
 end # function replace_dashboard
 
 # Client callable method for delete_dashboard
-function delete_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_id::Int32)
+function delete_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "delete_dashboard", Thrift.MessageType.CALL, c.seqid)
@@ -3159,7 +3160,7 @@ function delete_dashboard(c::MapD______ClientBase, session::TSessionId, dashboar
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, delete_dashboard_result())
@@ -3170,7 +3171,7 @@ function delete_dashboard(c::MapD______ClientBase, session::TSessionId, dashboar
 end # function delete_dashboard
 
 # Client callable method for share_dashboard
-function share_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
+function share_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "share_dashboard", Thrift.MessageType.CALL, c.seqid)
@@ -3183,7 +3184,7 @@ function share_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, share_dashboard_result())
@@ -3194,7 +3195,7 @@ function share_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard
 end # function share_dashboard
 
 # Client callable method for unshare_dashboard
-function unshare_dashboard(c::MapD______ClientBase, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
+function unshare_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "unshare_dashboard", Thrift.MessageType.CALL, c.seqid)
@@ -3207,7 +3208,7 @@ function unshare_dashboard(c::MapD______ClientBase, session::TSessionId, dashboa
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, unshare_dashboard_result())
@@ -3218,7 +3219,7 @@ function unshare_dashboard(c::MapD______ClientBase, session::TSessionId, dashboa
 end # function unshare_dashboard
 
 # Client callable method for get_dashboard_grantees
-function get_dashboard_grantees(c::MapD______ClientBase, session::TSessionId, dashboard_id::Int32)
+function get_dashboard_grantees(c::MapDClientBase, session::TSessionId, dashboard_id::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_dashboard_grantees", Thrift.MessageType.CALL, c.seqid)
@@ -3228,7 +3229,7 @@ function get_dashboard_grantees(c::MapD______ClientBase, session::TSessionId, da
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_dashboard_grantees_result())
@@ -3240,7 +3241,7 @@ function get_dashboard_grantees(c::MapD______ClientBase, session::TSessionId, da
 end # function get_dashboard_grantees
 
 # Client callable method for get_link_view
-function get_link_view(c::MapD______ClientBase, session::TSessionId, link::String)
+function get_link_view(c::MapDClientBase, session::TSessionId, link::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_link_view", Thrift.MessageType.CALL, c.seqid)
@@ -3250,7 +3251,7 @@ function get_link_view(c::MapD______ClientBase, session::TSessionId, link::Strin
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_link_view_result())
@@ -3262,7 +3263,7 @@ function get_link_view(c::MapD______ClientBase, session::TSessionId, link::Strin
 end # function get_link_view
 
 # Client callable method for create_link
-function create_link(c::MapD______ClientBase, session::TSessionId, view_state::String, view_metadata::String)
+function create_link(c::MapDClientBase, session::TSessionId, view_state::String, view_metadata::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "create_link", Thrift.MessageType.CALL, c.seqid)
@@ -3273,7 +3274,7 @@ function create_link(c::MapD______ClientBase, session::TSessionId, view_state::S
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_link_result())
@@ -3285,7 +3286,7 @@ function create_link(c::MapD______ClientBase, session::TSessionId, view_state::S
 end # function create_link
 
 # Client callable method for load_table_binary
-function load_table_binary(c::MapD______ClientBase, session::TSessionId, table_name::String, rows::Vector{TRow})
+function load_table_binary(c::MapDClientBase, session::TSessionId, table_name::String, rows::Vector{TRow})
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "load_table_binary", Thrift.MessageType.CALL, c.seqid)
@@ -3296,7 +3297,7 @@ function load_table_binary(c::MapD______ClientBase, session::TSessionId, table_n
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_binary_result())
@@ -3307,7 +3308,7 @@ function load_table_binary(c::MapD______ClientBase, session::TSessionId, table_n
 end # function load_table_binary
 
 # Client callable method for load_table_binary_columnar
-function load_table_binary_columnar(c::MapD______ClientBase, session::TSessionId, table_name::String, cols::Vector{TColumn})
+function load_table_binary_columnar(c::MapDClientBase, session::TSessionId, table_name::String, cols::Vector{TColumn})
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "load_table_binary_columnar", Thrift.MessageType.CALL, c.seqid)
@@ -3318,7 +3319,7 @@ function load_table_binary_columnar(c::MapD______ClientBase, session::TSessionId
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_binary_columnar_result())
@@ -3329,7 +3330,7 @@ function load_table_binary_columnar(c::MapD______ClientBase, session::TSessionId
 end # function load_table_binary_columnar
 
 # Client callable method for load_table_binary_arrow
-function load_table_binary_arrow(c::MapD______ClientBase, session::TSessionId, table_name::String, arrow_stream::Vector{UInt8})
+function load_table_binary_arrow(c::MapDClientBase, session::TSessionId, table_name::String, arrow_stream::Vector{UInt8})
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "load_table_binary_arrow", Thrift.MessageType.CALL, c.seqid)
@@ -3340,7 +3341,7 @@ function load_table_binary_arrow(c::MapD______ClientBase, session::TSessionId, t
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_binary_arrow_result())
@@ -3351,7 +3352,7 @@ function load_table_binary_arrow(c::MapD______ClientBase, session::TSessionId, t
 end # function load_table_binary_arrow
 
 # Client callable method for load_table
-function load_table(c::MapD______ClientBase, session::TSessionId, table_name::String, rows::Vector{TStringRow})
+function load_table(c::MapDClientBase, session::TSessionId, table_name::String, rows::Vector{TStringRow})
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "load_table", Thrift.MessageType.CALL, c.seqid)
@@ -3362,7 +3363,7 @@ function load_table(c::MapD______ClientBase, session::TSessionId, table_name::St
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_result())
@@ -3373,7 +3374,7 @@ function load_table(c::MapD______ClientBase, session::TSessionId, table_name::St
 end # function load_table
 
 # Client callable method for detect_column_types
-function detect_column_types(c::MapD______ClientBase, session::TSessionId, file_name::String, copy_params::TCopyParams)
+function detect_column_types(c::MapDClientBase, session::TSessionId, file_name::String, copy_params::TCopyParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "detect_column_types", Thrift.MessageType.CALL, c.seqid)
@@ -3384,7 +3385,7 @@ function detect_column_types(c::MapD______ClientBase, session::TSessionId, file_
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, detect_column_types_result())
@@ -3396,7 +3397,7 @@ function detect_column_types(c::MapD______ClientBase, session::TSessionId, file_
 end # function detect_column_types
 
 # Client callable method for create_table
-function create_table(c::MapD______ClientBase, session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32)
+function create_table(c::MapDClientBase, session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32, create_params::TCreateParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "create_table", Thrift.MessageType.CALL, c.seqid)
@@ -3405,10 +3406,11 @@ function create_table(c::MapD______ClientBase, session::TSessionId, table_name::
   Thrift.set_field!(inp, :table_name, table_name)
   Thrift.set_field!(inp, :row_desc, row_desc)
   Thrift.set_field!(inp, :table_type, table_type)
+  Thrift.set_field!(inp, :create_params, create_params)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_table_result())
@@ -3419,7 +3421,7 @@ function create_table(c::MapD______ClientBase, session::TSessionId, table_name::
 end # function create_table
 
 # Client callable method for import_table
-function import_table(c::MapD______ClientBase, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams)
+function import_table(c::MapDClientBase, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "import_table", Thrift.MessageType.CALL, c.seqid)
@@ -3431,7 +3433,7 @@ function import_table(c::MapD______ClientBase, session::TSessionId, table_name::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, import_table_result())
@@ -3442,7 +3444,7 @@ function import_table(c::MapD______ClientBase, session::TSessionId, table_name::
 end # function import_table
 
 # Client callable method for import_geo_table
-function import_geo_table(c::MapD______ClientBase, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
+function import_geo_table(c::MapDClientBase, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "import_geo_table", Thrift.MessageType.CALL, c.seqid)
@@ -3455,7 +3457,7 @@ function import_geo_table(c::MapD______ClientBase, session::TSessionId, table_na
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, import_geo_table_result())
@@ -3466,7 +3468,7 @@ function import_geo_table(c::MapD______ClientBase, session::TSessionId, table_na
 end # function import_geo_table
 
 # Client callable method for import_table_status
-function import_table_status(c::MapD______ClientBase, session::TSessionId, import_id::String)
+function import_table_status(c::MapDClientBase, session::TSessionId, import_id::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "import_table_status", Thrift.MessageType.CALL, c.seqid)
@@ -3476,7 +3478,7 @@ function import_table_status(c::MapD______ClientBase, session::TSessionId, impor
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, import_table_status_result())
@@ -3488,7 +3490,7 @@ function import_table_status(c::MapD______ClientBase, session::TSessionId, impor
 end # function import_table_status
 
 # Client callable method for get_first_geo_file_in_archive
-function get_first_geo_file_in_archive(c::MapD______ClientBase, session::TSessionId, archive_path::String, copy_params::TCopyParams)
+function get_first_geo_file_in_archive(c::MapDClientBase, session::TSessionId, archive_path::String, copy_params::TCopyParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_first_geo_file_in_archive", Thrift.MessageType.CALL, c.seqid)
@@ -3499,7 +3501,7 @@ function get_first_geo_file_in_archive(c::MapD______ClientBase, session::TSessio
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_first_geo_file_in_archive_result())
@@ -3511,7 +3513,7 @@ function get_first_geo_file_in_archive(c::MapD______ClientBase, session::TSessio
 end # function get_first_geo_file_in_archive
 
 # Client callable method for get_all_files_in_archive
-function get_all_files_in_archive(c::MapD______ClientBase, session::TSessionId, archive_path::String, copy_params::TCopyParams)
+function get_all_files_in_archive(c::MapDClientBase, session::TSessionId, archive_path::String, copy_params::TCopyParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_all_files_in_archive", Thrift.MessageType.CALL, c.seqid)
@@ -3522,7 +3524,7 @@ function get_all_files_in_archive(c::MapD______ClientBase, session::TSessionId, 
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_all_files_in_archive_result())
@@ -3534,7 +3536,7 @@ function get_all_files_in_archive(c::MapD______ClientBase, session::TSessionId, 
 end # function get_all_files_in_archive
 
 # Client callable method for start_query
-function start_query(c::MapD______ClientBase, session::TSessionId, query_ra::String, just_explain::Bool)
+function start_query(c::MapDClientBase, session::TSessionId, query_ra::String, just_explain::Bool)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "start_query", Thrift.MessageType.CALL, c.seqid)
@@ -3545,7 +3547,7 @@ function start_query(c::MapD______ClientBase, session::TSessionId, query_ra::Str
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, start_query_result())
@@ -3557,7 +3559,7 @@ function start_query(c::MapD______ClientBase, session::TSessionId, query_ra::Str
 end # function start_query
 
 # Client callable method for execute_first_step
-function execute_first_step(c::MapD______ClientBase, pending_query::TPendingQuery)
+function execute_first_step(c::MapDClientBase, pending_query::TPendingQuery)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "execute_first_step", Thrift.MessageType.CALL, c.seqid)
@@ -3566,7 +3568,7 @@ function execute_first_step(c::MapD______ClientBase, pending_query::TPendingQuer
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, execute_first_step_result())
@@ -3578,7 +3580,7 @@ function execute_first_step(c::MapD______ClientBase, pending_query::TPendingQuer
 end # function execute_first_step
 
 # Client callable method for broadcast_serialized_rows
-function broadcast_serialized_rows(c::MapD______ClientBase, serialized_rows::String, row_desc::TRowDescriptor, query_id::TQueryId)
+function broadcast_serialized_rows(c::MapDClientBase, serialized_rows::String, row_desc::TRowDescriptor, query_id::TQueryId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "broadcast_serialized_rows", Thrift.MessageType.CALL, c.seqid)
@@ -3589,7 +3591,7 @@ function broadcast_serialized_rows(c::MapD______ClientBase, serialized_rows::Str
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, broadcast_serialized_rows_result())
@@ -3600,7 +3602,7 @@ function broadcast_serialized_rows(c::MapD______ClientBase, serialized_rows::Str
 end # function broadcast_serialized_rows
 
 # Client callable method for start_render_query
-function start_render_query(c::MapD______ClientBase, session::TSessionId, widget_id::Int64, node_idx::Int16, vega_json::String)
+function start_render_query(c::MapDClientBase, session::TSessionId, widget_id::Int64, node_idx::Int16, vega_json::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "start_render_query", Thrift.MessageType.CALL, c.seqid)
@@ -3612,7 +3614,7 @@ function start_render_query(c::MapD______ClientBase, session::TSessionId, widget
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, start_render_query_result())
@@ -3624,7 +3626,7 @@ function start_render_query(c::MapD______ClientBase, session::TSessionId, widget
 end # function start_render_query
 
 # Client callable method for execute_next_render_step
-function execute_next_render_step(c::MapD______ClientBase, pending_render::TPendingRenderQuery, merged_data::TRenderDataAggMap)
+function execute_next_render_step(c::MapDClientBase, pending_render::TPendingRenderQuery, merged_data::TRenderAggDataMap)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "execute_next_render_step", Thrift.MessageType.CALL, c.seqid)
@@ -3634,7 +3636,7 @@ function execute_next_render_step(c::MapD______ClientBase, pending_render::TPend
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, execute_next_render_step_result())
@@ -3646,7 +3648,7 @@ function execute_next_render_step(c::MapD______ClientBase, pending_render::TPend
 end # function execute_next_render_step
 
 # Client callable method for insert_data
-function insert_data(c::MapD______ClientBase, session::TSessionId, insert_data::TInsertData)
+function insert_data(c::MapDClientBase, session::TSessionId, insert_data::TInsertData)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "insert_data", Thrift.MessageType.CALL, c.seqid)
@@ -3656,7 +3658,7 @@ function insert_data(c::MapD______ClientBase, session::TSessionId, insert_data::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, insert_data_result())
@@ -3667,7 +3669,7 @@ function insert_data(c::MapD______ClientBase, session::TSessionId, insert_data::
 end # function insert_data
 
 # Client callable method for checkpoint
-function checkpoint(c::MapD______ClientBase, session::TSessionId, db_id::Int32, table_id::Int32)
+function checkpoint(c::MapDClientBase, session::TSessionId, db_id::Int32, table_id::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "checkpoint", Thrift.MessageType.CALL, c.seqid)
@@ -3678,7 +3680,7 @@ function checkpoint(c::MapD______ClientBase, session::TSessionId, db_id::Int32, 
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, checkpoint_result())
@@ -3689,7 +3691,7 @@ function checkpoint(c::MapD______ClientBase, session::TSessionId, db_id::Int32, 
 end # function checkpoint
 
 # Client callable method for get_table_descriptor
-function get_table_descriptor(c::MapD______ClientBase, session::TSessionId, table_name::String)
+function get_table_descriptor(c::MapDClientBase, session::TSessionId, table_name::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_table_descriptor", Thrift.MessageType.CALL, c.seqid)
@@ -3699,7 +3701,7 @@ function get_table_descriptor(c::MapD______ClientBase, session::TSessionId, tabl
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_descriptor_result())
@@ -3711,7 +3713,7 @@ function get_table_descriptor(c::MapD______ClientBase, session::TSessionId, tabl
 end # function get_table_descriptor
 
 # Client callable method for get_row_descriptor
-function get_row_descriptor(c::MapD______ClientBase, session::TSessionId, table_name::String)
+function get_row_descriptor(c::MapDClientBase, session::TSessionId, table_name::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_row_descriptor", Thrift.MessageType.CALL, c.seqid)
@@ -3721,7 +3723,7 @@ function get_row_descriptor(c::MapD______ClientBase, session::TSessionId, table_
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_row_descriptor_result())
@@ -3733,7 +3735,7 @@ function get_row_descriptor(c::MapD______ClientBase, session::TSessionId, table_
 end # function get_row_descriptor
 
 # Client callable method for get_roles
-function get_roles(c::MapD______ClientBase, session::TSessionId)
+function get_roles(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_roles", Thrift.MessageType.CALL, c.seqid)
@@ -3742,7 +3744,7 @@ function get_roles(c::MapD______ClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_roles_result())
@@ -3754,7 +3756,7 @@ function get_roles(c::MapD______ClientBase, session::TSessionId)
 end # function get_roles
 
 # Client callable method for get_db_objects_for_grantee
-function get_db_objects_for_grantee(c::MapD______ClientBase, session::TSessionId, roleName::String)
+function get_db_objects_for_grantee(c::MapDClientBase, session::TSessionId, roleName::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_db_objects_for_grantee", Thrift.MessageType.CALL, c.seqid)
@@ -3764,7 +3766,7 @@ function get_db_objects_for_grantee(c::MapD______ClientBase, session::TSessionId
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_db_objects_for_grantee_result())
@@ -3776,7 +3778,7 @@ function get_db_objects_for_grantee(c::MapD______ClientBase, session::TSessionId
 end # function get_db_objects_for_grantee
 
 # Client callable method for get_db_object_privs
-function get_db_object_privs(c::MapD______ClientBase, session::TSessionId, objectName::String, _type::Int32)
+function get_db_object_privs(c::MapDClientBase, session::TSessionId, objectName::String, _type::Int32)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_db_object_privs", Thrift.MessageType.CALL, c.seqid)
@@ -3787,7 +3789,7 @@ function get_db_object_privs(c::MapD______ClientBase, session::TSessionId, objec
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_db_object_privs_result())
@@ -3799,7 +3801,7 @@ function get_db_object_privs(c::MapD______ClientBase, session::TSessionId, objec
 end # function get_db_object_privs
 
 # Client callable method for get_all_roles_for_user
-function get_all_roles_for_user(c::MapD______ClientBase, session::TSessionId, userName::String)
+function get_all_roles_for_user(c::MapDClientBase, session::TSessionId, userName::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_all_roles_for_user", Thrift.MessageType.CALL, c.seqid)
@@ -3809,7 +3811,7 @@ function get_all_roles_for_user(c::MapD______ClientBase, session::TSessionId, us
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_all_roles_for_user_result())
@@ -3821,7 +3823,7 @@ function get_all_roles_for_user(c::MapD______ClientBase, session::TSessionId, us
 end # function get_all_roles_for_user
 
 # Client callable method for set_license_key
-function set_license_key(c::MapD______ClientBase, session::TSessionId, key::String, nonce::String)
+function set_license_key(c::MapDClientBase, session::TSessionId, key::String, nonce::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "set_license_key", Thrift.MessageType.CALL, c.seqid)
@@ -3832,7 +3834,7 @@ function set_license_key(c::MapD______ClientBase, session::TSessionId, key::Stri
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_license_key_result())
@@ -3844,7 +3846,7 @@ function set_license_key(c::MapD______ClientBase, session::TSessionId, key::Stri
 end # function set_license_key
 
 # Client callable method for get_license_claims
-function get_license_claims(c::MapD______ClientBase, session::TSessionId, nonce::String)
+function get_license_claims(c::MapDClientBase, session::TSessionId, nonce::String)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_license_claims", Thrift.MessageType.CALL, c.seqid)
@@ -3854,7 +3856,7 @@ function get_license_claims(c::MapD______ClientBase, session::TSessionId, nonce:
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-  
+
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_license_claims_result())
@@ -3864,4 +3866,3 @@ function get_license_claims(c::MapD______ClientBase, session::TSessionId, nonce:
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_license_claims
-

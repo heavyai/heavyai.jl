@@ -82,7 +82,8 @@ struct TTypeInfo {
   3: bool is_array,
   5: i32 precision,
   6: i32 scale,
-  7: i32 comp_param
+  7: i32 comp_param,
+  8: optional i32 size=-1
 }
 
 struct TColumnType {
@@ -185,6 +186,10 @@ struct TCopyParams {
   18: TDatumType geo_coords_type=TDatumType.GEOMETRY
   19: i32 geo_coords_srid=4326
   20: bool sanitize_column_names=true
+}
+
+struct TCreateParams {
+  1: bool is_replicated
 }
 
 struct TDetectResult {
@@ -403,10 +408,10 @@ struct TRenderDatum {
   3: binary value
 }
 
-typedef map<string, map<string, map<string, map<string, list<TRenderDatum>>>>> TRenderDataAggMap
+typedef map<string, map<string, map<string, map<string, list<TRenderDatum>>>>> TRenderAggDataMap
 
 struct TRenderStepResult {
-  1: TRenderDataAggMap merge_data
+  1: TRenderAggDataMap merge_data
   2: TRawPixelData raw_pixel_data
   3: i64 execution_time_ms
   4: i64 render_time_ms
@@ -527,7 +532,7 @@ service MapD {
   void load_table_binary_arrow(1: TSessionId session, 2: string table_name, 3: binary arrow_stream) throws (1: TMapDException e)
   void load_table(1: TSessionId session, 2: string table_name, 3: list<TStringRow> rows) throws (1: TMapDException e)
   TDetectResult detect_column_types(1: TSessionId session, 2: string file_name, 3: TCopyParams copy_params) throws (1: TMapDException e)
-  void create_table(1: TSessionId session, 2: string table_name, 3: TRowDescriptor row_desc, 4: TTableType table_type=TTableType.DELIMITED) throws (1: TMapDException e)
+  void create_table(1: TSessionId session, 2: string table_name, 3: TRowDescriptor row_desc, 4: TTableType table_type=TTableType.DELIMITED, 5: TCreateParams create_params) throws (1: TMapDException e)
   void import_table(1: TSessionId session, 2: string table_name, 3: string file_name, 4: TCopyParams copy_params) throws (1: TMapDException e)
   void import_geo_table(1: TSessionId session, 2: string table_name, 3: string file_name, 4: TCopyParams copy_params, 5: TRowDescriptor row_desc) throws (1: TMapDException e)
   TImportStatus import_table_status(1: TSessionId session, 2: string import_id) throws (1: TMapDException e)
@@ -538,7 +543,7 @@ service MapD {
   TStepResult execute_first_step(1: TPendingQuery pending_query) throws (1: TMapDException e)
   void broadcast_serialized_rows(1: string serialized_rows, 2: TRowDescriptor row_desc, 3: TQueryId query_id) throws (1: TMapDException e)
   TPendingRenderQuery start_render_query(1: TSessionId session, 2: i64 widget_id, 3: i16 node_idx, 4: string vega_json) throws (1: TMapDException e)
-  TRenderStepResult execute_next_render_step(1: TPendingRenderQuery pending_render, 2: TRenderDataAggMap merged_data) throws (1: TMapDException e)
+  TRenderStepResult execute_next_render_step(1: TPendingRenderQuery pending_render, 2: TRenderAggDataMap merged_data) throws (1: TMapDException e)
   void insert_data(1: TSessionId session, 2: TInsertData insert_data) throws (1: TMapDException e)
   void checkpoint(1: TSessionId session, 2: i32 db_id, 3: i32 table_id) throws (1: TMapDException e)
   # deprecated

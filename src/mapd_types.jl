@@ -29,9 +29,10 @@ mutable struct TTypeInfo <: Thrift.TMsg
   precision::Int32
   scale::Int32
   comp_param::Int32
+  size::Int32
   TTypeInfo() = (o=new(); fillunset(o); o)
 end # mutable struct TTypeInfo
-meta(t::Type{TTypeInfo}) = meta(t, Symbol[], Int[1,4,2,3,5,6,7], Dict{Symbol,Any}())
+meta(t::Type{TTypeInfo}) = meta(t, Symbol[:size], Int[1,4,2,3,5,6,7,8], Dict{Symbol,Any}(:size => Int32(-1)))
 
 mutable struct TColumnType <: Thrift.TMsg
   col_name::String
@@ -139,6 +140,11 @@ mutable struct TCopyParams <: Thrift.TMsg
   TCopyParams() = (o=new(); fillunset(o); o)
 end # mutable struct TCopyParams
 meta(t::Type{TCopyParams}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0), :geo_coords_encoding => Int32(6), :geo_coords_comp_param => Int32(32), :geo_coords_type => Int32(18), :geo_coords_srid => Int32(4326), :sanitize_column_names => true))
+
+mutable struct TCreateParams <: Thrift.TMsg
+  is_replicated::Bool
+  TCreateParams() = (o=new(); fillunset(o); o)
+end # mutable struct TCreateParams
 
 mutable struct TDetectResult <: Thrift.TMsg
   row_set::TRowSet
@@ -377,10 +383,10 @@ mutable struct TRenderDatum <: Thrift.TMsg
   TRenderDatum() = (o=new(); fillunset(o); o)
 end # mutable struct TRenderDatum
 
-const TRenderDataAggMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 
 mutable struct TRenderStepResult <: Thrift.TMsg
-  merge_data::TRenderDataAggMap
+  merge_data::TRenderAggDataMap
   raw_pixel_data::TRawPixelData
   execution_time_ms::Int64
   render_time_ms::Int64
@@ -1289,6 +1295,7 @@ mutable struct create_table_args <: Thrift.TMsg
   table_name::String
   row_desc::TRowDescriptor
   table_type::Int32
+  create_params::TCreateParams
   create_table_args() = (o=new(); fillunset(o); o)
 end # mutable struct create_table_args
 meta(t::Type{create_table_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0)))
@@ -1451,7 +1458,7 @@ meta(t::Type{start_render_query_result}) = meta(t, Symbol[:success, :e], Int[0, 
 
 mutable struct execute_next_render_step_args <: Thrift.TMsg
   pending_render::TPendingRenderQuery
-  merged_data::TRenderDataAggMap
+  merged_data::TRenderAggDataMap
   execute_next_render_step_args() = (o=new(); fillunset(o); o)
 end # mutable struct execute_next_render_step_args
 
