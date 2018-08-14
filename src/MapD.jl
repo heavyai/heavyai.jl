@@ -2,9 +2,10 @@ __precompile__()
 
 module MapD
 
-using Compat, Thrift, Sockets, Distributed
+using Compat, Thrift
 import Thrift: process, meta, distribute
-import Base: connect, interrupt
+import Sockets: connect
+import Distributed: interrupt
 
 #### enums ####
 export TDatumType, TExecuteMode, TEncodingType, TDeviceType, TTableType, TPartitionDetail,
