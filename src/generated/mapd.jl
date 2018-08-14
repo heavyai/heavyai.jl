@@ -11,7 +11,7 @@ using Thrift
 import Thrift.process, Thrift.meta, Thrift.distribute
 
 # import included programs
-using completion_hints
+using ..completion_hints
 
 
 export meta
@@ -29,7 +29,7 @@ export TTableDescriptor # typealias for Dict{String,TColumnType}
 export TSessionId # typealias for String
 export TQueryId # typealias for Int64
 export TRenderPassMap # typealias for Dict{Int32,TRawRenderPassDataResult}
-export TRenderDataAggMap # typealias for Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+export TRenderAggDataMap # typealias for Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 export TDatumVal # struct
 export TDatum # struct
 export TStringValue # struct
@@ -46,6 +46,7 @@ export TDataFrame # struct
 export TDBInfo # struct
 export TMapDException # exception
 export TCopyParams # struct
+export TCreateParams # struct
 export TDetectResult # struct
 export TImportStatus # struct
 export TFrontendView # struct
