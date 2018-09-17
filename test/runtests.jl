@@ -134,4 +134,4 @@ glc = get_license_claims(conn)
 
 #disconnect from database
 disc = disconnect(conn)
-@test typeof(disc) == Void
+@test typeof(disc) == Nothing
