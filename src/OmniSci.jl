@@ -1,4 +1,4 @@
-module MapD
+module OmniSci
 
 using Compat, Thrift, Random
 import Thrift: process, meta, distribute
