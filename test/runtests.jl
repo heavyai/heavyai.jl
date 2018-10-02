@@ -1,4 +1,4 @@
-using MapD
+using OmniSci
 using Test
 using Dates
 
@@ -7,15 +7,15 @@ include("credentials.jl")
 
 ######################################## connection, admin
 #connect to database
-conn = MapD.connect(host, port , user, passwd, dbname)
-@test typeof(conn) == MapD.MapDConnection
+conn = OmniSci.connect(host, port , user, passwd, dbname)
+@test typeof(conn) == OmniSci.OmniSciConnection
 
 sstatus = get_status(conn)
-@test typeof(sstatus) == Vector{MapD.TServerStatus}
-@test sstatus[1].start_time <= Dates.datetime2unix(now()) #test sstatus has values
+@test typeof(sstatus) == Vector{OmniSci.TServerStatus}
+@test sstatus[1].start_time <= Dates.datetime2unix(now(UTC)) #test sstatus has values...assumes server started before test happened
 
 hware = get_hardware_info(conn)
-@test typeof(hware) == MapD.TClusterHardwareInfo
+@test typeof(hware) == OmniSci.TClusterHardwareInfo
 
 tables = get_tables(conn)
 @test typeof(tables) == Vector{String}
@@ -27,23 +27,23 @@ views = get_views(conn)
 @test typeof(views) == Vector{String}
 
 met = get_tables_meta(conn)
-@test typeof(met) == Vector{MapD.TTableMeta}
+@test typeof(met) == Vector{OmniSci.TTableMeta}
 
 #Need to change eventually, depending on what is in test instance
-table_deet = get_table_details(conn, "fordgobike_tripdata_v2")
-@test typeof(table_deet) == MapD.TTableDetails
+table_deet = get_table_details(conn, "fordgobike_tripdata")
+@test typeof(table_deet) == OmniSci.TTableDetails
 
 users = get_users(conn)
 @test typeof(users) == Vector{String}
 
 databases = get_databases(conn)
-@test typeof(databases) == Vector{MapD.TDBInfo}
+@test typeof(databases) == Vector{OmniSci.TDBInfo}
 
 version = get_version(conn)
 @test typeof(version) == String
 
 mem = get_memory(conn, "cpu")
-@test typeof(mem) == Vector{MapD.TNodeMemoryInfo}
+@test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
 
 clear_cpu = clear_cpu_memory(conn)
 @test typeof(clear_cpu) == Nothing
@@ -53,7 +53,7 @@ clear_gpu = clear_gpu_memory(conn)
 
 ######################################## query, render
 
-#se = sql_execute(conn, "select count(*) as records from fordgobike_tripdata_v2", false, 100, 100)
+#se = sql_execute(conn, "select count(*) as records from fordgobike_tripdata", false, 100, 100)
 
 #sql_execute_df
 
@@ -63,8 +63,8 @@ clear_gpu = clear_gpu_memory(conn)
 
 #interrupt
 
-sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata_v2")
-@test typeof(sqlval) == Dict{String,MapD.TColumnType}
+sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata")
+@test typeof(sqlval) == Dict{String,OmniSci.TColumnType}
 
 #set_execution_mode(conn, GPU)
 
@@ -74,11 +74,11 @@ sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata
 
 #make this test conditional on taking a value from get_dashboards?
 #would need to reverse order of tests so that getdbs exists first
-getdash = get_dashboard(conn, 1)
-@test typeof(getdash) == MapD.TDashboard
+getdash = get_dashboard(conn, 3)
+@test typeof(getdash) == OmniSci.TDashboard
 
 getdbs = get_dashboards(conn)
-@test typeof(getdbs) == Vector{MapD.TDashboard}
+@test typeof(getdbs) == Vector{OmniSci.TDashboard}
 
 #create_dashboard
 
@@ -90,7 +90,8 @@ getdbs = get_dashboards(conn)
 
 #unshare_dashboard
 
-getdashgrant = get_dashboard_grantees(conn, 1)
+getdashgrant = get_dashboard_grantees(conn, 3)
+@test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
 
 ######################################## import
 
@@ -115,22 +116,22 @@ getdashgrant = get_dashboard_grantees(conn, 1)
 ######################################## object privileges
 
 gr = get_roles(conn)
-@test typeof(gr) == Vector{MapD.TDashboard}
+@test typeof(gr) == Vector{OmniSci.TDashboard}
 
 #get_db_objects_for_grantee(conn, "mapd")
 
 #get_db_object_privs
 
-roleuser = get_all_roles_for_user(conn, "mapd")
-@test typeof(roleuser) == Vector{String}
+#roleuser = get_all_roles_for_user(conn, "mapd")
+#@test typeof(roleuser) == Vector{String}
 
 ######################################## licensing
 
 slc = set_license_key(conn, "hello, world!") #not real license key :)
-@test typeof(slc) == MapD.TLicenseInfo
+@test typeof(slc) == OmniSci.TLicenseInfo
 
 glc = get_license_claims(conn)
-@test typeof(glc) == MapD.TLicenseInfo
+@test typeof(glc) == OmniSci.TLicenseInfo
 
 #disconnect from database
 disc = disconnect(conn)

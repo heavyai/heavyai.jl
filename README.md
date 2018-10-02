@@ -1,1 +1,1 @@
-# MapD
+# OmniSci.jl

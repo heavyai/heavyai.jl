@@ -1,6 +1,6 @@
-The MapD.jl package is licensed under the Apache License, Version 2.0:
+The OmniSci.jl package is licensed under the Apache License, Version 2.0:
 
-> Copyright (c) 2018: Randy Zwitch.
+> Copyright (c) 2018: OmniSci.
 >
 >                                  Apache License
 >                            Version 2.0, January 2004
@@ -190,7 +190,7 @@ The MapD.jl package is licensed under the Apache License, Version 2.0:
 >       same "printed page" as the copyright notice for easier
 >       identification within third-party archives.
 >
->    Copyright [year] [fullname]
+>    Copyright 2018 OmniSci
 >
 >    Licensed under the Apache License, Version 2.0 (the "License");
 >    you may not use this file except in compliance with the License.
