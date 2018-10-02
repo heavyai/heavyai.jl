@@ -27,7 +27,7 @@ TTableDetails, TColumnRange, TDictionaryGeneration, TTableGeneration, TPendingQu
 TVarLen, TDataBlockPtr, TInsertData, TPendingRenderQuery, TRenderParseResult,
 TRawRenderPassDataResult, TRawPixelData, TRenderDatum, TRenderStepResult, TDatabasePermissions,
 TTablePermissions, TDashboardPermissions, TViewPermissions, TDBObject, TDashboardGrantees,
-TLicenseInfo, MapDConnection
+TLicenseInfo, OmniSciConnection
 
 #### functions ####
 export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect,
@@ -49,4 +49,4 @@ include("mapd_types.jl")
 include("mapd_client.jl")
 include("misc.jl") #for hand-maintained code
 
-end # module MapD
+end # module OmniSci
