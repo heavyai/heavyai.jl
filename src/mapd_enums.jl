@@ -31,7 +31,7 @@ end
 
 @scopedenum TEncodingType NONE=Int32(0) FIXED=Int32(1) RL=Int32(2) DIFF=Int32(3) DICT=Int32(4) SPARSE=Int32(5) GEOINT=Int32(6)
 
-@scopedenum TExecuteMode HYBRID=Int32(0) GPU=Int32(1) CPU=Int32(2)
+@scopedenum TExecuteMode GPU=Int32(1) CPU=Int32(2)
 
 @scopedenum TDeviceType CPU=Int32(0) GPU=Int32(1)
 
