@@ -4,6 +4,7 @@ using Compat, Thrift, Random
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Sockets: connect
 import Distributed: interrupt
+import Base: show
 
 #### enums ####
 export TDatumType, TExecuteMode, TEncodingType, TDeviceType, TTableType, TPartitionDetail,
