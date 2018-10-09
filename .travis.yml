@@ -1,4 +1,7 @@
 ## Documentation: http://docs.travis-ci.com/user/languages/julia/
+sudo: required
+services:
+  - docker
 language: julia
 os:
   - linux
@@ -6,6 +9,10 @@ os:
 julia:
   - 1.0
   - nightly
+before_install:
+  - docker pull mapd/core-os-cpu
+  - docker run -d --ipc=host -v /dev:/dev -p 9091:9091 --name=mapd mapd/core-os-cpu:latest
+  - docker ps -a
 notifications:
   email: false
 git:
