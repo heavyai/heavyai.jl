@@ -34,7 +34,7 @@ met = get_tables_meta(conn)
 @test typeof(met) == Vector{OmniSci.TTableMeta}
 
 #Need to change eventually, depending on what is in test instance
-table_deet = get_table_details(conn, "fordgobike_tripdata")
+table_deet = get_table_details(conn, "mapd_counties")
 @test typeof(table_deet) == OmniSci.TTableDetails
 
 users = get_users(conn)
@@ -70,7 +70,7 @@ se = sql_execute(conn, "select count(*) as records from mapd_counties", true) #c
 
 #interrupt
 
-sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata")
+sqlval = sql_validate(conn, "select count(*) as records from mapd_counties")
 @test typeof(sqlval) == Dict{String,OmniSci.TColumnType}
 
 #set_execution_mode(conn, GPU)
@@ -81,7 +81,7 @@ sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata
 
 #make this test conditional on taking a value from get_dashboards?
 #would need to reverse order of tests so that getdbs exists first
-getdash = get_dashboard(conn, 3)
+getdash = get_dashboard(conn, 1)
 @test typeof(getdash) == OmniSci.TDashboard
 
 getdbs = get_dashboards(conn)
@@ -97,7 +97,7 @@ getdbs = get_dashboards(conn)
 
 #unshare_dashboard
 
-getdashgrant = get_dashboard_grantees(conn, 3)
+getdashgrant = get_dashboard_grantees(conn, 1)
 @test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
 
 ######################################## import
