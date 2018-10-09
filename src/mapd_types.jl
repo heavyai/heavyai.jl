@@ -5,9 +5,19 @@ mutable struct TDatumVal <: Thrift.TMsg
   int_val::Int64
   real_val::Float64
   str_val::String
-  arr_val::AbstractVector
+  arr_val::Vector{Any}
   TDatumVal() = (o=new(); fillunset(o); o)
 end # mutable struct TDatumVal
+
+#https://github.com/tanmaykm/Thrift.jl/issues/37#issuecomment-428024388
+function Thrift.meta(t::Type{TDatumVal})
+    ThriftMeta(t, [
+        ThriftMetaAttribs(1, :int_val, 10, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(2, :real_val, 4, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(3, :str_val, 11, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(4, :arr_val, 15, true, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TDatum")))])
+    ])
+end
 
 mutable struct TDatum <: Thrift.TMsg
   val::TDatumVal
@@ -53,7 +63,7 @@ mutable struct TColumnData <: Thrift.TMsg
   int_col::Vector{Int64}
   real_col::Vector{Float64}
   str_col::Vector{String}
-  arr_col::AbstractVector
+  arr_col::Vector{Any}
   TColumnData() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnData
 
@@ -62,6 +72,15 @@ mutable struct TColumn <: Thrift.TMsg
   nulls::Vector{Bool}
   TColumn() = (o=new(); fillunset(o); o)
 end # mutable struct TColumn
+
+function Thrift.meta(t::Type{TColumnData})
+    ThriftMeta(t, [
+        ThriftMetaAttribs(1, :int_col, 15, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(2, :real_col,15, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(3, :str_col, 15, true, Any[], ThriftMeta[])                                           
+        ThriftMetaAttribs(4, :arr_col, 15, true, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TColumn")))])
+    ])
+end
 
 mutable struct TStringRow <: Thrift.TMsg
   cols::Vector{TStringValue}
