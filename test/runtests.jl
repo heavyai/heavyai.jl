@@ -2,8 +2,12 @@ using OmniSci
 using Test
 using Dates
 
-#wrap in ifexists before using on Travis
-include("credentials.jl")
+#defaults for OmniSci
+host="localhost"
+user="mapd"
+passwd="HyperInteractive"
+port=9091
+dbname="mapd"
 
 ######################################## connection, admin
 #connect to database
