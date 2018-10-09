@@ -416,6 +416,8 @@ end # mutable struct TRenderStepResult
 mutable struct TDatabasePermissions <: Thrift.TMsg
   create_::Bool
   delete_::Bool
+  view_sql_editor_::Bool
+  access_::Bool
   TDatabasePermissions() = (o=new(); fillunset(o); o)
 end # mutable struct TDatabasePermissions
 

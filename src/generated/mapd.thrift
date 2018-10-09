@@ -36,8 +36,7 @@ enum TEncodingType {
 }
 
 enum TExecuteMode {
-  HYBRID,
-  GPU,
+  GPU = 1,
   CPU
 }
 
@@ -420,6 +419,8 @@ struct TRenderStepResult {
 struct TDatabasePermissions {
   1: bool create_;
   2: bool delete_;
+  3: bool view_sql_editor_;
+  4: bool access_;
 }
 
 struct TTablePermissions {
