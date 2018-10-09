@@ -52,8 +52,8 @@ mem = get_memory(conn, "cpu")
 clear_cpu = clear_cpu_memory(conn)
 @test typeof(clear_cpu) == Nothing
 
-clear_gpu = clear_gpu_memory(conn)
-@test typeof(clear_gpu) == Nothing
+# clear_gpu = clear_gpu_memory(conn)
+# @test typeof(clear_gpu) == Nothing
 
 ######################################## query, render
 
