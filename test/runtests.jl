@@ -53,7 +53,10 @@ clear_gpu = clear_gpu_memory(conn)
 
 ######################################## query, render
 
-#se = sql_execute(conn, "select count(*) as records from fordgobike_tripdata", false, 100, 100)
+se_row = sql_execute(conn, "select count(*) as records from mapd_counties", false) #row
+#
+
+se = sql_execute(conn, "select count(*) as records from mapd_counties", true) #columnar
 
 #sql_execute_df
 
