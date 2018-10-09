@@ -90,13 +90,13 @@ clear_gpu_memory(conn::OmniSciConnection) =
 
 ######################################## query, render
 
-sql_execute(conn::OmniSciConnection, query::String, column_format::Bool, first_n::Int, at_most_n::Int) =
+sql_execute(conn::OmniSciConnection, query::String, column_format::Bool, first_n::Int = -1, at_most_n::Int = -1) =
     sql_execute(conn.c, conn.session, query, column_format, randstring(32), Int32(first_n), Int32(at_most_n))
 
-sql_execute_df(conn::OmniSciConnection, query::String, device_type::Int, device_id::Int, first_n::Int) =
+sql_execute_df(conn::OmniSciConnection, query::String, device_type::Int, device_id::Int, first_n::Int = -1) =
     sql_execute_df(conn.c, conn.session, query, Int32(device_type), Int32(device_id), Int32(first_n))
 
-sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int, first_n::Int) =
+sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int, first_n::Int = -1) =
     sql_execute_gdf(conn.c, conn.session, query, Int32(device_id), Int32(first_n))
 
 deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_id::Int) =
