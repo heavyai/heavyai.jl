@@ -34,7 +34,7 @@ met = get_tables_meta(conn)
 @test typeof(met) == Vector{OmniSci.TTableMeta}
 
 #Need to change eventually, depending on what is in test instance
-table_deet = get_table_details(conn, "fordgobike_tripdata")
+table_deet = get_table_details(conn, "omnisci_counties")
 @test typeof(table_deet) == OmniSci.TTableDetails
 
 users = get_users(conn)
@@ -52,15 +52,15 @@ mem = get_memory(conn, "cpu")
 clear_cpu = clear_cpu_memory(conn)
 @test typeof(clear_cpu) == Nothing
 
-clear_gpu = clear_gpu_memory(conn)
-@test typeof(clear_gpu) == Nothing
+# clear_gpu = clear_gpu_memory(conn)
+# @test typeof(clear_gpu) == Nothing
 
 ######################################## query, render
 
-se_row = sql_execute(conn, "select count(*) as records from mapd_counties", false) #row
+se_row = sql_execute(conn, "select count(*) as records from omnisci_counties", false) #row
 #
 
-se = sql_execute(conn, "select count(*) as records from mapd_counties", true) #columnar
+se = sql_execute(conn, "select count(*) as records from omnisci_counties", true) #columnar
 
 #sql_execute_df
 
@@ -70,7 +70,7 @@ se = sql_execute(conn, "select count(*) as records from mapd_counties", true) #c
 
 #interrupt
 
-sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata")
+sqlval = sql_validate(conn, "select count(*) as records from omnisci_counties")
 @test typeof(sqlval) == Dict{String,OmniSci.TColumnType}
 
 #set_execution_mode(conn, GPU)
@@ -81,8 +81,8 @@ sqlval = sql_validate(conn, "select count(*) as records from fordgobike_tripdata
 
 #make this test conditional on taking a value from get_dashboards?
 #would need to reverse order of tests so that getdbs exists first
-getdash = get_dashboard(conn, 3)
-@test typeof(getdash) == OmniSci.TDashboard
+#getdash = get_dashboard(conn, 1)
+#@test typeof(getdash) == OmniSci.TDashboard
 
 getdbs = get_dashboards(conn)
 @test typeof(getdbs) == Vector{OmniSci.TDashboard}
@@ -97,8 +97,8 @@ getdbs = get_dashboards(conn)
 
 #unshare_dashboard
 
-getdashgrant = get_dashboard_grantees(conn, 3)
-@test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
+#getdashgrant = get_dashboard_grantees(conn, 1)
+#@test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
 
 ######################################## import
 
@@ -134,8 +134,8 @@ gr = get_roles(conn)
 
 ######################################## licensing
 
-slc = set_license_key(conn, "hello, world!") #not real license key :)
-@test typeof(slc) == OmniSci.TLicenseInfo
+# slc = set_license_key(conn, "hello, world!") #not real license key :)
+# @test typeof(slc) == OmniSci.TLicenseInfo
 
 glc = get_license_claims(conn)
 @test typeof(glc) == OmniSci.TLicenseInfo

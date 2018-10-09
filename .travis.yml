@@ -1,11 +1,17 @@
 ## Documentation: http://docs.travis-ci.com/user/languages/julia/
+sudo: required
+services:
+  - docker
 language: julia
 os:
   - linux
-  - osx
 julia:
   - 1.0
   - nightly
+before_install:
+  - docker pull mapd/core-os-cpu
+  - docker run -d --ipc=host -v /dev:/dev -p 9091:9091 --name=mapd mapd/core-os-cpu:latest
+  - docker ps -a
 notifications:
   email: false
 git:
@@ -13,9 +19,9 @@ git:
 
 ## uncomment the following lines to allow failures on nightly julia
 ## (tests will run but not make your overall status red)
-#matrix:
-#  allow_failures:
-#  - julia: nightly
+matrix:
+ allow_failures:
+ - julia: nightly
 
 ## uncomment and modify the following lines to manually install system packages
 #addons:
