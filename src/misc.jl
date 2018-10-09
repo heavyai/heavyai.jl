@@ -44,7 +44,7 @@ function connect(host::String, port::Int, user::String, passwd::String, dbname::
     socket = TSocket(host, port)
 
     #create libuv socket and keep-alive
-    tcp = connect(host, port)
+    tcp = Sockets.connect(host, port)
     err = ccall(:uv_tcp_keepalive, Cint, (Ptr{Nothing}, Cint, Cuint), tcp.handle, 1, 1)
     err != 0 && error("error setting keepalive on socket")
 

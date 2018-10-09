@@ -1,9 +1,7 @@
 module OmniSci
 
-using Compat, Thrift, Random
+using Compat, Thrift, Random, Sockets, Distributed
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
-import Sockets: connect
-import Distributed: interrupt
 import Base: show
 
 #### enums ####
