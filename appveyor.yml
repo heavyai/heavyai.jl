@@ -12,6 +12,7 @@ platform:
 matrix:
   allow_failures:
   - julia_version: nightly
+  - platform: x86
 
 branches:
   only:
@@ -26,7 +27,7 @@ notifications:
 
 services:
   - docker
-  
+
 install:
   - ps: iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/version-1/bin/install.ps1"))
 
