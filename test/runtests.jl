@@ -134,8 +134,8 @@ gr = get_roles(conn)
 
 ######################################## licensing
 
-slc = set_license_key(conn, "hello, world!") #not real license key :)
-@test typeof(slc) == OmniSci.TLicenseInfo
+# slc = set_license_key(conn, "hello, world!") #not real license key :)
+# @test typeof(slc) == OmniSci.TLicenseInfo
 
 glc = get_license_claims(conn)
 @test typeof(glc) == OmniSci.TLicenseInfo
