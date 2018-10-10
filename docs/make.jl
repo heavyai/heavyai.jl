@@ -3,10 +3,15 @@ using Documenter, OmniSci
 makedocs(
     # options
     modules = [OmniSci],
+    clean = false,
+    assets = ["assets/favicon.ico"],
     format = :html,
     sitename = "OmniSci.jl",
     pages = [
-        "index.md"
+        "Getting Started" => "index.md",
+        "Functions" => "functions.md",
+        "Internal" => "internal.md",
+        "API Reference" => "apireference.md"
 
     ]
 )
