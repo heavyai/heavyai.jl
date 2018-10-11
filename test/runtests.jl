@@ -1,6 +1,7 @@
 using OmniSci
 using Test
 using Dates
+using Random
 
 #defaults for OmniSci
 host="localhost"
@@ -11,131 +12,141 @@ dbname="mapd"
 
 ######################################## connection, admin
 #connect to database
-conn = OmniSci.connect(host, port , user, passwd, dbname)
+conn = connect(host, port , user, passwd, dbname)
 @test typeof(conn) == OmniSci.OmniSciConnection
 
+#TODO: create a nametuple here?
 sstatus = get_status(conn)
 @test typeof(sstatus) == Vector{OmniSci.TServerStatus}
 @test sstatus[1].start_time <= Dates.datetime2unix(now(UTC)) #test sstatus has values...assumes server started before test happened
 
+#TODO: create list of a nametuple here?
 hware = get_hardware_info(conn)
 @test typeof(hware) == OmniSci.TClusterHardwareInfo
 
+#TODO: create kw for dataframe?
 tables = get_tables(conn)
 @test typeof(tables) == Vector{String}
 
+#TODO: create kw for dataframe?
 ptables = get_physical_tables(conn)
 @test typeof(ptables) == Vector{String}
 
+#TODO: create kw for dataframe?
 views = get_views(conn)
 @test typeof(views) == Vector{String}
 
+#TODO: create kw for dataframe? namedtuple?
 met = get_tables_meta(conn)
 @test typeof(met) == Vector{OmniSci.TTableMeta}
 
-#Need to change eventually, depending on what is in test instance
+#TODO: Single table: dataframe or namedtuple?
 table_deet = get_table_details(conn, "omnisci_counties")
 @test typeof(table_deet) == OmniSci.TTableDetails
 
+#TODO: create kw for dataframe?
 users = get_users(conn)
 @test typeof(users) == Vector{String}
 
+#TODO: create kw for dataframe?
 databases = get_databases(conn)
 @test typeof(databases) == Vector{OmniSci.TDBInfo}
 
+#Deprecate this in lieu of get_status
 version = get_version(conn)
 @test typeof(version) == String
 
+#TODO: what are the acceptable values of the second argument?
 mem = get_memory(conn, "cpu")
 @test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
 
 clear_cpu = clear_cpu_memory(conn)
 @test typeof(clear_cpu) == Nothing
 
-# clear_gpu = clear_gpu_memory(conn)
-# @test typeof(clear_gpu) == Nothing
-
 ######################################## query, render
 
-se_row = sql_execute(conn, "select count(*) as records from omnisci_counties", false) #row
-#
+#TODO: How to return this data? namedtuple? what would the user expect?
+se_row = sql_execute(conn, "select * from omnisci_counties limit 100", false) #row
+@test typeof(se_row) == OmniSci.TQueryResult
 
-se = sql_execute(conn, "select count(*) as records from omnisci_counties", true) #columnar
+#TODO: How to return this data? namedtuple? what would the user expect?
+se = sql_execute(conn, "select * from omnisci_counties limit 100", true) #columnar
+@test typeof(se) == OmniSci.TQueryResult
 
-#sql_execute_df
+cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
+@test typeof(cpu_arrow) == OmniSci.TDataFrame
 
-#sql_execute_gdf
-
-#deallocate_df
-
-#interrupt
-
+#TODO: remove this method from package? will use want to pre-validate instead of just trying it?
 sqlval = sql_validate(conn, "select count(*) as records from omnisci_counties")
 @test typeof(sqlval) == Dict{String,OmniSci.TColumnType}
 
-#set_execution_mode(conn, GPU)
+execmode = set_execution_mode(conn, TExecuteMode.CPU)
+@test typeof(execmode) == Nothing
 
-#render_vega
+#deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_id::Int)
+
+#interrupt(conn::OmniSciConnection)
+
+#does this fit within this package?
+#render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
 
 ######################################## dashboard
-
-#make this test conditional on taking a value from get_dashboards?
-#would need to reverse order of tests so that getdbs exists first
-#getdash = get_dashboard(conn, 1)
-#@test typeof(getdash) == OmniSci.TDashboard
 
 getdbs = get_dashboards(conn)
 @test typeof(getdbs) == Vector{OmniSci.TDashboard}
 
-#create_dashboard
+#cdash represents id of dashboard created, use for later tests
+cdash = create_dashboard(conn, randstring(10), "state", "image", "metadata")
+@test cdash > 0
 
-#replace_dashboard
+getdash = get_dashboard(conn, cdash)
+@test typeof(getdash) == OmniSci.TDashboard
 
-#delete_dashboard
+getdashgrant = get_dashboard_grantees(conn, cdash)
+@test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
 
-#share_dashboard
+#share_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
-#unshare_dashboard
+#unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
-#getdashgrant = get_dashboard_grantees(conn, 1)
-#@test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
+#replace_dashboard(conn::OmniSciConnection, dashboard_id::Int, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
+
+#delete_dashboard(conn::OmniSciConnection, dashboard_id::Int)
+
 
 ######################################## import
 
-#load_table_binary
+#load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})
 
-#load_table_binary_columnar
+#load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})
 
-#load_table_binary_arrow
+#load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
 
-#load_table
+#load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})
 
-#detect_column_types
+#detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
 
-#create_table
+#create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
 
-#import_table
+#import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
 
-#import_geo_table
+#import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
 
-#import_table_status
+#import_table_status(conn::OmniSciConnection, import_id::String)
 
 ######################################## object privileges
 
 gr = get_roles(conn)
 @test typeof(gr) == Vector{OmniSci.TDashboard}
 
-#get_db_objects_for_grantee(conn, "mapd")
+roleuser = get_all_roles_for_user(conn, "mapd")
+@test typeof(roleuser) == Vector{String}
 
-#get_db_object_privs
+#get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)
 
-#roleuser = get_all_roles_for_user(conn, "mapd")
-#@test typeof(roleuser) == Vector{String}
+#get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
 
 ######################################## licensing
-
-# slc = set_license_key(conn, "hello, world!") #not real license key :)
-# @test typeof(slc) == OmniSci.TLicenseInfo
 
 glc = get_license_claims(conn)
 @test typeof(glc) == OmniSci.TLicenseInfo
@@ -143,3 +154,6 @@ glc = get_license_claims(conn)
 #disconnect from database
 disc = disconnect(conn)
 @test typeof(disc) == Nothing
+
+# slc = set_license_key(conn, "hello, world!") #not real license key :)
+# @test typeof(slc) == OmniSci.TLicenseInfo

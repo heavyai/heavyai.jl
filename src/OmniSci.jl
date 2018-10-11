@@ -42,10 +42,9 @@ load_table, detect_column_types, create_table, import_table, import_geo_table,
 import_table_status, get_roles, get_db_objects_for_grantee, get_db_object_privs,
 get_all_roles_for_user, set_license_key, get_license_claims
 
-include("mapd_constants.jl")
-include("mapd_enums.jl")
-include("mapd_types.jl")
-include("mapd_client.jl")
+include("mapd_enums.jl") #hand-maintained code for more convenient enums
+include("mapd_types.jl") #slightly modified from Thrift.jl for circular type fix
+include("mapd_client.jl") #should be same as output by Thrift.jl
 include("misc.jl") #for hand-maintained code
 
 end # module OmniSci
