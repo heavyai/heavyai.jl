@@ -257,10 +257,10 @@ clear_gpu_memory(conn::OmniSciConnection) =
 ######################################## query, render
 
 """
-    sql_execute(conn::OmniSciConnection, query::String, column_format::Bool, first_n::Int = -1, at_most_n::Int = -1)
+    sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)
 
 """
-function sql_execute(conn::OmniSciConnection, query::String, column_format::Bool, first_n::Int = -1, at_most_n::Int = -1)
+function sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)
 
     first_n > 0 && at_most_n > 0 ? error("Only one of first_n and at_most_n can be set at one time") : nothing
 

@@ -73,6 +73,10 @@ se_row = sql_execute(conn, "select * from omnisci_counties limit 100", false) #r
 se = sql_execute(conn, "select * from omnisci_counties limit 100", true) #columnar
 @test typeof(se) == OmniSci.TQueryResult
 
+#TODO: write convenience method when result unlikely to return a result and/or default value in method
+#This needed for later to test role access
+sql_execute(conn, "create role testuser", false)
+
 cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
 @test typeof(cpu_arrow) == OmniSci.TDataFrame
 
@@ -96,7 +100,7 @@ getdbs = get_dashboards(conn)
 @test typeof(getdbs) == Vector{OmniSci.TDashboard}
 
 #cdash represents id of dashboard created, use for later tests
-cdash = create_dashboard(conn, randstring(10), "state", "image", "metadata")
+cdash = create_dashboard(conn, "dashboard", "state", "image", "metadata")
 @test cdash > 0
 
 getdash = get_dashboard(conn, cdash)
@@ -105,14 +109,15 @@ getdash = get_dashboard(conn, cdash)
 getdashgrant = get_dashboard_grantees(conn, cdash)
 @test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
 
-#share_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
+#sharedash = share_dashboard(conn, cdash, [""], [""], OmniSci.TDashboardPermissions(false))
 
 #unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
-#replace_dashboard(conn::OmniSciConnection, dashboard_id::Int, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
+replacedash = replace_dashboard(conn, cdash, "", "mapd", "newstate", "newhash", "newmetadata")
+@test typeof(replacedash) == Nothing
 
-#delete_dashboard(conn::OmniSciConnection, dashboard_id::Int)
-
+ddash = delete_dashboard(conn, cdash)
+@test typeof(ddash) == Nothing
 
 ######################################## import
 
@@ -142,7 +147,8 @@ gr = get_roles(conn)
 roleuser = get_all_roles_for_user(conn, "mapd")
 @test typeof(roleuser) == Vector{String}
 
-#get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)
+gobj = get_db_objects_for_grantee(conn, "testuser")
+@test typeof(gobj) == Vector{OmniSci.TDBObject}
 
 #get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
 
