@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.sql_execute",
     "category": "function",
-    "text": "sql_execute(conn::OmniSciConnection, query::String, column_format::Bool, first_n::Int = -1, at_most_n::Int = -1)\n\n\n\n\n\n"
+    "text": "sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)\n\n\n\n\n\n"
 },
 
 {
@@ -221,7 +221,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.share_dashboard",
     "category": "function",
-    "text": "share_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)\n\n\n\n\n\n"
+    "text": "share_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)\n\n\n\n\n\n"
 },
 
 {
@@ -229,7 +229,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.get_dashboard",
     "category": "function",
-    "text": "get_dashboard(conn::OmniSciConnection, dashboard_id::Int)\n\n\n\n\n\n"
+    "text": "get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)\n\n\n\n\n\n"
 },
 
 {
@@ -237,7 +237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.unshare_dashboard",
     "category": "function",
-    "text": "unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)\n\n\n\n\n\n"
+    "text": "unshare_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)\n\n\n\n\n\n"
 },
 
 {
@@ -253,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.get_dashboard_grantees",
     "category": "function",
-    "text": "get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Int)\n\n\n\n\n\n"
+    "text": "get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer)\n\n\n\n\n\n"
 },
 
 {
@@ -261,7 +261,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.replace_dashboard",
     "category": "function",
-    "text": "replace_dashboard(conn::OmniSciConnection, dashboard_id::Int, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)\n\n\n\n\n\n"
+    "text": "replace_dashboard(conn::OmniSciConnection, dashboard_id::Integer, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)\n\n\n\n\n\n"
 },
 
 {
@@ -269,7 +269,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.delete_dashboard",
     "category": "function",
-    "text": "delete_dashboard(conn::OmniSciConnection, dashboard_id::Int)\n\n\n\n\n\n"
+    "text": "delete_dashboard(conn::OmniSciConnection, dashboard_id::Integer)\n\n\n\n\n\n"
 },
 
 {
@@ -349,7 +349,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.get_db_object_privs",
     "category": "function",
-    "text": "get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)\n\n\n\n\n\n"
+    "text": "get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)\n\n\n\n\n\n"
 },
 
 {
