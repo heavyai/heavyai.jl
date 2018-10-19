@@ -281,78 +281,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions.html#OmniSci.get_databases",
-    "page": "Functions",
-    "title": "OmniSci.get_databases",
-    "category": "function",
-    "text": "get_databases(conn::OmniSciConnection)\n\nGet list of databases.\n\nExamples\n\njulia> db = get_databases(conn)\n1-element Array{TDBInfo,1}:\n TDBInfo(\"mapd\", \"mapd\")\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_users",
-    "page": "Functions",
-    "title": "OmniSci.get_users",
-    "category": "function",
-    "text": "get_users(conn::OmniSciConnection)\n\nGet list of users who have access to database specified in connect().\n\nExamples\n\njulia> users = get_users(conn)\n1-element Array{String,1}:\n \"mapd\"\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_roles",
-    "page": "Functions",
-    "title": "OmniSci.get_roles",
-    "category": "function",
-    "text": "get_roles(conn::OmniSciConnection)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_hardware_info",
-    "page": "Functions",
-    "title": "OmniSci.get_hardware_info",
-    "category": "function",
-    "text": "get_hardware_info(conn::OmniSciConnection)\n\nDisplays selected properties of hardware where OmniSci running, such as GPU and CPU information.\n\nExamples\n\njulia> hardware = get_hardware_info(conn)\nTClusterHardwareInfo(THardwareInfo[THardwareInfo(0, 12, 0, 0, \"\", TGpuSpecification[])])\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_status",
-    "page": "Functions",
-    "title": "OmniSci.get_status",
-    "category": "function",
-    "text": "get_status(conn::OmniSciConnection)\n\nDisplays properties of OmniSci server, such as version and rendering capabilities.\n\nExamples\n\njulia> status = get_status(conn)\n1-element Array{TServerStatus,1}:\n TServerStatus(false, \"4.2.0dev-20181003-0206b9f92c\", false, 1539095178, \"ee\", \"aggregator\", false)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_all_roles_for_user",
-    "page": "Functions",
-    "title": "OmniSci.get_all_roles_for_user",
-    "category": "function",
-    "text": "get_all_roles_for_user(conn::OmniSciConnection, userName::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_db_objects_for_grantee",
-    "page": "Functions",
-    "title": "OmniSci.get_db_objects_for_grantee",
-    "category": "function",
-    "text": "get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_version",
-    "page": "Functions",
-    "title": "OmniSci.get_version",
-    "category": "function",
-    "text": "get_version(conn::OmniSciConnection)\n\nGet OmniSci software version.\n\nExamples\n\njulia> version = get_version(conn)\n\"4.2.0dev-20181003-0206b9f92c\"\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_db_object_privs",
-    "page": "Functions",
-    "title": "OmniSci.get_db_object_privs",
-    "category": "function",
-    "text": "get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)\n\n\n\n\n\n"
-},
-
-{
     "location": "functions.html#Metadata-1",
     "page": "Functions",
     "title": "Metadata",
@@ -401,91 +329,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "internal.html#OmniSci.deallocate_df",
-    "page": "Internal",
-    "title": "OmniSci.deallocate_df",
-    "category": "function",
-    "text": "deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_id::Int)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.clear_gpu_memory",
-    "page": "Internal",
-    "title": "OmniSci.clear_gpu_memory",
-    "category": "function",
-    "text": "clear_gpu_memory(conn::OmniSciConnection)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.clear_cpu_memory",
-    "page": "Internal",
-    "title": "OmniSci.clear_cpu_memory",
-    "category": "function",
-    "text": "clear_cpu_memory(conn::OmniSciConnection)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.set_execution_mode",
-    "page": "Internal",
-    "title": "OmniSci.set_execution_mode",
-    "category": "function",
-    "text": "set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.get_memory",
-    "page": "Internal",
-    "title": "OmniSci.get_memory",
-    "category": "function",
-    "text": "get_memory(conn::OmniSciConnection, memory_level::String)\n\n\n\n\n\n"
-},
-
-{
     "location": "internal.html#Memory-Management-1",
     "page": "Internal",
     "title": "Memory Management",
     "category": "section",
     "text": "deallocate_df\nclear_gpu_memory\nclear_cpu_memory\nset_execution_mode\nget_memory"
-},
-
-{
-    "location": "internal.html#OmniSci.sql_validate",
-    "page": "Internal",
-    "title": "OmniSci.sql_validate",
-    "category": "function",
-    "text": "sql_validate(conn::OmniSciConnection, query::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.import_table_status",
-    "page": "Internal",
-    "title": "OmniSci.import_table_status",
-    "category": "function",
-    "text": "import_table_status(conn::OmniSciConnection, import_id::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.interrupt",
-    "page": "Internal",
-    "title": "OmniSci.interrupt",
-    "category": "function",
-    "text": "interrupt(conn::OmniSciConnection)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.detect_column_types",
-    "page": "Internal",
-    "title": "OmniSci.detect_column_types",
-    "category": "function",
-    "text": "detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.render_vega",
-    "page": "Internal",
-    "title": "OmniSci.render_vega",
-    "category": "function",
-    "text": "render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)\n\n\n\n\n\n"
 },
 
 {
