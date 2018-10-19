@@ -279,25 +279,25 @@ function get_databases(c::MapDClient, session::TSessionId)
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_databases
 
-# Client callable method for get_version
-function get_version(c::MapDClient)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_version", Thrift.MessageType.CALL, c.seqid)
-  inp = get_version_args()
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_version_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_version
+# # Client callable method for get_version
+# function get_version(c::MapDClient)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "get_version", Thrift.MessageType.CALL, c.seqid)
+#   inp = get_version_args()
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, get_version_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function get_version
 
 # Client callable method for start_heap_profile
 function start_heap_profile(c::MapDClient, session::TSessionId)
@@ -628,27 +628,27 @@ function interrupt(c::MapDClient, session::TSessionId)
   nothing
 end # function interrupt
 
-# Client callable method for sql_validate
-function sql_validate(c::MapDClient, session::TSessionId, query::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "sql_validate", Thrift.MessageType.CALL, c.seqid)
-  inp = sql_validate_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :query, query)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, sql_validate_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function sql_validate
+# # Client callable method for sql_validate
+# function sql_validate(c::MapDClient, session::TSessionId, query::String)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "sql_validate", Thrift.MessageType.CALL, c.seqid)
+#   inp = sql_validate_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.set_field!(inp, :query, query)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, sql_validate_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function sql_validate
 
 # Client callable method for get_completion_hints
 function get_completion_hints(c::MapDClient, session::TSessionId, sql::String, cursor::Int32)
