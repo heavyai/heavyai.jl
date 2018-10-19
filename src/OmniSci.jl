@@ -5,7 +5,7 @@ import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Base: show
 import DataFrames: DataFrame
 
-export TDatum, TColumn
+export TDatum, TColumn, TExecuteMode
 
 #### functions ####
 export connect, disconnect
