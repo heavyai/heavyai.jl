@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.sql_execute",
     "category": "function",
-    "text": "sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)\n\n\n\n\n\n"
+    "text": "sql_execute(conn::OmniSciConnection, query::String, first_n::Int = -1, at_most_n::Int = -1)\n\n\n\n\n\n"
 },
 
 {
