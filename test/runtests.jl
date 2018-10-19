@@ -52,10 +52,6 @@ users = get_users(conn)
 databases = get_databases(conn)
 @test typeof(databases) == Vector{OmniSci.TDBInfo}
 
-#Deprecate this in lieu of get_status
-version = get_version(conn)
-@test typeof(version) == String
-
 #TODO: what are the acceptable values of the second argument?
 mem = get_memory(conn, "cpu")
 @test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
@@ -76,10 +72,7 @@ sql_execute(conn, "create role testuser")
 cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
 @test typeof(cpu_arrow) == OmniSci.TDataFrame
 
-#TODO: remove this method from package? will use want to pre-validate instead of just trying it?
-sqlval = sql_validate(conn, "select count(*) as records from omnisci_counties")
-@test typeof(sqlval) == Dict{String,OmniSci.TColumnType}
-
+#TODO: Should this be public?
 execmode = set_execution_mode(conn, TExecuteMode.CPU)
 @test typeof(execmode) == Nothing
 

@@ -244,19 +244,19 @@ julia> db = get_databases(conn)
 get_databases(conn::OmniSciConnection) =
     get_databases(conn.c, conn.session)
 
-"""
-    get_version(conn::OmniSciConnection)
-
-Get OmniSci software version.
-
-# Examples
-```julia-repl
-julia> version = get_version(conn)
-"4.2.0dev-20181003-0206b9f92c"
-```
-"""
-get_version(conn::OmniSciConnection) =
-    get_version(conn.c)
+# """
+#     get_version(conn::OmniSciConnection)
+#
+# Get OmniSci software version.
+#
+# # Examples
+# ```julia-repl
+# julia> version = get_version(conn)
+# "4.2.0dev-20181003-0206b9f92c"
+# ```
+# """
+# get_version(conn::OmniSciConnection) =
+#     get_version(conn.c)
 
 """
     get_memory(conn::OmniSciConnection, memory_level::String)
@@ -324,12 +324,12 @@ deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_
 interrupt(conn::OmniSciConnection) =
     interrupt(conn.c, conn.session)
 
-"""
-    sql_validate(conn::OmniSciConnection, query::String)
-
-"""
-sql_validate(conn::OmniSciConnection, query::String) =
-    sql_validate(conn.c, conn.session, query)
+# """
+#     sql_validate(conn::OmniSciConnection, query::String)
+#
+# """
+# sql_validate(conn::OmniSciConnection, query::String) =
+#     sql_validate(conn.c, conn.session, query)
 
 """
     set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum)
