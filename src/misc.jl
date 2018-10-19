@@ -26,6 +26,31 @@ function load_buffer(handle::Vector{UInt8}, size::Int)
 
 end
 
+#Find which field in the struct the data actually is
+function findvalues(x::OmniSci.TColumn)
+    for f in propertynames(x.data)
+        n = length(getfield(x.data, f))
+        if n > 0
+            return (f, eltype(getfield(x.data, f)), n)
+        end
+    end
+end
+
+#Take two vectors, values and nulls, make into a single vector
+function squashbitmask(x::TColumn)
+
+    #Get location of data from struct, eltype of vector and its length
+    valuescol, ltype, n = findvalues(x)
+
+    #Build/fill new vector based on missingness
+    A = Vector{Union{ltype, Missing}}(undef, n)
+    @simd for i = 1:n
+        @inbounds A[i] = ifelse(x.nulls[i], missing, getfield(x.data, valuescol)[i])
+    end
+
+    return A
+end
+
 ######################################## connection, admin
 
 """
@@ -257,14 +282,17 @@ clear_gpu_memory(conn::OmniSciConnection) =
 ######################################## query, render
 
 """
-    sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)
+    sql_execute(conn::OmniSciConnection, query::String, first_n::Int = -1, at_most_n::Int = -1)
 
 """
-function sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)
+function sql_execute(conn::OmniSciConnection, query::String, first_n::Int = -1, at_most_n::Int = -1)
 
     first_n > 0 && at_most_n > 0 ? error("Only one of first_n and at_most_n can be set at one time") : nothing
 
-    result = sql_execute(conn.c, conn.session, query, column_format, randstring(32), Int32(first_n), Int32(at_most_n))
+    #true hard-coded for column_format, as its not clear there is any benefit to providing row-wise parsing (slow)
+    result = sql_execute(conn.c, conn.session, query, true, randstring(32), Int32(first_n), Int32(at_most_n))
+
+    return DataFrame(result)
 
 end
 

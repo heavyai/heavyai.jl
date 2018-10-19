@@ -1,8 +1,9 @@
 module OmniSci
 
-using Compat, Thrift, Random, Sockets, Distributed
+using Compat, Thrift, Random, Sockets, Distributed, DataFrames
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Base: show
+import DataFrames: DataFrame
 
 #### enums ####
 export TDatumType, TExecuteMode, TEncodingType, TDeviceType, TTableType, TPartitionDetail,
@@ -40,11 +41,12 @@ share_dashboard, unshare_dashboard, get_dashboard_grantees,
 load_table_binary, load_table_binary_columnar, load_table_binary_arrow,
 load_table, detect_column_types, create_table, import_table, import_geo_table,
 import_table_status, get_roles, get_db_objects_for_grantee, get_db_object_privs,
-get_all_roles_for_user, set_license_key, get_license_claims
+get_all_roles_for_user, set_license_key, get_license_claims, DataFrame
 
 include("mapd_enums.jl") #hand-maintained code for more convenient enums
 include("mapd_types.jl") #slightly modified from Thrift.jl for circular type fix
 include("mapd_client.jl") #should be same as output by Thrift.jl
 include("misc.jl") #for hand-maintained code
+include("dataframes.jl")
 
 end # module OmniSci
