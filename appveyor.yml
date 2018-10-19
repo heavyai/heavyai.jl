@@ -30,6 +30,7 @@ services:
 
 install:
   - ps: iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/version-1/bin/install.ps1"))
+  - docker run -d -v $HOME/mapd-docker-storage:/mapd-storage -p 9090-9092:9090-9092 mapd/mapd-ce-cpu
 
 build_script:
   - echo "%JL_BUILD_SCRIPT%"
