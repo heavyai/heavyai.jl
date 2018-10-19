@@ -66,12 +66,12 @@ clear_cpu = clear_cpu_memory(conn)
 ######################################## query, render
 
 #TODO: How to return this data? namedtuple? what would the user expect?
-se = sql_execute(conn, "select * from flights_2008_10k") #columnar
+se = sql_execute(conn, "select * from omnisci_counties")
 @test typeof(se) == DataFrame
 
 #TODO: write convenience method when result unlikely to return a result
 #This needed for later to test role access
-sql_execute(conn, "create role testuser2")
+sql_execute(conn, "create role testuser")
 
 cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
 @test typeof(cpu_arrow) == OmniSci.TDataFrame
