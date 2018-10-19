@@ -1,3 +1,5 @@
+image: Visual Studio 2017
+
 environment:
   matrix:
   - julia_version: 1
@@ -30,8 +32,10 @@ services:
 
 install:
   - ps: iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/version-1/bin/install.ps1"))
-  - docker run -d -v $HOME/mapd-docker-storage:/mapd-storage -p 9090-9092:9090-9092 mapd/mapd-ce-cpu
-
+  - docker pull mapd/core-os-cpu
+  - docker run -d --ipc=host -v C:/dev:/dev -p 9091:9091 --name=mapd mapd/core-os-cpu:latest
+  - docker ps -a
+  
 build_script:
   - echo "%JL_BUILD_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
