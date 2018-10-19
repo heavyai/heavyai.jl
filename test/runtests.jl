@@ -100,7 +100,7 @@ getdbs = get_dashboards(conn)
 @test typeof(getdbs) == Vector{OmniSci.TDashboard}
 
 #cdash represents id of dashboard created, use for later tests
-cdash = create_dashboard(conn, "dashboard", "state", "image", "metadata")
+cdash = create_dashboard(conn, randstring(10), "state", "image", "metadata")
 @test cdash > 0
 
 getdash = get_dashboard(conn, cdash)
