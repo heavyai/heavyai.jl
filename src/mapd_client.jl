@@ -109,68 +109,68 @@ function get_hardware_info(c::MapDClient, session::TSessionId)
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_hardware_info
 
-# Client callable method for get_tables
-function get_tables(c::MapDClient, session::TSessionId)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_tables", Thrift.MessageType.CALL, c.seqid)
-  inp = get_tables_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_tables_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_tables
-
-# Client callable method for get_physical_tables
-function get_physical_tables(c::MapDClient, session::TSessionId)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_physical_tables", Thrift.MessageType.CALL, c.seqid)
-  inp = get_physical_tables_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_physical_tables_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_physical_tables
-
-# Client callable method for get_views
-function get_views(c::MapDClient, session::TSessionId)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_views", Thrift.MessageType.CALL, c.seqid)
-  inp = get_views_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_views_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_views
+# # Client callable method for get_tables
+# function get_tables(c::MapDClient, session::TSessionId)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "get_tables", Thrift.MessageType.CALL, c.seqid)
+#   inp = get_tables_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, get_tables_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function get_tables
+#
+# # Client callable method for get_physical_tables
+# function get_physical_tables(c::MapDClient, session::TSessionId)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "get_physical_tables", Thrift.MessageType.CALL, c.seqid)
+#   inp = get_physical_tables_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, get_physical_tables_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function get_physical_tables
+#
+# # Client callable method for get_views
+# function get_views(c::MapDClient, session::TSessionId)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "get_views", Thrift.MessageType.CALL, c.seqid)
+#   inp = get_views_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, get_views_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function get_views
 
 # Client callable method for get_tables_meta
 function get_tables_meta(c::MapDClient, session::TSessionId)

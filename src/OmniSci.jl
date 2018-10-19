@@ -10,7 +10,7 @@ export TDatum, TColumn, TExecuteMode
 #### functions ####
 export connect, disconnect
 export get_status, get_hardware_info
-export get_tables, get_physical_tables, get_views, get_tables_meta, get_table_details
+export get_tables_meta, get_table_details
 export get_users, get_databases
 export get_memory, clear_cpu_memory, clear_gpu_memory
 export sql_execute, sql_execute_df, sql_execute_gdf

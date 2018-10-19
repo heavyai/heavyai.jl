@@ -133,56 +133,6 @@ get_hardware_info(conn::OmniSciConnection) =
     get_hardware_info(conn.c, conn.session)
 
 """
-    get_tables(conn::OmniSciConnection)
-
-Get tables and views for authenticated database specified in `connect()`.
-
-# Examples
-```julia-repl
-julia> tbl = get_tables(conn)
-4-element Array{String,1}:
- "mapd_states"
- "mapd_counties"
- "mapd_countries"
- "nyc_trees_2015_683k"
-```
-"""
-get_tables(conn::OmniSciConnection) =
-    get_tables(conn.c, conn.session)
-
-"""
-    get_physical_tables(conn::OmniSciConnection)
-
-Get tables for authenticated database specified in `connect()`.
-
-# Examples
-```julia-repl
-julia> ptbl = get_physical_tables(conn)
-4-element Array{String,1}:
- "mapd_states"
- "mapd_counties"
- "mapd_countries"
- "nyc_trees_2015_683k"
-```
-"""
-get_physical_tables(conn::OmniSciConnection) =
-    get_physical_tables(conn.c, conn.session)
-
-"""
-    get_views(conn::OmniSciConnection)
-
-Get views for authenticated database specified in `connect()`.
-
-# Examples
-```julia-repl
-julia> vw = get_views(conn)
-0-element Array{String,1}
-```
-"""
-get_views(conn::OmniSciConnection) =
-    get_views(conn.c, conn.session)
-
-"""
     get_tables_meta(conn::OmniSciConnection)
 
 Get metadata for tables in database specified in `connect()`.
@@ -243,20 +193,6 @@ julia> db = get_databases(conn)
 """
 get_databases(conn::OmniSciConnection) =
     get_databases(conn.c, conn.session)
-
-# """
-#     get_version(conn::OmniSciConnection)
-#
-# Get OmniSci software version.
-#
-# # Examples
-# ```julia-repl
-# julia> version = get_version(conn)
-# "4.2.0dev-20181003-0206b9f92c"
-# ```
-# """
-# get_version(conn::OmniSciConnection) =
-#     get_version(conn.c)
 
 """
     get_memory(conn::OmniSciConnection, memory_level::String)
@@ -323,13 +259,6 @@ deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_
 """
 interrupt(conn::OmniSciConnection) =
     interrupt(conn.c, conn.session)
-
-# """
-#     sql_validate(conn::OmniSciConnection, query::String)
-#
-# """
-# sql_validate(conn::OmniSciConnection, query::String) =
-#     sql_validate(conn.c, conn.session, query)
 
 """
     set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum)

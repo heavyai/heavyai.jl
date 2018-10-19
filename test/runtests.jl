@@ -15,28 +15,17 @@ dbname="mapd"
 conn = connect(host, port , user, passwd, dbname)
 @test typeof(conn) == OmniSci.OmniSciConnection
 
-#TODO: create a nametuple here?
+#TODO: create a show method
 sstatus = get_status(conn)
 @test typeof(sstatus) == Vector{OmniSci.TServerStatus}
 @test sstatus[1].start_time <= Dates.datetime2unix(now(UTC)) #test sstatus has values...assumes server started before test happened
 
-#TODO: create list of a nametuple here?
+#TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
 @test typeof(hware) == OmniSci.TClusterHardwareInfo
 
-#TODO: create kw for dataframe?
-tables = get_tables(conn)
-@test typeof(tables) == Vector{String}
-
-#TODO: create kw for dataframe?
-ptables = get_physical_tables(conn)
-@test typeof(ptables) == Vector{String}
-
-#TODO: create kw for dataframe?
-views = get_views(conn)
-@test typeof(views) == Vector{String}
-
 #TODO: create kw for dataframe? namedtuple?
+#Use this to replace get_tables, get_physical_tables and get_views
 met = get_tables_meta(conn)
 @test typeof(met) == Vector{OmniSci.TTableMeta}
 
