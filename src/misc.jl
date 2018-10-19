@@ -257,10 +257,10 @@ clear_gpu_memory(conn::OmniSciConnection) =
 ######################################## query, render
 
 """
-    sql_execute(conn::OmniSciConnection, query::String, column_format::Bool, first_n::Int = -1, at_most_n::Int = -1)
+    sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)
 
 """
-function sql_execute(conn::OmniSciConnection, query::String, column_format::Bool, first_n::Int = -1, at_most_n::Int = -1)
+function sql_execute(conn::OmniSciConnection, query::String, column_format::Bool = true, first_n::Int = -1, at_most_n::Int = -1)
 
     first_n > 0 && at_most_n > 0 ? error("Only one of first_n and at_most_n can be set at one time") : nothing
 
@@ -320,10 +320,10 @@ render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compress
 ######################################## dashboard
 
 """
-    get_dashboard(conn::OmniSciConnection, dashboard_id::Int)
+    get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
 
 """
-get_dashboard(conn::OmniSciConnection, dashboard_id::Int) =
+get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)  =
     get_dashboard(conn.c, conn.session, Int32(dashboard_id))
 
 """
@@ -342,40 +342,40 @@ create_dashboard(conn::OmniSciConnection, dashboard_name::String, dashboard_stat
     create_dashboard(conn.c, conn.session, dashboard_name, dashboard_state, image_hash, dashboard_metadata)
 
 """
-    replace_dashboard(conn::OmniSciConnection, dashboard_id::Int, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
+    replace_dashboard(conn::OmniSciConnection, dashboard_id::Integer, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
 
 
 """
-replace_dashboard(conn::OmniSciConnection, dashboard_id::Int, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String) =
+replace_dashboard(conn::OmniSciConnection, dashboard_id::Integer, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String) =
     replace_dashboard(conn.c, conn.session, Int32(dashboard_id), dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata)
 
 """
-    delete_dashboard(conn::OmniSciConnection, dashboard_id::Int)
+    delete_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
 
 """
-delete_dashboard(conn::OmniSciConnection, dashboard_id::Int) =
+delete_dashboard(conn::OmniSciConnection, dashboard_id::Integer) =
     delete_dashboard(conn.c, conn.session, Int32(dashboard_id))
 
 """
-    share_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
+    share_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
 """
-share_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions) =
+share_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions) =
     share_dashboard(conn.c, conn.session, Int32(dashboard_id), groups, objects, permissions)
 
 """
-    unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
+    unshare_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
 
 """
-unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions) =
+unshare_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions) =
     unshare_dashboard(conn.c, conn.session, Int32(dashboard_id), groups, objects, permissions)
 
 """
-    get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Int)
+    get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer)
 
 """
-get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Int) =
+get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer) =
     get_dashboard_grantees(conn.c, conn.session, Int32(dashboard_id))
 
 ######################################## import
@@ -461,11 +461,11 @@ get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String) =
     get_db_objects_for_grantee(conn.c, conn.session, roleName)
 
 """
-    get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
+    get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)
 
 
 """
-get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int) =
+get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer) =
     get_db_object_privs(conn.c, conn.session, objectName, Int32(type_))
 
 """
