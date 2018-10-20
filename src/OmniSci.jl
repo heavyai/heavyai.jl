@@ -31,6 +31,7 @@ export DataFrame
 include("mapd_enums.jl") #hand-maintained code for more convenient enums
 include("mapd_types.jl") #slightly modified from Thrift.jl for circular type fix
 include("mapd_client.jl") #should be same as output by Thrift.jl
+include("internal.jl")
 include("misc.jl") #for hand-maintained code
 include("dataframes.jl")
 

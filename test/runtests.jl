@@ -107,8 +107,10 @@ ddash = delete_dashboard(conn, cdash)
 
 #load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})
 
+#Is this internal method?
 #detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
 
+#Is this internal method?
 #create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
 
 #import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
@@ -138,6 +140,3 @@ glc = get_license_claims(conn)
 #disconnect from database
 disc = disconnect(conn)
 @test typeof(disc) == Nothing
-
-# slc = set_license_key(conn, "hello, world!") #not real license key :)
-# @test typeof(slc) == OmniSci.TLicenseInfo
