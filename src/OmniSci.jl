@@ -1,6 +1,6 @@
 module OmniSci
 
-using Compat, Thrift, Random, Sockets, Distributed, DataFrames
+using Thrift, Random, Sockets, Distributed, DataFrames
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Base: show
 import DataFrames: DataFrame
