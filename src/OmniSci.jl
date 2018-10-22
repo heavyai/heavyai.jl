@@ -5,6 +5,7 @@ import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Base: show
 import DataFrames: DataFrame
 
+#### types and enums ####
 export TDatum, TColumn, TExecuteMode
 
 #### functions ####
@@ -34,5 +35,6 @@ include("mapd_client.jl") #should be same as output by Thrift.jl
 include("internal.jl")
 include("misc.jl") #for hand-maintained code
 include("dataframes.jl")
+include("show.jl")
 
 end # module OmniSci
