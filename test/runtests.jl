@@ -81,7 +81,7 @@ mem = OmniSci.get_memory(conn, "cpu")
 #TODO: Single table: dataframe kw
 #What to do with shard info and other singletons, given column descriptions should be rows
 tbl_details = get_table_details(conn, "omnisci_counties")
-@test typeof(table_deet) == OmniSci.TTableDetails
+@test typeof(tbl_details) == OmniSci.TTableDetails
 
 #render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
 
