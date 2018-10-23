@@ -80,22 +80,26 @@ get_hardware_info(conn::OmniSciConnection) =
     get_hardware_info(conn.c, conn.session)
 
 """
-    get_tables_meta(conn::OmniSciConnection)
+    get_tables_meta(conn::OmniSciConnection, as_df::Bool = true)
 
 Get metadata for tables in database specified in `connect()`.
 
 # Examples
 ```julia-repl
 julia> metad = get_tables_meta(conn)
-4-element Array{TTableMeta,1}:
- TTableMeta("mapd_states", 4, Int32[6, 16], false, false, 0, 4611686018427387904)
- TTableMeta("mapd_counties", 6, Int32[6, 16], false, false, 0, 4611686018427387904)
- TTableMeta("mapd_countries", 64, Int32[1, 5, 6, 16], false, false, 0, 4611686018427387904)
- TTableMeta("nyc_trees_2015_683k", 42, Int32[0, 3, 6, 9], false, false, 0, 4611686018427387904)
+5×6 DataFrame. Omitted printing of 1 columns
+│ Row │ is_replicated │ is_view │ max_rows            │ num_cols │ shard_count │
+│     │ Bool          │ Bool    │ Int64               │ Int64    │ Int64       │
+├─────┼───────────────┼─────────┼─────────────────────┼──────────┼─────────────┤
+│ 1   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │
+│ 2   │ false         │ false   │ 4611686018427387904 │ 6        │ 0           │
+│ 3   │ false         │ false   │ 4611686018427387904 │ 64       │ 0           │
+│ 4   │ false         │ false   │ 4611686018427387904 │ 56       │ 0           │
+│ 5   │ false         │ false   │ 4611686018427387904 │ 42       │ 0           │
 ```
 """
-get_tables_meta(conn::OmniSciConnection) =
-    get_tables_meta(conn.c, conn.session)
+get_tables_meta(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(get_tables_meta(conn.c, conn.session)) : get_tables_meta(conn.c, conn.session)
 
 """
     get_table_details(conn::OmniSciConnection, table_name::String)
@@ -112,34 +116,40 @@ get_table_details(conn::OmniSciConnection, table_name::String) =
     get_table_details(conn.c, conn.session, table_name)
 
 """
-    get_users(conn::OmniSciConnection)
+    get_users(conn::OmniSciConnection, as_df::Bool = true)
 
 Get list of users who have access to database specified in `connect()`.
 
 # Examples
 ```julia-repl
 julia> users = get_users(conn)
-1-element Array{String,1}:
- "mapd"
+1×1 DataFrame
+│ Row │ users  │
+│     │ String │
+├─────┼────────┤
+│ 1   │ mapd   │
 ```
 """
-get_users(conn::OmniSciConnection) =
-    get_users(conn.c, conn.session)
+get_users(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(Dict(:users => get_users(conn.c, conn.session))) : get_users(conn.c, conn.session)
 
 """
-    get_databases(conn::OmniSciConnection)
+    get_databases(conn::OmniSciConnection, as_df::Bool=true)
 
 Get list of databases.
 
 # Examples
 ```julia-repl
 julia> db = get_databases(conn)
-1-element Array{TDBInfo,1}:
- TDBInfo("mapd", "mapd")
+1×2 DataFrame
+│ Row │ db_name │ db_owner │
+│     │ String  │ String   │
+├─────┼─────────┼──────────┤
+│ 1   │ mapd    │ mapd     │
 ```
 """
-get_databases(conn::OmniSciConnection) =
-    get_databases(conn.c, conn.session)
+get_databases(conn::OmniSciConnection, as_df::Bool=true) =
+    as_df ? DataFrame(get_databases(conn.c, conn.session)) : get_databases(conn.c, conn.session)
 
 """
     get_memory(conn::OmniSciConnection, memory_level::String)
@@ -210,6 +220,13 @@ interrupt(conn::OmniSciConnection) =
 """
     set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum)
 
+Sets execution mode for server during session. This function returns `nothing`.
+
+# Examples
+```julia-repl
+julia> set_execution_mode(conn, TExecuteMode.CPU)
+```
+
 """
 set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum) =
     set_execution_mode(conn.c, conn.session, mode.value)
@@ -223,19 +240,37 @@ render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compress
 
 ######################################## dashboard
 
-"""
-    get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
+# """
+#     get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
+#
+# """
+# get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)  =
+#     get_dashboard(conn.c, conn.session, Int32(dashboard_id))
 
 """
-get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)  =
-    get_dashboard(conn.c, conn.session, Int32(dashboard_id))
+    get_dashboards(conn::OmniSciConnection, as_df::Bool = true)
+
+Gets dashboards that user submitted during connect() can access.
+
+# Examples
+```julia-repl
+julia> getdbs = get_dashboards(conn)
+7×8 DataFrame. Omitted printing of 3 columns
+│ Row │ dashboard_id │ dashboard_metadata │ dashboard_name │ dashboard_owner │ dashboard_state │
+│     │ Int32        │ String             │ String         │ String          │ String          │
+├─────┼──────────────┼────────────────────┼────────────────┼─────────────────┼─────────────────┤
+│ 1   │ 9            │ metadata           │ 0vcAQEO1ZD     │ mapd            │                 │
+│ 2   │ 6            │ metadata           │ QI0JsthBsB     │ mapd            │                 │
+│ 3   │ 5            │ metadata           │ Srm72rCJHa     │ mapd            │                 │
+│ 4   │ 4            │ metadata           │ sO0XgMUOZH     │ mapd            │                 │
+│ 5   │ 1            │ metadata           │ testdash       │ mapd            │                 │
+│ 6   │ 2            │ metadata           │ testdash2      │ mapd            │                 │
+│ 7   │ 3            │ metadata           │ testdash3      │ mapd            │                 │
+```
 
 """
-    get_dashboards(conn::OmniSciConnection)
-
-"""
-get_dashboards(conn::OmniSciConnection) =
-    get_dashboards(conn.c, conn.session)
+get_dashboards(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(get_dashboards(conn.c, conn.session)) : get_dashboards(conn.c, conn.session)
 
 """
     create_dashboard(conn::OmniSciConnection, dashboard_name::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)

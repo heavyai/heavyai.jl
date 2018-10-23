@@ -834,27 +834,27 @@ function delete_frontend_view(c::MapDClient, session::TSessionId, view_name::Str
   nothing
 end # function delete_frontend_view
 
-# Client callable method for get_dashboard
-function get_dashboard(c::MapDClient, session::TSessionId, dashboard_id::Int32)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_dashboard", Thrift.MessageType.CALL, c.seqid)
-  inp = get_dashboard_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :dashboard_id, dashboard_id)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_dashboard_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_dashboard
+# # Client callable method for get_dashboard
+# function get_dashboard(c::MapDClient, session::TSessionId, dashboard_id::Int32)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "get_dashboard", Thrift.MessageType.CALL, c.seqid)
+#   inp = get_dashboard_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.set_field!(inp, :dashboard_id, dashboard_id)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, get_dashboard_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function get_dashboard
 
 # Client callable method for get_dashboards
 function get_dashboards(c::MapDClient, session::TSessionId)
