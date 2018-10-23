@@ -27,5 +27,4 @@ sql_validate
 import_table_status
 interrupt
 detect_column_types
-render_vega
 ```

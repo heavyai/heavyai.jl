@@ -27,10 +27,7 @@ import_table
 
 ## Table Metadata
 ```@docs
-get_tables
-get_physical_tables
 get_tables_meta
-get_views
 get_table_details
 ```
 
@@ -38,12 +35,12 @@ get_table_details
 ```@docs
 create_dashboard
 share_dashboard
-get_dashboard
 unshare_dashboard
 get_dashboards
 get_dashboard_grantees
 replace_dashboard
 delete_dashboard
+render_vega
 ```
 
 ## Metadata
