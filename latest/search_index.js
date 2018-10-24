@@ -145,35 +145,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions.html#OmniSci.import_table",
-    "page": "Functions",
-    "title": "OmniSci.import_table",
-    "category": "function",
-    "text": "import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)\n\n\n\n\n\n"
-},
-
-{
     "location": "functions.html#Loading-Data-1",
     "page": "Functions",
     "title": "Loading Data",
     "category": "section",
-    "text": "create_table\nload_table\nload_table_binary_arrow\nload_table_binary\nload_table_binary_columnar\nimport_geo_table\nimport_table"
-},
-
-{
-    "location": "functions.html#OmniSci.get_tables",
-    "page": "Functions",
-    "title": "OmniSci.get_tables",
-    "category": "function",
-    "text": "get_tables(conn::OmniSciConnection)\n\nGet tables and views for authenticated database specified in connect().\n\nExamples\n\njulia> tbl = get_tables(conn)\n4-element Array{String,1}:\n \"mapd_states\"\n \"mapd_counties\"\n \"mapd_countries\"\n \"nyc_trees_2015_683k\"\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_physical_tables",
-    "page": "Functions",
-    "title": "OmniSci.get_physical_tables",
-    "category": "function",
-    "text": "get_physical_tables(conn::OmniSciConnection)\n\nGet tables for authenticated database specified in connect().\n\nExamples\n\njulia> ptbl = get_physical_tables(conn)\n4-element Array{String,1}:\n \"mapd_states\"\n \"mapd_counties\"\n \"mapd_countries\"\n \"nyc_trees_2015_683k\"\n\n\n\n\n\n"
+    "text": "create_table\nload_table\nload_table_binary_arrow\nload_table_binary\nload_table_binary_columnar\nimport_geo_table"
 },
 
 {
@@ -181,15 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.get_tables_meta",
     "category": "function",
-    "text": "get_tables_meta(conn::OmniSciConnection)\n\nGet metadata for tables in database specified in connect().\n\nExamples\n\njulia> metad = get_tables_meta(conn)\n4-element Array{TTableMeta,1}:\n TTableMeta(\"mapd_states\", 4, Int32[6, 16], false, false, 0, 4611686018427387904)\n TTableMeta(\"mapd_counties\", 6, Int32[6, 16], false, false, 0, 4611686018427387904)\n TTableMeta(\"mapd_countries\", 64, Int32[1, 5, 6, 16], false, false, 0, 4611686018427387904)\n TTableMeta(\"nyc_trees_2015_683k\", 42, Int32[0, 3, 6, 9], false, false, 0, 4611686018427387904)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions.html#OmniSci.get_views",
-    "page": "Functions",
-    "title": "OmniSci.get_views",
-    "category": "function",
-    "text": "get_views(conn::OmniSciConnection)\n\nGet views for authenticated database specified in connect().\n\nExamples\n\njulia> vw = get_views(conn)\n0-element Array{String,1}\n\n\n\n\n\n"
+    "text": "get_tables_meta(conn::OmniSciConnection, as_df::Bool = true)\n\nGet metadata for tables in database specified in connect().\n\nExamples\n\njulia> metad = get_tables_meta(conn)\n5×6 DataFrame. Omitted printing of 1 columns\n│ Row │ is_replicated │ is_view │ max_rows            │ num_cols │ shard_count │\n│     │ Bool          │ Bool    │ Int64               │ Int64    │ Int64       │\n├─────┼───────────────┼─────────┼─────────────────────┼──────────┼─────────────┤\n│ 1   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │\n│ 2   │ false         │ false   │ 4611686018427387904 │ 6        │ 0           │\n│ 3   │ false         │ false   │ 4611686018427387904 │ 64       │ 0           │\n│ 4   │ false         │ false   │ 4611686018427387904 │ 56       │ 0           │\n│ 5   │ false         │ false   │ 4611686018427387904 │ 42       │ 0           │\n\n\n\n\n\n"
 },
 
 {
@@ -205,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "Table Metadata",
     "category": "section",
-    "text": "get_tables\nget_physical_tables\nget_tables_meta\nget_views\nget_table_details"
+    "text": "get_tables_meta\nget_table_details"
 },
 
 {
@@ -225,14 +193,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions.html#OmniSci.get_dashboard",
-    "page": "Functions",
-    "title": "OmniSci.get_dashboard",
-    "category": "function",
-    "text": "get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)\n\n\n\n\n\n"
-},
-
-{
     "location": "functions.html#OmniSci.unshare_dashboard",
     "page": "Functions",
     "title": "OmniSci.unshare_dashboard",
@@ -245,7 +205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.get_dashboards",
     "category": "function",
-    "text": "get_dashboards(conn::OmniSciConnection)\n\n\n\n\n\n"
+    "text": "get_dashboards(conn::OmniSciConnection, as_df::Bool = true)\n\nGets dashboards that user submitted during connect() can access.\n\nExamples\n\njulia> getdbs = get_dashboards(conn)\n7×8 DataFrame. Omitted printing of 3 columns\n│ Row │ dashboard_id │ dashboard_metadata │ dashboard_name │ dashboard_owner │ dashboard_state │\n│     │ Int32        │ String             │ String         │ String          │ String          │\n├─────┼──────────────┼────────────────────┼────────────────┼─────────────────┼─────────────────┤\n│ 1   │ 9            │ metadata           │ 0vcAQEO1ZD     │ mapd            │                 │\n│ 2   │ 6            │ metadata           │ QI0JsthBsB     │ mapd            │                 │\n│ 3   │ 5            │ metadata           │ Srm72rCJHa     │ mapd            │                 │\n│ 4   │ 4            │ metadata           │ sO0XgMUOZH     │ mapd            │                 │\n│ 5   │ 1            │ metadata           │ testdash       │ mapd            │                 │\n│ 6   │ 2            │ metadata           │ testdash2      │ mapd            │                 │\n│ 7   │ 3            │ metadata           │ testdash3      │ mapd            │                 │\n\n\n\n\n\n"
 },
 
 {
@@ -273,11 +233,83 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#OmniSci.render_vega",
+    "page": "Functions",
+    "title": "OmniSci.render_vega",
+    "category": "function",
+    "text": "render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)\n\n\n\n\n\n"
+},
+
+{
     "location": "functions.html#Dashboards-1",
     "page": "Functions",
     "title": "Dashboards",
     "category": "section",
-    "text": "create_dashboard\nshare_dashboard\nget_dashboard\nunshare_dashboard\nget_dashboards\nget_dashboard_grantees\nreplace_dashboard\ndelete_dashboard"
+    "text": "create_dashboard\nshare_dashboard\nunshare_dashboard\nget_dashboards\nget_dashboard_grantees\nreplace_dashboard\ndelete_dashboard\nrender_vega"
+},
+
+{
+    "location": "functions.html#OmniSci.get_databases",
+    "page": "Functions",
+    "title": "OmniSci.get_databases",
+    "category": "function",
+    "text": "get_databases(conn::OmniSciConnection, as_df::Bool=true)\n\nGet list of databases.\n\nExamples\n\njulia> db = get_databases(conn)\n1×2 DataFrame\n│ Row │ db_name │ db_owner │\n│     │ String  │ String   │\n├─────┼─────────┼──────────┤\n│ 1   │ mapd    │ mapd     │\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions.html#OmniSci.get_users",
+    "page": "Functions",
+    "title": "OmniSci.get_users",
+    "category": "function",
+    "text": "get_users(conn::OmniSciConnection, as_df::Bool = true)\n\nGet list of users who have access to database specified in connect().\n\nExamples\n\njulia> users = get_users(conn)\n1×1 DataFrame\n│ Row │ users  │\n│     │ String │\n├─────┼────────┤\n│ 1   │ mapd   │\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions.html#OmniSci.get_roles",
+    "page": "Functions",
+    "title": "OmniSci.get_roles",
+    "category": "function",
+    "text": "get_roles(conn::OmniSciConnection, as_df::Bool = true)\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions.html#OmniSci.get_hardware_info",
+    "page": "Functions",
+    "title": "OmniSci.get_hardware_info",
+    "category": "function",
+    "text": "get_hardware_info(conn::OmniSciConnection)\n\nDisplays selected properties of hardware where OmniSci running, such as GPU and CPU information.\n\nExamples\n\njulia> hardware = get_hardware_info(conn)\nTClusterHardwareInfo(THardwareInfo[THardwareInfo(0, 12, 0, 0, \"\", TGpuSpecification[])])\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions.html#OmniSci.get_status",
+    "page": "Functions",
+    "title": "OmniSci.get_status",
+    "category": "function",
+    "text": "get_status(conn::OmniSciConnection)\n\nDisplays properties of OmniSci server, such as version and rendering capabilities.\n\nExamples\n\njulia> status = get_status(conn)\n1-element Array{TServerStatus,1}:\n TServerStatus(false, \"4.2.0dev-20181003-0206b9f92c\", false, 1539095178, \"ee\", \"aggregator\", false)\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions.html#OmniSci.get_all_roles_for_user",
+    "page": "Functions",
+    "title": "OmniSci.get_all_roles_for_user",
+    "category": "function",
+    "text": "get_all_roles_for_user(conn::OmniSciConnection, userName::String)\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions.html#OmniSci.get_db_objects_for_grantee",
+    "page": "Functions",
+    "title": "OmniSci.get_db_objects_for_grantee",
+    "category": "function",
+    "text": "get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions.html#OmniSci.get_db_object_privs",
+    "page": "Functions",
+    "title": "OmniSci.get_db_object_privs",
+    "category": "function",
+    "text": "get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)\n\n\n\n\n\n"
 },
 
 {
@@ -285,63 +317,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "Metadata",
     "category": "section",
-    "text": "get_databases\nget_users\nget_roles\nget_hardware_info\nget_status\nget_all_roles_for_user\nget_db_objects_for_grantee\nget_version\nget_db_object_privs"
-},
-
-{
-    "location": "internal.html#",
-    "page": "Internal",
-    "title": "Internal",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "internal.html#Internal-Functions-1",
-    "page": "Internal",
-    "title": "Internal Functions",
-    "category": "section",
-    "text": "For completeness of wrapping the OmniSci Thrift interface, the following functions have been implemented. These functions represent either internal OmniSci functionality and/or functions that have other convenience methods defined around them.It is not expected that a user would need to use these functions under normal circumstances."
-},
-
-{
-    "location": "internal.html#OmniSci.get_license_claims",
-    "page": "Internal",
-    "title": "OmniSci.get_license_claims",
-    "category": "function",
-    "text": "get_license_claims(conn::OmniSciConnection)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#OmniSci.set_license_key",
-    "page": "Internal",
-    "title": "OmniSci.set_license_key",
-    "category": "function",
-    "text": "set_license_key(conn::OmniSciConnection, key::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "internal.html#Licensing-1",
-    "page": "Internal",
-    "title": "Licensing",
-    "category": "section",
-    "text": "get_license_claims\nset_license_key"
-},
-
-{
-    "location": "internal.html#Memory-Management-1",
-    "page": "Internal",
-    "title": "Memory Management",
-    "category": "section",
-    "text": "deallocate_df\nclear_gpu_memory\nclear_cpu_memory\nset_execution_mode\nget_memory"
-},
-
-{
-    "location": "internal.html#Misc-1",
-    "page": "Internal",
-    "title": "Misc",
-    "category": "section",
-    "text": "sql_validate\nimport_table_status\ninterrupt\ndetect_column_types\nrender_vega"
+    "text": "get_databases\nget_users\nget_roles\nget_hardware_info\nget_status\nget_all_roles_for_user\nget_db_objects_for_grantee\nget_db_object_privs"
 },
 
 {
