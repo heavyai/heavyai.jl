@@ -22,15 +22,11 @@ load_table_binary_arrow
 load_table_binary
 load_table_binary_columnar
 import_geo_table
-import_table
 ```
 
 ## Table Metadata
 ```@docs
-get_tables
-get_physical_tables
 get_tables_meta
-get_views
 get_table_details
 ```
 
@@ -38,12 +34,12 @@ get_table_details
 ```@docs
 create_dashboard
 share_dashboard
-get_dashboard
 unshare_dashboard
 get_dashboards
 get_dashboard_grantees
 replace_dashboard
 delete_dashboard
+render_vega
 ```
 
 ## Metadata
@@ -55,6 +51,5 @@ get_hardware_info
 get_status
 get_all_roles_for_user
 get_db_objects_for_grantee
-get_version
 get_db_object_privs
 ```

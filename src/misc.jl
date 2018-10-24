@@ -1,56 +1,3 @@
-######################################## internals
-mutable struct OmniSciConnection
-    session::TSessionId
-    c::MapDClient
-end
-
-#REPL display; show method for Juno uses inline tree display
-Base.show(io::IO, ::MIME"text/plain", m::OmniSciConnection) = print(io, "Connected to $(m.c.p.t.host):$(m.c.p.t.port)")
-
-function load_buffer(handle::Vector{UInt8}, size::Int)
-
-    # get key as UInt32, then get string value instead of len 1 array
-    shmkey = reinterpret(UInt32, handle)[1]
-
-    # use <sys/ipc.h> from C standard library to get shared memory id
-    # validate that shmget returns a valid id
-    shmid = ccall((:shmget, "libc"), Cint, (Cuint, Int32, Int32), shmkey, size, 0)
-    shmid == -1 ? error("Invalid shared memory key: $shmkey") : nothing
-
-    # with shmid, get shared memory start address
-    ptr = ccall((:shmat, "libc"), Ptr{Nothing}, (Cint, Ptr{Nothing}, Cint), shmid, C_NULL, 0)
-
-    # makes a zero-copy reference to memory, true gives ownership to julia
-    # validate that memory no longer needs to be released using MapD methods
-    return unsafe_wrap(Array, convert(Ptr{UInt8}, ptr), size)
-
-end
-
-#Find which field in the struct the data actually is
-function findvalues(x::OmniSci.TColumn)
-    for f in propertynames(x.data)
-        n = length(getfield(x.data, f))
-        if n > 0
-            return (f, eltype(getfield(x.data, f)), n)
-        end
-    end
-end
-
-#Take two vectors, values and nulls, make into a single vector
-function squashbitmask(x::TColumn)
-
-    #Get location of data from struct, eltype of vector and its length
-    valuescol, ltype, n = findvalues(x)
-
-    #Build/fill new vector based on missingness
-    A = Vector{Union{ltype, Missing}}(undef, n)
-    @simd for i = 1:n
-        @inbounds A[i] = ifelse(x.nulls[i], missing, getfield(x.data, valuescol)[i])
-    end
-
-    return A
-end
-
 ######################################## connection, admin
 
 """
@@ -133,72 +80,26 @@ get_hardware_info(conn::OmniSciConnection) =
     get_hardware_info(conn.c, conn.session)
 
 """
-    get_tables(conn::OmniSciConnection)
-
-Get tables and views for authenticated database specified in `connect()`.
-
-# Examples
-```julia-repl
-julia> tbl = get_tables(conn)
-4-element Array{String,1}:
- "mapd_states"
- "mapd_counties"
- "mapd_countries"
- "nyc_trees_2015_683k"
-```
-"""
-get_tables(conn::OmniSciConnection) =
-    get_tables(conn.c, conn.session)
-
-"""
-    get_physical_tables(conn::OmniSciConnection)
-
-Get tables for authenticated database specified in `connect()`.
-
-# Examples
-```julia-repl
-julia> ptbl = get_physical_tables(conn)
-4-element Array{String,1}:
- "mapd_states"
- "mapd_counties"
- "mapd_countries"
- "nyc_trees_2015_683k"
-```
-"""
-get_physical_tables(conn::OmniSciConnection) =
-    get_physical_tables(conn.c, conn.session)
-
-"""
-    get_views(conn::OmniSciConnection)
-
-Get views for authenticated database specified in `connect()`.
-
-# Examples
-```julia-repl
-julia> vw = get_views(conn)
-0-element Array{String,1}
-```
-"""
-get_views(conn::OmniSciConnection) =
-    get_views(conn.c, conn.session)
-
-"""
-    get_tables_meta(conn::OmniSciConnection)
+    get_tables_meta(conn::OmniSciConnection, as_df::Bool = true)
 
 Get metadata for tables in database specified in `connect()`.
 
 # Examples
 ```julia-repl
 julia> metad = get_tables_meta(conn)
-4-element Array{TTableMeta,1}:
- TTableMeta("mapd_states", 4, Int32[6, 16], false, false, 0, 4611686018427387904)
- TTableMeta("mapd_counties", 6, Int32[6, 16], false, false, 0, 4611686018427387904)
- TTableMeta("mapd_countries", 64, Int32[1, 5, 6, 16], false, false, 0, 4611686018427387904)
- TTableMeta("nyc_trees_2015_683k", 42, Int32[0, 3, 6, 9], false, false, 0, 4611686018427387904)
+5×6 DataFrame. Omitted printing of 1 columns
+│ Row │ is_replicated │ is_view │ max_rows            │ num_cols │ shard_count │
+│     │ Bool          │ Bool    │ Int64               │ Int64    │ Int64       │
+├─────┼───────────────┼─────────┼─────────────────────┼──────────┼─────────────┤
+│ 1   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │
+│ 2   │ false         │ false   │ 4611686018427387904 │ 6        │ 0           │
+│ 3   │ false         │ false   │ 4611686018427387904 │ 64       │ 0           │
+│ 4   │ false         │ false   │ 4611686018427387904 │ 56       │ 0           │
+│ 5   │ false         │ false   │ 4611686018427387904 │ 42       │ 0           │
 ```
 """
-get_tables_meta(conn::OmniSciConnection) =
-    get_tables_meta(conn.c, conn.session)
+get_tables_meta(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(get_tables_meta(conn.c, conn.session)) : get_tables_meta(conn.c, conn.session)
 
 """
     get_table_details(conn::OmniSciConnection, table_name::String)
@@ -215,55 +116,50 @@ get_table_details(conn::OmniSciConnection, table_name::String) =
     get_table_details(conn.c, conn.session, table_name)
 
 """
-    get_users(conn::OmniSciConnection)
+    get_users(conn::OmniSciConnection, as_df::Bool = true)
 
 Get list of users who have access to database specified in `connect()`.
 
 # Examples
 ```julia-repl
 julia> users = get_users(conn)
-1-element Array{String,1}:
- "mapd"
+1×1 DataFrame
+│ Row │ users  │
+│     │ String │
+├─────┼────────┤
+│ 1   │ mapd   │
 ```
 """
-get_users(conn::OmniSciConnection) =
-    get_users(conn.c, conn.session)
+get_users(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(Dict(:users => get_users(conn.c, conn.session))) : get_users(conn.c, conn.session)
 
 """
-    get_databases(conn::OmniSciConnection)
+    get_databases(conn::OmniSciConnection, as_df::Bool=true)
 
 Get list of databases.
 
 # Examples
 ```julia-repl
 julia> db = get_databases(conn)
-1-element Array{TDBInfo,1}:
- TDBInfo("mapd", "mapd")
+1×2 DataFrame
+│ Row │ db_name │ db_owner │
+│     │ String  │ String   │
+├─────┼─────────┼──────────┤
+│ 1   │ mapd    │ mapd     │
 ```
 """
-get_databases(conn::OmniSciConnection) =
-    get_databases(conn.c, conn.session)
-
-# """
-#     get_version(conn::OmniSciConnection)
-#
-# Get OmniSci software version.
-#
-# # Examples
-# ```julia-repl
-# julia> version = get_version(conn)
-# "4.2.0dev-20181003-0206b9f92c"
-# ```
-# """
-# get_version(conn::OmniSciConnection) =
-#     get_version(conn.c)
+get_databases(conn::OmniSciConnection, as_df::Bool=true) =
+    as_df ? DataFrame(get_databases(conn.c, conn.session)) : get_databases(conn.c, conn.session)
 
 """
     get_memory(conn::OmniSciConnection, memory_level::String)
 
 """
-get_memory(conn::OmniSciConnection, memory_level::String) =
+function get_memory(conn::OmniSciConnection, memory_level::String)
+
+    @assert memory_level in ["cpu", "gpu"] """memory level can be one of: \"cpu\", \"gpu\""""
     get_memory(conn.c, conn.session, memory_level)
+end
 
 """
     clear_cpu_memory(conn::OmniSciConnection)
@@ -324,15 +220,15 @@ deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_
 interrupt(conn::OmniSciConnection) =
     interrupt(conn.c, conn.session)
 
-# """
-#     sql_validate(conn::OmniSciConnection, query::String)
-#
-# """
-# sql_validate(conn::OmniSciConnection, query::String) =
-#     sql_validate(conn.c, conn.session, query)
-
 """
     set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum)
+
+Sets execution mode for server during session. This function returns `nothing`.
+
+# Examples
+```julia-repl
+julia> set_execution_mode(conn, TExecuteMode.CPU)
+```
 
 """
 set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum) =
@@ -347,19 +243,37 @@ render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compress
 
 ######################################## dashboard
 
-"""
-    get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
+# """
+#     get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
+#
+# """
+# get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)  =
+#     get_dashboard(conn.c, conn.session, Int32(dashboard_id))
 
 """
-get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)  =
-    get_dashboard(conn.c, conn.session, Int32(dashboard_id))
+    get_dashboards(conn::OmniSciConnection, as_df::Bool = true)
+
+Gets dashboards that user submitted during connect() can access.
+
+# Examples
+```julia-repl
+julia> getdbs = get_dashboards(conn)
+7×8 DataFrame. Omitted printing of 3 columns
+│ Row │ dashboard_id │ dashboard_metadata │ dashboard_name │ dashboard_owner │ dashboard_state │
+│     │ Int32        │ String             │ String         │ String          │ String          │
+├─────┼──────────────┼────────────────────┼────────────────┼─────────────────┼─────────────────┤
+│ 1   │ 9            │ metadata           │ 0vcAQEO1ZD     │ mapd            │                 │
+│ 2   │ 6            │ metadata           │ QI0JsthBsB     │ mapd            │                 │
+│ 3   │ 5            │ metadata           │ Srm72rCJHa     │ mapd            │                 │
+│ 4   │ 4            │ metadata           │ sO0XgMUOZH     │ mapd            │                 │
+│ 5   │ 1            │ metadata           │ testdash       │ mapd            │                 │
+│ 6   │ 2            │ metadata           │ testdash2      │ mapd            │                 │
+│ 7   │ 3            │ metadata           │ testdash3      │ mapd            │                 │
+```
 
 """
-    get_dashboards(conn::OmniSciConnection)
-
-"""
-get_dashboards(conn::OmniSciConnection) =
-    get_dashboards(conn.c, conn.session)
+get_dashboards(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(get_dashboards(conn.c, conn.session)) : get_dashboards(conn.c, conn.session)
 
 """
     create_dashboard(conn::OmniSciConnection, dashboard_name::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
@@ -436,12 +350,12 @@ load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_strea
 load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}) =
     load_table(conn.c, conn.session, table_name, rows)
 
-"""
-    detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
-
-"""
-detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams) =
-    detect_column_types(conn.c, conn.session, file_name, copy_params)
+# """
+#     detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
+#
+# """
+# detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams) =
+#     detect_column_types(conn.c, conn.session, file_name, copy_params)
 
 """
     create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
@@ -450,12 +364,12 @@ detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCo
 create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
     create_table(conn.c, conn.session, table_name, row_desc, table_type.value)
 
-"""
-    import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
-
-"""
-import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams) =
-    import_table(conn.c, conn.session, table_name, file_name, copy_params)
+# """
+#     import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
+#
+# """
+# import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams) =
+#     import_table(conn.c, conn.session, table_name, file_name, copy_params)
 
 """
     import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
@@ -464,21 +378,21 @@ import_table(conn::OmniSciConnection, table_name::String, file_name::String, cop
 import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor) =
     import_geo_table(conn.c, conn.session, table_name, file_name, copy_params, row_desc)
 
-"""
-    import_table_status(conn::OmniSciConnection, import_id::String)
-
-"""
-import_table_status(conn::OmniSciConnection, import_id::String) =
-    import_table_status(conn.c, conn.session, import_id)
+# """
+#     import_table_status(conn::OmniSciConnection, import_id::String)
+#
+# """
+# import_table_status(conn::OmniSciConnection, import_id::String) =
+#     import_table_status(conn.c, conn.session, import_id)
 
 ######################################## object privileges
 
 """
-    get_roles(conn::OmniSciConnection)
+    get_roles(conn::OmniSciConnection, as_df::Bool = true)
 
 """
-get_roles(conn::OmniSciConnection) =
-    get_dashboards(conn.c, conn.session)
+get_roles(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(Dict(:roles => get_roles(conn.c, conn.session))) : get_roles(conn.c, conn.session)
 
 """
     get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)
