@@ -22,7 +22,6 @@ load_table_binary_arrow
 load_table_binary
 load_table_binary_columnar
 import_geo_table
-import_table
 ```
 
 ## Table Metadata

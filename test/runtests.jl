@@ -59,8 +59,7 @@ glc = OmniSci.get_license_claims(conn)
 @test typeof(glc) == OmniSci.TLicenseInfo
 
 #TODO: what are the acceptable values of the second argument? seems like anything works
-#Add valid values as assertions inside method
-#can be "gpu" or "cpu"
+#Add valid values as assertions inside method: can be "gpu" or "cpu"
 mem = OmniSci.get_memory(conn, "cpu")
 @test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
 
@@ -102,7 +101,7 @@ ddash = delete_dashboard(conn, cdash)
 
 #get roles assigned to user
 sql_execute(conn, "create role testuser") #TODO: write convenience method when result unlikely to return a result instead of empty dataframe
-roleuser = get_all_roles_for_user(conn, "mapd")
+roleuser = get_all_roles_for_user(conn, "mapd") #TODO: tests fail here
 @test typeof(roleuser) == Vector{String}
 
 gobj = get_db_objects_for_grantee(conn, "testuser")
