@@ -101,7 +101,7 @@ ddash = delete_dashboard(conn, cdash)
 
 #get roles assigned to user
 sql_execute(conn, "create role testuser") #TODO: write convenience method when result unlikely to return a result instead of empty dataframe
-sql_execute(conn, "create user mapd2")
+sql_execute(conn, "create user mapd2 (password = 'OmniSciRocks!', is_super = 'true')")
 sql_execute(conn, "grant testuser to mapd2")
 roleuser = get_all_roles_for_user(conn, "mapd2") #TODO: tests fail here
 @test typeof(roleuser) == Vector{String}
