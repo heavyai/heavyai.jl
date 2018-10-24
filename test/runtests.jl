@@ -60,17 +60,15 @@ glc = OmniSci.get_license_claims(conn)
 
 #TODO: what are the acceptable values of the second argument? seems like anything works
 #Add valid values as assertions inside method
+#can be "gpu" or "cpu"
 mem = OmniSci.get_memory(conn, "cpu")
 @test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
 
-#not exported
+#not exported, needed for IPC, not for end users
 #OmniSci.deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_id::Int)
 
 #not exported
 #OmniSci.interrupt(conn::OmniSciConnection)
-
-
-
 
 
 
@@ -112,35 +110,29 @@ gobj = get_db_objects_for_grantee(conn, "testuser")
 
 #get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
 
+#load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})
 #load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})
 
+#Thrift arrays
 #load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})
 
+#Long-term, hopefully just this
 #load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
-
-#load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})
-
-#import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
 
 #sharedash = share_dashboard(conn, cdash, [""], [""], OmniSci.TDashboardPermissions(false))
 
 #unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
-
 ######################################## Need validation of purpose of methods
 
-#Is this method right? Why is it returning TDashboard?
+#Method incorrect, need to validate client code
+#Randy might have jacked this up
 gr = get_roles(conn)
-@test typeof(gr) == Vector{OmniSci.TDashboard}
-
-#Is this a front-end method or mapdql? Does this make sense from a client like this?
-#import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
-
-#Is this an internal/front-end/mapdql method?
-#import_table_status(conn::OmniSciConnection, import_id::String)
+@test typeof(gr) == Vector{String}
 
 #Is this internal/front-end/mapdql method?
-#detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
-
-#Is this internal/front-end/mapdql method?
+#Probably useful to implement
 #create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
+
+#Probably don't need, could follow up with Simon
+#import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)

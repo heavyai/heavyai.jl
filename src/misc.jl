@@ -347,12 +347,12 @@ load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_strea
 load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}) =
     load_table(conn.c, conn.session, table_name, rows)
 
-"""
-    detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
-
-"""
-detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams) =
-    detect_column_types(conn.c, conn.session, file_name, copy_params)
+# """
+#     detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
+#
+# """
+# detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams) =
+#     detect_column_types(conn.c, conn.session, file_name, copy_params)
 
 """
     create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
@@ -361,12 +361,12 @@ detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCo
 create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
     create_table(conn.c, conn.session, table_name, row_desc, table_type.value)
 
-"""
-    import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
-
-"""
-import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams) =
-    import_table(conn.c, conn.session, table_name, file_name, copy_params)
+# """
+#     import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
+#
+# """
+# import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams) =
+#     import_table(conn.c, conn.session, table_name, file_name, copy_params)
 
 """
     import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
@@ -375,12 +375,12 @@ import_table(conn::OmniSciConnection, table_name::String, file_name::String, cop
 import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor) =
     import_geo_table(conn.c, conn.session, table_name, file_name, copy_params, row_desc)
 
-"""
-    import_table_status(conn::OmniSciConnection, import_id::String)
-
-"""
-import_table_status(conn::OmniSciConnection, import_id::String) =
-    import_table_status(conn.c, conn.session, import_id)
+# """
+#     import_table_status(conn::OmniSciConnection, import_id::String)
+#
+# """
+# import_table_status(conn::OmniSciConnection, import_id::String) =
+#     import_table_status(conn.c, conn.session, import_id)
 
 ######################################## object privileges
 
@@ -389,7 +389,7 @@ import_table_status(conn::OmniSciConnection, import_id::String) =
 
 """
 get_roles(conn::OmniSciConnection) =
-    get_dashboards(conn.c, conn.session)
+    get_roles(conn.c, conn.session)
 
 """
     get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)

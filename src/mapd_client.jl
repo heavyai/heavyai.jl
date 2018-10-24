@@ -1152,28 +1152,28 @@ function load_table(c::MapDClient, session::TSessionId, table_name::String, rows
   nothing
 end # function load_table
 
-# Client callable method for detect_column_types
-function detect_column_types(c::MapDClient, session::TSessionId, file_name::String, copy_params::TCopyParams)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "detect_column_types", Thrift.MessageType.CALL, c.seqid)
-  inp = detect_column_types_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :file_name, file_name)
-  Thrift.set_field!(inp, :copy_params, copy_params)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, detect_column_types_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function detect_column_types
+# # Client callable method for detect_column_types
+# function detect_column_types(c::MapDClient, session::TSessionId, file_name::String, copy_params::TCopyParams)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "detect_column_types", Thrift.MessageType.CALL, c.seqid)
+#   inp = detect_column_types_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.set_field!(inp, :file_name, file_name)
+#   Thrift.set_field!(inp, :copy_params, copy_params)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, detect_column_types_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function detect_column_types
 
 # Client callable method for create_table
 function create_table(c::MapDClient, session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32, create_params::TCreateParams)
@@ -1199,28 +1199,28 @@ function create_table(c::MapDClient, session::TSessionId, table_name::String, ro
   nothing
 end # function create_table
 
-# Client callable method for import_table
-function import_table(c::MapDClient, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "import_table", Thrift.MessageType.CALL, c.seqid)
-  inp = import_table_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :table_name, table_name)
-  Thrift.set_field!(inp, :file_name, file_name)
-  Thrift.set_field!(inp, :copy_params, copy_params)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, import_table_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function import_table
+# # Client callable method for import_table
+# function import_table(c::MapDClient, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "import_table", Thrift.MessageType.CALL, c.seqid)
+#   inp = import_table_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.set_field!(inp, :table_name, table_name)
+#   Thrift.set_field!(inp, :file_name, file_name)
+#   Thrift.set_field!(inp, :copy_params, copy_params)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, import_table_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   nothing
+# end # function import_table
 
 # Client callable method for import_geo_table
 function import_geo_table(c::MapDClient, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
@@ -1246,27 +1246,27 @@ function import_geo_table(c::MapDClient, session::TSessionId, table_name::String
   nothing
 end # function import_geo_table
 
-# Client callable method for import_table_status
-function import_table_status(c::MapDClient, session::TSessionId, import_id::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "import_table_status", Thrift.MessageType.CALL, c.seqid)
-  inp = import_table_status_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :import_id, import_id)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, import_table_status_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function import_table_status
+# # Client callable method for import_table_status
+# function import_table_status(c::MapDClient, session::TSessionId, import_id::String)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "import_table_status", Thrift.MessageType.CALL, c.seqid)
+#   inp = import_table_status_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.set_field!(inp, :import_id, import_id)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, import_table_status_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function import_table_status
 
 # Client callable method for get_first_geo_file_in_archive
 function get_first_geo_file_in_archive(c::MapDClient, session::TSessionId, archive_path::String, copy_params::TCopyParams)

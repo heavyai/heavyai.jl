@@ -26,7 +26,6 @@ DataFrame(x::TTableMeta) = DataFrame(Dict(:table_name => x.table_name,
                                           )
                                     )
 
-
 DataFrame(x::TDashboard) = DataFrame(Dict(:dashboard_name => x.dashboard_name,
                                           :dashboard_state => x.dashboard_state,
                                           :image_hash => x.image_hash,

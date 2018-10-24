@@ -24,7 +24,5 @@ get_memory
 
 ```@docs
 sql_validate
-import_table_status
 interrupt
-detect_column_types
 ```

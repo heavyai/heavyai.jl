@@ -52,6 +52,5 @@ get_hardware_info
 get_status
 get_all_roles_for_user
 get_db_objects_for_grantee
-get_version
 get_db_object_privs
 ```
