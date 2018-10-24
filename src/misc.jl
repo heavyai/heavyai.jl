@@ -155,8 +155,11 @@ get_databases(conn::OmniSciConnection, as_df::Bool=true) =
     get_memory(conn::OmniSciConnection, memory_level::String)
 
 """
-get_memory(conn::OmniSciConnection, memory_level::String) =
+function get_memory(conn::OmniSciConnection, memory_level::String)
+
+    @assert memory_level in ["cpu", "gpu"] """memory level can be one of: \"cpu\", \"gpu\""""
     get_memory(conn.c, conn.session, memory_level)
+end
 
 """
     clear_cpu_memory(conn::OmniSciConnection)
@@ -385,11 +388,11 @@ import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String,
 ######################################## object privileges
 
 """
-    get_roles(conn::OmniSciConnection)
+    get_roles(conn::OmniSciConnection, as_df::Bool = true)
 
 """
-get_roles(conn::OmniSciConnection) =
-    get_roles(conn.c, conn.session)
+get_roles(conn::OmniSciConnection, as_df::Bool = true) =
+    as_df ? DataFrame(Dict(:roles => get_roles(conn.c, conn.session))) : get_roles(conn.c, conn.session)
 
 """
     get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)

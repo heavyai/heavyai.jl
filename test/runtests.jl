@@ -47,6 +47,9 @@ cdash = create_dashboard(conn, randstring(10), "state", "image", "metadata")
 getdbs = get_dashboards(conn)
 @test typeof(getdbs) == DataFrame
 
+gr = get_roles(conn)
+@test typeof(gr) == DataFrame
+
 ######################################## not exported (essentially, OmniSci internal)
 
 clear_cpu = OmniSci.clear_cpu_memory(conn)
@@ -57,11 +60,6 @@ execmode = OmniSci.set_execution_mode(conn, TExecuteMode.CPU)
 
 glc = OmniSci.get_license_claims(conn)
 @test typeof(glc) == OmniSci.TLicenseInfo
-
-#TODO: what are the acceptable values of the second argument? seems like anything works
-#Add valid values as assertions inside method: can be "gpu" or "cpu"
-mem = OmniSci.get_memory(conn, "cpu")
-@test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
 
 #not exported, needed for IPC, not for end users
 #OmniSci.deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_id::Int)
@@ -80,7 +78,9 @@ mem = OmniSci.get_memory(conn, "cpu")
 tbl_details = get_table_details(conn, "omnisci_counties")
 @test typeof(tbl_details) == OmniSci.TTableDetails
 
-#render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
+#TODO: kw for dataframe
+mem = OmniSci.get_memory(conn, "cpu")
+@test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
@@ -107,8 +107,8 @@ roleuser = get_all_roles_for_user(conn, "mapd") #TODO: tests fail here
 gobj = get_db_objects_for_grantee(conn, "testuser")
 @test typeof(gobj) == Vector{OmniSci.TDBObject}
 
+#render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
 #get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
-
 #load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})
 #load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})
 
@@ -122,16 +122,5 @@ gobj = get_db_objects_for_grantee(conn, "testuser")
 
 #unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
-######################################## Need validation of purpose of methods
-
-#Method incorrect, need to validate client code
-#Randy might have jacked this up
-gr = get_roles(conn)
-@test typeof(gr) == Vector{String}
-
-#Is this internal/front-end/mapdql method?
-#Probably useful to implement
+#Probably useful to implement, can take a dataframe and infer its create statement
 #create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
-
-#Probably don't need, could follow up with Simon
-#import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
