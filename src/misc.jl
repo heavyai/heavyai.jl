@@ -102,7 +102,7 @@ get_tables_meta(conn::OmniSciConnection, as_df::Bool = true) =
     as_df ? DataFrame(get_tables_meta(conn.c, conn.session)) : get_tables_meta(conn.c, conn.session)
 
 """
-    get_table_details(conn::OmniSciConnection, table_name::String)
+    get_table_details(conn::OmniSciConnection, table_name::String, as_df::Bool = true)
 
 Get table details such as column names and types.
 
@@ -112,8 +112,8 @@ julia> tbl_detail = get_table_details(conn, "mapd_states")
 TTableDetails(TColumnType[TColumnType("id", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, "", false, false), TColumnType("abbr", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, "", false, false), TColumnType("name", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, "", false, false), TColumnType("mapd_geo", TTypeInfo(16, 6, true, false, 23, 4326, 32, -1), false, "", false, false)], 32000000, 2097152, 4611686018427387904, "", 0, "[]", false, 0)
 ```
 """
-get_table_details(conn::OmniSciConnection, table_name::String) =
-    get_table_details(conn.c, conn.session, table_name)
+get_table_details(conn::OmniSciConnection, table_name::String, as_df::Bool = true) =
+    as_df ? DataFrame(get_table_details(conn.c, conn.session, table_name)) : get_table_details(conn.c, conn.session, table_name)
 
 """
     get_users(conn::OmniSciConnection, as_df::Bool = true)
@@ -411,12 +411,12 @@ get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)
     get_db_object_privs(conn.c, conn.session, objectName, Int32(type_))
 
 """
-    get_all_roles_for_user(conn::OmniSciConnection, userName::String)
+    get_all_roles_for_user(conn::OmniSciConnection, userName::String, as_df::Bool = true)
 
 
 """
-get_all_roles_for_user(conn::OmniSciConnection, userName::String) =
-    get_all_roles_for_user(conn.c, conn.session, userName)
+get_all_roles_for_user(conn::OmniSciConnection, userName::String, as_df::Bool = true) =
+    as_df ? DataFrame(Dict("roles" => get_all_roles_for_user(conn.c, conn.session, userName))) : get_all_roles_for_user(conn.c, conn.session, userName)
 
 ######################################## licensing
 

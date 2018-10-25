@@ -50,6 +50,25 @@ getdbs = get_dashboards(conn)
 gr = get_roles(conn)
 @test typeof(gr) == DataFrame
 
+replacedash = replace_dashboard(conn, cdash, "", "mapd", "newstate", "newhash", "newmetadata")
+@test typeof(replacedash) == Nothing
+
+getdashgrant = get_dashboard_grantees(conn, cdash)
+@test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
+
+ddash = delete_dashboard(conn, cdash)
+@test typeof(ddash) == Nothing
+
+tbl_details = get_table_details(conn, "omnisci_counties")
+@test typeof(tbl_details) == DataFrame
+
+#get roles assigned to user
+sql_execute(conn, "create role testuser") #TODO: write convenience method when result unlikely to return a result instead of empty dataframe
+sql_execute(conn, "create user mapd2 (password = 'OmniSciRocks!', is_super = 'true')")
+sql_execute(conn, "grant testuser to mapd2")
+roleuser = get_all_roles_for_user(conn, "mapd2")
+@test typeof(roleuser) == DataFrame
+
 ######################################## not exported (essentially, OmniSci internal)
 
 clear_cpu = OmniSci.clear_cpu_memory(conn)
@@ -61,10 +80,13 @@ execmode = OmniSci.set_execution_mode(conn, TExecuteMode.CPU)
 glc = OmniSci.get_license_claims(conn)
 @test typeof(glc) == OmniSci.TLicenseInfo
 
+mem = OmniSci.get_memory(conn, "cpu")
+@test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
+
 #not exported, needed for IPC, not for end users
 #OmniSci.deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_id::Int)
 
-#not exported
+#not exported, needs to be hooked up in OmniSci core
 #OmniSci.interrupt(conn::OmniSciConnection)
 
 
@@ -73,41 +95,16 @@ glc = OmniSci.get_license_claims(conn)
 
 ######################################## Need work
 
-#TODO: Single table: dataframe kw
-#What to do with shard info and other singletons, given column descriptions should be rows
-tbl_details = get_table_details(conn, "omnisci_counties")
-@test typeof(tbl_details) == OmniSci.TTableDetails
-
-#TODO: kw for dataframe
-mem = OmniSci.get_memory(conn, "cpu")
-@test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
-
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
 @test typeof(hware) == OmniSci.TClusterHardwareInfo
 
+gobj = get_db_objects_for_grantee(conn, "testuser")
+@test typeof(gobj) == Vector{OmniSci.TDBObject}
+
 #TODO: Figure out IPC
 cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
 @test typeof(cpu_arrow) == OmniSci.TDataFrame
-
-getdashgrant = get_dashboard_grantees(conn, cdash)
-@test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
-
-replacedash = replace_dashboard(conn, cdash, "", "mapd", "newstate", "newhash", "newmetadata")
-@test typeof(replacedash) == Nothing
-
-ddash = delete_dashboard(conn, cdash)
-@test typeof(ddash) == Nothing
-
-#get roles assigned to user
-sql_execute(conn, "create role testuser") #TODO: write convenience method when result unlikely to return a result instead of empty dataframe
-sql_execute(conn, "create user mapd2 (password = 'OmniSciRocks!', is_super = 'true')")
-sql_execute(conn, "grant testuser to mapd2")
-roleuser = get_all_roles_for_user(conn, "mapd2") #TODO: tests fail here
-@test typeof(roleuser) == Vector{String}
-
-gobj = get_db_objects_for_grantee(conn, "testuser")
-@test typeof(gobj) == Vector{OmniSci.TDBObject}
 
 #render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
 #get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
