@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.get_table_details",
     "category": "function",
-    "text": "get_table_details(conn::OmniSciConnection, table_name::String)\n\nGet table details such as column names and types.\n\nExamples\n\njulia> tbl_detail = get_table_details(conn, \"mapd_states\")\nTTableDetails(TColumnType[TColumnType(\"id\", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, \"\", false, false), TColumnType(\"abbr\", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, \"\", false, false), TColumnType(\"name\", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, \"\", false, false), TColumnType(\"mapd_geo\", TTypeInfo(16, 6, true, false, 23, 4326, 32, -1), false, \"\", false, false)], 32000000, 2097152, 4611686018427387904, \"\", 0, \"[]\", false, 0)\n\n\n\n\n\n"
+    "text": "get_table_details(conn::OmniSciConnection, table_name::String, as_df::Bool = true)\n\nGet table details such as column names and types.\n\nExamples\n\njulia> tbl_detail = get_table_details(conn, \"mapd_states\")\nTTableDetails(TColumnType[TColumnType(\"id\", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, \"\", false, false), TColumnType(\"abbr\", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, \"\", false, false), TColumnType(\"name\", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, \"\", false, false), TColumnType(\"mapd_geo\", TTypeInfo(16, 6, true, false, 23, 4326, 32, -1), false, \"\", false, false)], 32000000, 2097152, 4611686018427387904, \"\", 0, \"[]\", false, 0)\n\n\n\n\n\n"
 },
 
 {
@@ -293,7 +293,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.get_all_roles_for_user",
     "category": "function",
-    "text": "get_all_roles_for_user(conn::OmniSciConnection, userName::String)\n\n\n\n\n\n"
+    "text": "get_all_roles_for_user(conn::OmniSciConnection, userName::String, as_df::Bool = true)\n\n\n\n\n\n"
 },
 
 {
