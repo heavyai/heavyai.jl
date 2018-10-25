@@ -37,5 +37,40 @@ DataFrame(x::TDashboard) = DataFrame(Dict(:dashboard_name => x.dashboard_name,
                                           )
                                     )
 
+#This one digs into col_type, so slightly different than others that might be generated
+DataFrame(x::TColumnType) = DataFrame(Dict(:col_name => x.col_name,
+                                           :col_type => x.col_type._type,
+                                           :encoding => x.col_type.encoding,
+                                           :nullable => x.col_type.nullable,
+                                           :is_array => x.col_type.is_array,
+                                           :precision => x.col_type.precision,
+                                           :scale => x.col_type.scale,
+                                           :comp_param => x.col_type.comp_param,
+                                           :size => x.col_type.size,
+                                           :is_reserved_keyword => x.is_reserved_keyword,
+                                           :src_name => x.src_name,
+                                           :is_system => x.is_system,
+                                           :is_physical => x.is_physical
+                                          )
+                                      )
+
+#This is slightly awkward, in that the added columns make it seem like these are row-level info
+#In reality, these fields are table-level
+#TODO: think about how to better represent
+function DataFrame(x::TTableDetails)
+
+    tmp = DataFrame(x.row_desc)
+    tmp[:fragment_size] = x.fragment_size
+    tmp[:page_size] = x.page_size
+    tmp[:max_rows] = x.max_rows
+    tmp[:view_sql] = x.view_sql
+    tmp[:shard_count] = x.shard_count
+    tmp[:key_metainfo] = x.key_metainfo
+    tmp[:is_temporary] = x.is_temporary
+    tmp[:partition_detail] = x.partition_detail
+
+    return tmp
+end
+
 #After individual types have DataFrame methods written, this method concatenates
-DataFrame(x::Vector{<:Union{TDBInfo, TTableMeta, TDashboard}})  = vcat(DataFrame.(x)...)
+DataFrame(x::Vector{<:Union{TDBInfo, TTableMeta, TDashboard, TColumnType}})  = vcat(DataFrame.(x)...)
