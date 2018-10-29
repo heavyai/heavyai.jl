@@ -77,7 +77,7 @@ function Thrift.meta(t::Type{TColumnData})
     ThriftMeta(t, [
         ThriftMetaAttribs(1, :int_col, 15, true, Any[], ThriftMeta[])
         ThriftMetaAttribs(2, :real_col,15, true, Any[], ThriftMeta[])
-        ThriftMetaAttribs(3, :str_col, 15, true, Any[], ThriftMeta[])                                           
+        ThriftMetaAttribs(3, :str_col, 15, true, Any[], ThriftMeta[])
         ThriftMetaAttribs(4, :arr_col, 15, true, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TColumn")))])
     ])
 end
@@ -90,15 +90,15 @@ end # mutable struct TStringRow
 const TRowDescriptor = Vector{TColumnType}
 const TTableDescriptor = Dict{String,TColumnType}
 
-mutable struct TStepResult <: Thrift.TMsg
-  serialized_rows::String
-  execution_finished::Bool
-  merge_type::Int32
-  sharded::Bool
-  row_desc::TRowDescriptor
-  node_id::Int32
-  TStepResult() = (o=new(); fillunset(o); o)
-end # mutable struct TStepResult
+# mutable struct TStepResult <: Thrift.TMsg
+#   serialized_rows::String
+#   execution_finished::Bool
+#   merge_type::Int32
+#   sharded::Bool
+#   row_desc::TRowDescriptor
+#   node_id::Int32
+#   TStepResult() = (o=new(); fillunset(o); o)
+# end # mutable struct TStepResult
 
 mutable struct TRowSet <: Thrift.TMsg
   row_desc::TRowDescriptor
@@ -171,13 +171,13 @@ mutable struct TDetectResult <: Thrift.TMsg
   TDetectResult() = (o=new(); fillunset(o); o)
 end # mutable struct TDetectResult
 
-mutable struct TImportStatus <: Thrift.TMsg
-  elapsed::Int64
-  rows_completed::Int64
-  rows_estimated::Int64
-  rows_rejected::Int64
-  TImportStatus() = (o=new(); fillunset(o); o)
-end # mutable struct TImportStatus
+# mutable struct TImportStatus <: Thrift.TMsg
+#   elapsed::Int64
+#   rows_completed::Int64
+#   rows_estimated::Int64
+#   rows_rejected::Int64
+#   TImportStatus() = (o=new(); fillunset(o); o)
+# end # mutable struct TImportStatus
 
 mutable struct TFrontendView <: Thrift.TMsg
   view_name::String
@@ -216,16 +216,16 @@ mutable struct TPixel <: Thrift.TMsg
   y::Int64
   TPixel() = (o=new(); fillunset(o); o)
 end # mutable struct TPixel
-
-mutable struct TPixelTableRowResult <: Thrift.TMsg
-  pixel::TPixel
-  vega_table_name::String
-  table_id::Int64
-  row_id::Int64
-  row_set::TRowSet
-  nonce::String
-  TPixelTableRowResult() = (o=new(); fillunset(o); o)
-end # mutable struct TPixelTableRowResult
+#
+# mutable struct TPixelTableRowResult <: Thrift.TMsg
+#   pixel::TPixel
+#   vega_table_name::String
+#   table_id::Int64
+#   row_id::Int64
+#   row_set::TRowSet
+#   nonce::String
+#   TPixelTableRowResult() = (o=new(); fillunset(o); o)
+# end # mutable struct TPixelTableRowResult
 
 mutable struct TRenderResult <: Thrift.TMsg
   image::Vector{UInt8}
@@ -564,33 +564,33 @@ meta(t::Type{get_tables_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict
 
 # types encapsulating arguments and return values of method get_physical_tables
 
-mutable struct get_physical_tables_args <: Thrift.TMsg
-  session::TSessionId
-  get_physical_tables_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_physical_tables_args
-
-mutable struct get_physical_tables_result
-  success::Vector{String}
-  e::TMapDException
-  get_physical_tables_result() = (o=new(); fillunset(o); o)
-  get_physical_tables_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_physical_tables_result
-meta(t::Type{get_physical_tables_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_physical_tables_args <: Thrift.TMsg
+#   session::TSessionId
+#   get_physical_tables_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_physical_tables_args
+#
+# mutable struct get_physical_tables_result
+#   success::Vector{String}
+#   e::TMapDException
+#   get_physical_tables_result() = (o=new(); fillunset(o); o)
+#   get_physical_tables_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_physical_tables_result
+# meta(t::Type{get_physical_tables_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_views
 
-mutable struct get_views_args <: Thrift.TMsg
-  session::TSessionId
-  get_views_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_views_args
-
-mutable struct get_views_result
-  success::Vector{String}
-  e::TMapDException
-  get_views_result() = (o=new(); fillunset(o); o)
-  get_views_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_views_result
-meta(t::Type{get_views_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_views_args <: Thrift.TMsg
+#   session::TSessionId
+#   get_views_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_views_args
+#
+# mutable struct get_views_result
+#   success::Vector{String}
+#   e::TMapDException
+#   get_views_result() = (o=new(); fillunset(o); o)
+#   get_views_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_views_result
+# meta(t::Type{get_views_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_tables_meta
 
@@ -625,19 +625,19 @@ meta(t::Type{get_table_details_result}) = meta(t, Symbol[:success, :e], Int[0, 1
 
 # types encapsulating arguments and return values of method get_internal_table_details
 
-mutable struct get_internal_table_details_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  get_internal_table_details_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_internal_table_details_args
-
-mutable struct get_internal_table_details_result
-  success::TTableDetails
-  e::TMapDException
-  get_internal_table_details_result() = (o=new(); fillunset(o); o)
-  get_internal_table_details_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_internal_table_details_result
-meta(t::Type{get_internal_table_details_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_internal_table_details_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   get_internal_table_details_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_internal_table_details_args
+#
+# mutable struct get_internal_table_details_result
+#   success::TTableDetails
+#   e::TMapDException
+#   get_internal_table_details_result() = (o=new(); fillunset(o); o)
+#   get_internal_table_details_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_internal_table_details_result
+# meta(t::Type{get_internal_table_details_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_users
 
@@ -671,57 +671,57 @@ meta(t::Type{get_databases_result}) = meta(t, Symbol[:success, :e], Int[0, 1], D
 
 # types encapsulating arguments and return values of method get_version
 
-mutable struct get_version_args <: Thrift.TMsg
-end # mutable struct get_version_args
-
-mutable struct get_version_result
-  success::String
-  e::TMapDException
-  get_version_result() = (o=new(); fillunset(o); o)
-  get_version_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_version_result
-meta(t::Type{get_version_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_version_args <: Thrift.TMsg
+# end # mutable struct get_version_args
+#
+# mutable struct get_version_result
+#   success::String
+#   e::TMapDException
+#   get_version_result() = (o=new(); fillunset(o); o)
+#   get_version_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_version_result
+# meta(t::Type{get_version_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method start_heap_profile
 
-mutable struct start_heap_profile_args <: Thrift.TMsg
-  session::TSessionId
-  start_heap_profile_args() = (o=new(); fillunset(o); o)
-end # mutable struct start_heap_profile_args
-
-mutable struct start_heap_profile_result
-  e::TMapDException
-  start_heap_profile_result() = (o=new(); fillunset(o); o)
-end # mutable struct start_heap_profile_result
-meta(t::Type{start_heap_profile_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct start_heap_profile_args <: Thrift.TMsg
+#   session::TSessionId
+#   start_heap_profile_args() = (o=new(); fillunset(o); o)
+# end # mutable struct start_heap_profile_args
+#
+# mutable struct start_heap_profile_result
+#   e::TMapDException
+#   start_heap_profile_result() = (o=new(); fillunset(o); o)
+# end # mutable struct start_heap_profile_result
+# meta(t::Type{start_heap_profile_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method stop_heap_profile
 
-mutable struct stop_heap_profile_args <: Thrift.TMsg
-  session::TSessionId
-  stop_heap_profile_args() = (o=new(); fillunset(o); o)
-end # mutable struct stop_heap_profile_args
-
-mutable struct stop_heap_profile_result
-  e::TMapDException
-  stop_heap_profile_result() = (o=new(); fillunset(o); o)
-end # mutable struct stop_heap_profile_result
-meta(t::Type{stop_heap_profile_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct stop_heap_profile_args <: Thrift.TMsg
+#   session::TSessionId
+#   stop_heap_profile_args() = (o=new(); fillunset(o); o)
+# end # mutable struct stop_heap_profile_args
+#
+# mutable struct stop_heap_profile_result
+#   e::TMapDException
+#   stop_heap_profile_result() = (o=new(); fillunset(o); o)
+# end # mutable struct stop_heap_profile_result
+# meta(t::Type{stop_heap_profile_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_heap_profile
 
-mutable struct get_heap_profile_args <: Thrift.TMsg
-  session::TSessionId
-  get_heap_profile_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_heap_profile_args
-
-mutable struct get_heap_profile_result
-  success::String
-  e::TMapDException
-  get_heap_profile_result() = (o=new(); fillunset(o); o)
-  get_heap_profile_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_heap_profile_result
-meta(t::Type{get_heap_profile_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_heap_profile_args <: Thrift.TMsg
+#   session::TSessionId
+#   get_heap_profile_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_heap_profile_args
+#
+# mutable struct get_heap_profile_result
+#   success::String
+#   e::TMapDException
+#   get_heap_profile_result() = (o=new(); fillunset(o); o)
+#   get_heap_profile_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_heap_profile_result
+# meta(t::Type{get_heap_profile_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_memory
 
@@ -767,65 +767,65 @@ meta(t::Type{clear_gpu_memory_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol
 
 # types encapsulating arguments and return values of method set_table_epoch
 
-mutable struct set_table_epoch_args <: Thrift.TMsg
-  session::TSessionId
-  db_id::Int32
-  table_id::Int32
-  new_epoch::Int32
-  set_table_epoch_args() = (o=new(); fillunset(o); o)
-end # mutable struct set_table_epoch_args
-
-mutable struct set_table_epoch_result
-  e::TMapDException
-  set_table_epoch_result() = (o=new(); fillunset(o); o)
-end # mutable struct set_table_epoch_result
-meta(t::Type{set_table_epoch_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct set_table_epoch_args <: Thrift.TMsg
+#   session::TSessionId
+#   db_id::Int32
+#   table_id::Int32
+#   new_epoch::Int32
+#   set_table_epoch_args() = (o=new(); fillunset(o); o)
+# end # mutable struct set_table_epoch_args
+#
+# mutable struct set_table_epoch_result
+#   e::TMapDException
+#   set_table_epoch_result() = (o=new(); fillunset(o); o)
+# end # mutable struct set_table_epoch_result
+# meta(t::Type{set_table_epoch_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method set_table_epoch_by_name
 
-mutable struct set_table_epoch_by_name_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  new_epoch::Int32
-  set_table_epoch_by_name_args() = (o=new(); fillunset(o); o)
-end # mutable struct set_table_epoch_by_name_args
-
-mutable struct set_table_epoch_by_name_result
-  e::TMapDException
-  set_table_epoch_by_name_result() = (o=new(); fillunset(o); o)
-end # mutable struct set_table_epoch_by_name_result
-meta(t::Type{set_table_epoch_by_name_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct set_table_epoch_by_name_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   new_epoch::Int32
+#   set_table_epoch_by_name_args() = (o=new(); fillunset(o); o)
+# end # mutable struct set_table_epoch_by_name_args
+#
+# mutable struct set_table_epoch_by_name_result
+#   e::TMapDException
+#   set_table_epoch_by_name_result() = (o=new(); fillunset(o); o)
+# end # mutable struct set_table_epoch_by_name_result
+# meta(t::Type{set_table_epoch_by_name_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_table_epoch
 
-mutable struct get_table_epoch_args <: Thrift.TMsg
-  session::TSessionId
-  db_id::Int32
-  table_id::Int32
-  get_table_epoch_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_table_epoch_args
-
-mutable struct get_table_epoch_result
-  success::Int32
-  get_table_epoch_result() = (o=new(); fillunset(o); o)
-  get_table_epoch_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_table_epoch_result
-meta(t::Type{get_table_epoch_result}) = meta(t, Symbol[:success], Int[0], Dict{Symbol,Any}())
+# mutable struct get_table_epoch_args <: Thrift.TMsg
+#   session::TSessionId
+#   db_id::Int32
+#   table_id::Int32
+#   get_table_epoch_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_table_epoch_args
+#
+# mutable struct get_table_epoch_result
+#   success::Int32
+#   get_table_epoch_result() = (o=new(); fillunset(o); o)
+#   get_table_epoch_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_table_epoch_result
+# meta(t::Type{get_table_epoch_result}) = meta(t, Symbol[:success], Int[0], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_table_epoch_by_name
 
-mutable struct get_table_epoch_by_name_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  get_table_epoch_by_name_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_table_epoch_by_name_args
-
-mutable struct get_table_epoch_by_name_result
-  success::Int32
-  get_table_epoch_by_name_result() = (o=new(); fillunset(o); o)
-  get_table_epoch_by_name_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_table_epoch_by_name_result
-meta(t::Type{get_table_epoch_by_name_result}) = meta(t, Symbol[:success], Int[0], Dict{Symbol,Any}())
+# mutable struct get_table_epoch_by_name_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   get_table_epoch_by_name_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_table_epoch_by_name_args
+#
+# mutable struct get_table_epoch_by_name_result
+#   success::Int32
+#   get_table_epoch_by_name_result() = (o=new(); fillunset(o); o)
+#   get_table_epoch_by_name_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_table_epoch_by_name_result
+# meta(t::Type{get_table_epoch_by_name_result}) = meta(t, Symbol[:success], Int[0], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method sql_execute
 
@@ -919,36 +919,36 @@ meta(t::Type{interrupt_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}()
 
 # types encapsulating arguments and return values of method sql_validate
 
-mutable struct sql_validate_args <: Thrift.TMsg
-  session::TSessionId
-  query::String
-  sql_validate_args() = (o=new(); fillunset(o); o)
-end # mutable struct sql_validate_args
-
-mutable struct sql_validate_result
-  success::TTableDescriptor
-  e::TMapDException
-  sql_validate_result() = (o=new(); fillunset(o); o)
-  sql_validate_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct sql_validate_result
-meta(t::Type{sql_validate_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct sql_validate_args <: Thrift.TMsg
+#   session::TSessionId
+#   query::String
+#   sql_validate_args() = (o=new(); fillunset(o); o)
+# end # mutable struct sql_validate_args
+#
+# mutable struct sql_validate_result
+#   success::TTableDescriptor
+#   e::TMapDException
+#   sql_validate_result() = (o=new(); fillunset(o); o)
+#   sql_validate_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct sql_validate_result
+# meta(t::Type{sql_validate_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_completion_hints
 
-mutable struct get_completion_hints_args <: Thrift.TMsg
-  session::TSessionId
-  sql::String
-  cursor::Int32
-  get_completion_hints_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_completion_hints_args
-
-mutable struct get_completion_hints_result
-  success::AbstractVector
-  e::TMapDException
-  get_completion_hints_result() = (o=new(); fillunset(o); o)
-  get_completion_hints_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_completion_hints_result
-meta(t::Type{get_completion_hints_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_completion_hints_args <: Thrift.TMsg
+#   session::TSessionId
+#   sql::String
+#   cursor::Int32
+#   get_completion_hints_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_completion_hints_args
+#
+# mutable struct get_completion_hints_result
+#   success::AbstractVector
+#   e::TMapDException
+#   get_completion_hints_result() = (o=new(); fillunset(o); o)
+#   get_completion_hints_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_completion_hints_result
+# meta(t::Type{get_completion_hints_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method set_execution_mode
 
@@ -985,24 +985,24 @@ meta(t::Type{render_vega_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dic
 
 # types encapsulating arguments and return values of method get_result_row_for_pixel
 
-mutable struct get_result_row_for_pixel_args <: Thrift.TMsg
-  session::TSessionId
-  widget_id::Int64
-  pixel::TPixel
-  table_col_names::Dict{String,Vector{String}}
-  column_format::Bool
-  pixelRadius::Int32
-  nonce::String
-  get_result_row_for_pixel_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_result_row_for_pixel_args
-
-mutable struct get_result_row_for_pixel_result
-  success::TPixelTableRowResult
-  e::TMapDException
-  get_result_row_for_pixel_result() = (o=new(); fillunset(o); o)
-  get_result_row_for_pixel_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_result_row_for_pixel_result
-meta(t::Type{get_result_row_for_pixel_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_result_row_for_pixel_args <: Thrift.TMsg
+#   session::TSessionId
+#   widget_id::Int64
+#   pixel::TPixel
+#   table_col_names::Dict{String,Vector{String}}
+#   column_format::Bool
+#   pixelRadius::Int32
+#   nonce::String
+#   get_result_row_for_pixel_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_result_row_for_pixel_args
+#
+# mutable struct get_result_row_for_pixel_result
+#   success::TPixelTableRowResult
+#   e::TMapDException
+#   get_result_row_for_pixel_result() = (o=new(); fillunset(o); o)
+#   get_result_row_for_pixel_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_result_row_for_pixel_result
+# meta(t::Type{get_result_row_for_pixel_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_frontend_view
 
@@ -1201,36 +1201,36 @@ meta(t::Type{get_dashboard_grantees_result}) = meta(t, Symbol[:success, :e], Int
 
 # types encapsulating arguments and return values of method get_link_view
 
-mutable struct get_link_view_args <: Thrift.TMsg
-  session::TSessionId
-  link::String
-  get_link_view_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_link_view_args
-
-mutable struct get_link_view_result
-  success::TFrontendView
-  e::TMapDException
-  get_link_view_result() = (o=new(); fillunset(o); o)
-  get_link_view_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_link_view_result
-meta(t::Type{get_link_view_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_link_view_args <: Thrift.TMsg
+#   session::TSessionId
+#   link::String
+#   get_link_view_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_link_view_args
+#
+# mutable struct get_link_view_result
+#   success::TFrontendView
+#   e::TMapDException
+#   get_link_view_result() = (o=new(); fillunset(o); o)
+#   get_link_view_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_link_view_result
+# meta(t::Type{get_link_view_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method create_link
 
-mutable struct create_link_args <: Thrift.TMsg
-  session::TSessionId
-  view_state::String
-  view_metadata::String
-  create_link_args() = (o=new(); fillunset(o); o)
-end # mutable struct create_link_args
-
-mutable struct create_link_result
-  success::String
-  e::TMapDException
-  create_link_result() = (o=new(); fillunset(o); o)
-  create_link_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct create_link_result
-meta(t::Type{create_link_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct create_link_args <: Thrift.TMsg
+#   session::TSessionId
+#   view_state::String
+#   view_metadata::String
+#   create_link_args() = (o=new(); fillunset(o); o)
+# end # mutable struct create_link_args
+#
+# mutable struct create_link_result
+#   success::String
+#   e::TMapDException
+#   create_link_result() = (o=new(); fillunset(o); o)
+#   create_link_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct create_link_result
+# meta(t::Type{create_link_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method load_table_binary
 
@@ -1294,20 +1294,20 @@ meta(t::Type{load_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}(
 
 # types encapsulating arguments and return values of method detect_column_types
 
-mutable struct detect_column_types_args <: Thrift.TMsg
-  session::TSessionId
-  file_name::String
-  copy_params::TCopyParams
-  detect_column_types_args() = (o=new(); fillunset(o); o)
-end # mutable struct detect_column_types_args
-
-mutable struct detect_column_types_result
-  success::TDetectResult
-  e::TMapDException
-  detect_column_types_result() = (o=new(); fillunset(o); o)
-  detect_column_types_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct detect_column_types_result
-meta(t::Type{detect_column_types_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct detect_column_types_args <: Thrift.TMsg
+#   session::TSessionId
+#   file_name::String
+#   copy_params::TCopyParams
+#   detect_column_types_args() = (o=new(); fillunset(o); o)
+# end # mutable struct detect_column_types_args
+#
+# mutable struct detect_column_types_result
+#   success::TDetectResult
+#   e::TMapDException
+#   detect_column_types_result() = (o=new(); fillunset(o); o)
+#   detect_column_types_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct detect_column_types_result
+# meta(t::Type{detect_column_types_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method create_table
 
@@ -1345,180 +1345,180 @@ meta(t::Type{import_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any
 
 # types encapsulating arguments and return values of method import_geo_table
 
-mutable struct import_geo_table_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  file_name::String
-  copy_params::TCopyParams
-  row_desc::TRowDescriptor
-  import_geo_table_args() = (o=new(); fillunset(o); o)
-end # mutable struct import_geo_table_args
-
-mutable struct import_geo_table_result
-  e::TMapDException
-  import_geo_table_result() = (o=new(); fillunset(o); o)
-end # mutable struct import_geo_table_result
-meta(t::Type{import_geo_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct import_geo_table_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   file_name::String
+#   copy_params::TCopyParams
+#   row_desc::TRowDescriptor
+#   import_geo_table_args() = (o=new(); fillunset(o); o)
+# end # mutable struct import_geo_table_args
+#
+# mutable struct import_geo_table_result
+#   e::TMapDException
+#   import_geo_table_result() = (o=new(); fillunset(o); o)
+# end # mutable struct import_geo_table_result
+# meta(t::Type{import_geo_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method import_table_status
 
-mutable struct import_table_status_args <: Thrift.TMsg
-  session::TSessionId
-  import_id::String
-  import_table_status_args() = (o=new(); fillunset(o); o)
-end # mutable struct import_table_status_args
-
-mutable struct import_table_status_result
-  success::TImportStatus
-  e::TMapDException
-  import_table_status_result() = (o=new(); fillunset(o); o)
-  import_table_status_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct import_table_status_result
-meta(t::Type{import_table_status_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct import_table_status_args <: Thrift.TMsg
+#   session::TSessionId
+#   import_id::String
+#   import_table_status_args() = (o=new(); fillunset(o); o)
+# end # mutable struct import_table_status_args
+#
+# mutable struct import_table_status_result
+#   success::TImportStatus
+#   e::TMapDException
+#   import_table_status_result() = (o=new(); fillunset(o); o)
+#   import_table_status_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct import_table_status_result
+# meta(t::Type{import_table_status_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_first_geo_file_in_archive
 
-mutable struct get_first_geo_file_in_archive_args <: Thrift.TMsg
-  session::TSessionId
-  archive_path::String
-  copy_params::TCopyParams
-  get_first_geo_file_in_archive_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_first_geo_file_in_archive_args
-
-mutable struct get_first_geo_file_in_archive_result
-  success::String
-  e::TMapDException
-  get_first_geo_file_in_archive_result() = (o=new(); fillunset(o); o)
-  get_first_geo_file_in_archive_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_first_geo_file_in_archive_result
-meta(t::Type{get_first_geo_file_in_archive_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_first_geo_file_in_archive_args <: Thrift.TMsg
+#   session::TSessionId
+#   archive_path::String
+#   copy_params::TCopyParams
+#   get_first_geo_file_in_archive_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_first_geo_file_in_archive_args
+#
+# mutable struct get_first_geo_file_in_archive_result
+#   success::String
+#   e::TMapDException
+#   get_first_geo_file_in_archive_result() = (o=new(); fillunset(o); o)
+#   get_first_geo_file_in_archive_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_first_geo_file_in_archive_result
+# meta(t::Type{get_first_geo_file_in_archive_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_all_files_in_archive
 
-mutable struct get_all_files_in_archive_args <: Thrift.TMsg
-  session::TSessionId
-  archive_path::String
-  copy_params::TCopyParams
-  get_all_files_in_archive_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_all_files_in_archive_args
-
-mutable struct get_all_files_in_archive_result
-  success::Vector{String}
-  e::TMapDException
-  get_all_files_in_archive_result() = (o=new(); fillunset(o); o)
-  get_all_files_in_archive_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_all_files_in_archive_result
-meta(t::Type{get_all_files_in_archive_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_all_files_in_archive_args <: Thrift.TMsg
+#   session::TSessionId
+#   archive_path::String
+#   copy_params::TCopyParams
+#   get_all_files_in_archive_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_all_files_in_archive_args
+#
+# mutable struct get_all_files_in_archive_result
+#   success::Vector{String}
+#   e::TMapDException
+#   get_all_files_in_archive_result() = (o=new(); fillunset(o); o)
+#   get_all_files_in_archive_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_all_files_in_archive_result
+# meta(t::Type{get_all_files_in_archive_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method start_query
 
-mutable struct start_query_args <: Thrift.TMsg
-  session::TSessionId
-  query_ra::String
-  just_explain::Bool
-  start_query_args() = (o=new(); fillunset(o); o)
-end # mutable struct start_query_args
-
-mutable struct start_query_result
-  success::TPendingQuery
-  e::TMapDException
-  start_query_result() = (o=new(); fillunset(o); o)
-  start_query_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct start_query_result
-meta(t::Type{start_query_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct start_query_args <: Thrift.TMsg
+#   session::TSessionId
+#   query_ra::String
+#   just_explain::Bool
+#   start_query_args() = (o=new(); fillunset(o); o)
+# end # mutable struct start_query_args
+#
+# mutable struct start_query_result
+#   success::TPendingQuery
+#   e::TMapDException
+#   start_query_result() = (o=new(); fillunset(o); o)
+#   start_query_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct start_query_result
+# meta(t::Type{start_query_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method execute_first_step
 
-mutable struct execute_first_step_args <: Thrift.TMsg
-  pending_query::TPendingQuery
-  execute_first_step_args() = (o=new(); fillunset(o); o)
-end # mutable struct execute_first_step_args
-
-mutable struct execute_first_step_result
-  success::TStepResult
-  e::TMapDException
-  execute_first_step_result() = (o=new(); fillunset(o); o)
-  execute_first_step_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct execute_first_step_result
-meta(t::Type{execute_first_step_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct execute_first_step_args <: Thrift.TMsg
+#   pending_query::TPendingQuery
+#   execute_first_step_args() = (o=new(); fillunset(o); o)
+# end # mutable struct execute_first_step_args
+#
+# mutable struct execute_first_step_result
+#   success::TStepResult
+#   e::TMapDException
+#   execute_first_step_result() = (o=new(); fillunset(o); o)
+#   execute_first_step_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct execute_first_step_result
+# meta(t::Type{execute_first_step_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method broadcast_serialized_rows
 
-mutable struct broadcast_serialized_rows_args <: Thrift.TMsg
-  serialized_rows::String
-  row_desc::TRowDescriptor
-  query_id::TQueryId
-  broadcast_serialized_rows_args() = (o=new(); fillunset(o); o)
-end # mutable struct broadcast_serialized_rows_args
-
-mutable struct broadcast_serialized_rows_result
-  e::TMapDException
-  broadcast_serialized_rows_result() = (o=new(); fillunset(o); o)
-end # mutable struct broadcast_serialized_rows_result
-meta(t::Type{broadcast_serialized_rows_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct broadcast_serialized_rows_args <: Thrift.TMsg
+#   serialized_rows::String
+#   row_desc::TRowDescriptor
+#   query_id::TQueryId
+#   broadcast_serialized_rows_args() = (o=new(); fillunset(o); o)
+# end # mutable struct broadcast_serialized_rows_args
+#
+# mutable struct broadcast_serialized_rows_result
+#   e::TMapDException
+#   broadcast_serialized_rows_result() = (o=new(); fillunset(o); o)
+# end # mutable struct broadcast_serialized_rows_result
+# meta(t::Type{broadcast_serialized_rows_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method start_render_query
 
-mutable struct start_render_query_args <: Thrift.TMsg
-  session::TSessionId
-  widget_id::Int64
-  node_idx::Int16
-  vega_json::String
-  start_render_query_args() = (o=new(); fillunset(o); o)
-end # mutable struct start_render_query_args
-
-mutable struct start_render_query_result
-  success::TPendingRenderQuery
-  e::TMapDException
-  start_render_query_result() = (o=new(); fillunset(o); o)
-  start_render_query_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct start_render_query_result
-meta(t::Type{start_render_query_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct start_render_query_args <: Thrift.TMsg
+#   session::TSessionId
+#   widget_id::Int64
+#   node_idx::Int16
+#   vega_json::String
+#   start_render_query_args() = (o=new(); fillunset(o); o)
+# end # mutable struct start_render_query_args
+#
+# mutable struct start_render_query_result
+#   success::TPendingRenderQuery
+#   e::TMapDException
+#   start_render_query_result() = (o=new(); fillunset(o); o)
+#   start_render_query_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct start_render_query_result
+# meta(t::Type{start_render_query_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method execute_next_render_step
 
-mutable struct execute_next_render_step_args <: Thrift.TMsg
-  pending_render::TPendingRenderQuery
-  merged_data::TRenderAggDataMap
-  execute_next_render_step_args() = (o=new(); fillunset(o); o)
-end # mutable struct execute_next_render_step_args
-
-mutable struct execute_next_render_step_result
-  success::TRenderStepResult
-  e::TMapDException
-  execute_next_render_step_result() = (o=new(); fillunset(o); o)
-  execute_next_render_step_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct execute_next_render_step_result
-meta(t::Type{execute_next_render_step_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct execute_next_render_step_args <: Thrift.TMsg
+#   pending_render::TPendingRenderQuery
+#   merged_data::TRenderAggDataMap
+#   execute_next_render_step_args() = (o=new(); fillunset(o); o)
+# end # mutable struct execute_next_render_step_args
+#
+# mutable struct execute_next_render_step_result
+#   success::TRenderStepResult
+#   e::TMapDException
+#   execute_next_render_step_result() = (o=new(); fillunset(o); o)
+#   execute_next_render_step_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct execute_next_render_step_result
+# meta(t::Type{execute_next_render_step_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method insert_data
 
-mutable struct insert_data_args <: Thrift.TMsg
-  session::TSessionId
-  insert_data::TInsertData
-  insert_data_args() = (o=new(); fillunset(o); o)
-end # mutable struct insert_data_args
-
-mutable struct insert_data_result
-  e::TMapDException
-  insert_data_result() = (o=new(); fillunset(o); o)
-end # mutable struct insert_data_result
-meta(t::Type{insert_data_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct insert_data_args <: Thrift.TMsg
+#   session::TSessionId
+#   insert_data::TInsertData
+#   insert_data_args() = (o=new(); fillunset(o); o)
+# end # mutable struct insert_data_args
+#
+# mutable struct insert_data_result
+#   e::TMapDException
+#   insert_data_result() = (o=new(); fillunset(o); o)
+# end # mutable struct insert_data_result
+# meta(t::Type{insert_data_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method checkpoint
 
-mutable struct checkpoint_args <: Thrift.TMsg
-  session::TSessionId
-  db_id::Int32
-  table_id::Int32
-  checkpoint_args() = (o=new(); fillunset(o); o)
-end # mutable struct checkpoint_args
-
-mutable struct checkpoint_result
-  e::TMapDException
-  checkpoint_result() = (o=new(); fillunset(o); o)
-end # mutable struct checkpoint_result
-meta(t::Type{checkpoint_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct checkpoint_args <: Thrift.TMsg
+#   session::TSessionId
+#   db_id::Int32
+#   table_id::Int32
+#   checkpoint_args() = (o=new(); fillunset(o); o)
+# end # mutable struct checkpoint_args
+#
+# mutable struct checkpoint_result
+#   e::TMapDException
+#   checkpoint_result() = (o=new(); fillunset(o); o)
+# end # mutable struct checkpoint_result
+# meta(t::Type{checkpoint_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_table_descriptor
 
@@ -1651,812 +1651,812 @@ mutable struct get_license_claims_result
 end # mutable struct get_license_claims_result
 meta(t::Type{get_license_claims_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
-# Processor for MapD service (to be used in server implementation)
-mutable struct MapDProcessor <: TProcessor
-  tp::ThriftProcessor
-  function MapDProcessor()
-    p = new(ThriftProcessor())
-    handle(p.tp, ThriftHandler("connect", _connect, connect_args, connect_result))
-    handle(p.tp, ThriftHandler("disconnect", _disconnect, disconnect_args, disconnect_result))
-    handle(p.tp, ThriftHandler("get_server_status", _get_server_status, get_server_status_args, get_server_status_result))
-    handle(p.tp, ThriftHandler("get_status", _get_status, get_status_args, get_status_result))
-    handle(p.tp, ThriftHandler("get_hardware_info", _get_hardware_info, get_hardware_info_args, get_hardware_info_result))
-    handle(p.tp, ThriftHandler("get_tables", _get_tables, get_tables_args, get_tables_result))
-    handle(p.tp, ThriftHandler("get_physical_tables", _get_physical_tables, get_physical_tables_args, get_physical_tables_result))
-    handle(p.tp, ThriftHandler("get_views", _get_views, get_views_args, get_views_result))
-    handle(p.tp, ThriftHandler("get_tables_meta", _get_tables_meta, get_tables_meta_args, get_tables_meta_result))
-    handle(p.tp, ThriftHandler("get_table_details", _get_table_details, get_table_details_args, get_table_details_result))
-    handle(p.tp, ThriftHandler("get_internal_table_details", _get_internal_table_details, get_internal_table_details_args, get_internal_table_details_result))
-    handle(p.tp, ThriftHandler("get_users", _get_users, get_users_args, get_users_result))
-    handle(p.tp, ThriftHandler("get_databases", _get_databases, get_databases_args, get_databases_result))
-    handle(p.tp, ThriftHandler("get_version", _get_version, get_version_args, get_version_result))
-    handle(p.tp, ThriftHandler("start_heap_profile", _start_heap_profile, start_heap_profile_args, start_heap_profile_result))
-    handle(p.tp, ThriftHandler("stop_heap_profile", _stop_heap_profile, stop_heap_profile_args, stop_heap_profile_result))
-    handle(p.tp, ThriftHandler("get_heap_profile", _get_heap_profile, get_heap_profile_args, get_heap_profile_result))
-    handle(p.tp, ThriftHandler("get_memory", _get_memory, get_memory_args, get_memory_result))
-    handle(p.tp, ThriftHandler("clear_cpu_memory", _clear_cpu_memory, clear_cpu_memory_args, clear_cpu_memory_result))
-    handle(p.tp, ThriftHandler("clear_gpu_memory", _clear_gpu_memory, clear_gpu_memory_args, clear_gpu_memory_result))
-    handle(p.tp, ThriftHandler("set_table_epoch", _set_table_epoch, set_table_epoch_args, set_table_epoch_result))
-    handle(p.tp, ThriftHandler("set_table_epoch_by_name", _set_table_epoch_by_name, set_table_epoch_by_name_args, set_table_epoch_by_name_result))
-    handle(p.tp, ThriftHandler("get_table_epoch", _get_table_epoch, get_table_epoch_args, get_table_epoch_result))
-    handle(p.tp, ThriftHandler("get_table_epoch_by_name", _get_table_epoch_by_name, get_table_epoch_by_name_args, get_table_epoch_by_name_result))
-    handle(p.tp, ThriftHandler("sql_execute", _sql_execute, sql_execute_args, sql_execute_result))
-    handle(p.tp, ThriftHandler("sql_execute_df", _sql_execute_df, sql_execute_df_args, sql_execute_df_result))
-    handle(p.tp, ThriftHandler("sql_execute_gdf", _sql_execute_gdf, sql_execute_gdf_args, sql_execute_gdf_result))
-    handle(p.tp, ThriftHandler("deallocate_df", _deallocate_df, deallocate_df_args, deallocate_df_result))
-    handle(p.tp, ThriftHandler("interrupt", _interrupt, interrupt_args, interrupt_result))
-    handle(p.tp, ThriftHandler("sql_validate", _sql_validate, sql_validate_args, sql_validate_result))
-    handle(p.tp, ThriftHandler("get_completion_hints", _get_completion_hints, get_completion_hints_args, get_completion_hints_result))
-    handle(p.tp, ThriftHandler("set_execution_mode", _set_execution_mode, set_execution_mode_args, set_execution_mode_result))
-    handle(p.tp, ThriftHandler("render_vega", _render_vega, render_vega_args, render_vega_result))
-    handle(p.tp, ThriftHandler("get_result_row_for_pixel", _get_result_row_for_pixel, get_result_row_for_pixel_args, get_result_row_for_pixel_result))
-    handle(p.tp, ThriftHandler("get_frontend_view", _get_frontend_view, get_frontend_view_args, get_frontend_view_result))
-    handle(p.tp, ThriftHandler("get_frontend_views", _get_frontend_views, get_frontend_views_args, get_frontend_views_result))
-    handle(p.tp, ThriftHandler("create_frontend_view", _create_frontend_view, create_frontend_view_args, create_frontend_view_result))
-    handle(p.tp, ThriftHandler("delete_frontend_view", _delete_frontend_view, delete_frontend_view_args, delete_frontend_view_result))
-    handle(p.tp, ThriftHandler("get_dashboard", _get_dashboard, get_dashboard_args, get_dashboard_result))
-    handle(p.tp, ThriftHandler("get_dashboards", _get_dashboards, get_dashboards_args, get_dashboards_result))
-    handle(p.tp, ThriftHandler("create_dashboard", _create_dashboard, create_dashboard_args, create_dashboard_result))
-    handle(p.tp, ThriftHandler("replace_dashboard", _replace_dashboard, replace_dashboard_args, replace_dashboard_result))
-    handle(p.tp, ThriftHandler("delete_dashboard", _delete_dashboard, delete_dashboard_args, delete_dashboard_result))
-    handle(p.tp, ThriftHandler("share_dashboard", _share_dashboard, share_dashboard_args, share_dashboard_result))
-    handle(p.tp, ThriftHandler("unshare_dashboard", _unshare_dashboard, unshare_dashboard_args, unshare_dashboard_result))
-    handle(p.tp, ThriftHandler("get_dashboard_grantees", _get_dashboard_grantees, get_dashboard_grantees_args, get_dashboard_grantees_result))
-    handle(p.tp, ThriftHandler("get_link_view", _get_link_view, get_link_view_args, get_link_view_result))
-    handle(p.tp, ThriftHandler("create_link", _create_link, create_link_args, create_link_result))
-    handle(p.tp, ThriftHandler("load_table_binary", _load_table_binary, load_table_binary_args, load_table_binary_result))
-    handle(p.tp, ThriftHandler("load_table_binary_columnar", _load_table_binary_columnar, load_table_binary_columnar_args, load_table_binary_columnar_result))
-    handle(p.tp, ThriftHandler("load_table_binary_arrow", _load_table_binary_arrow, load_table_binary_arrow_args, load_table_binary_arrow_result))
-    handle(p.tp, ThriftHandler("load_table", _load_table, load_table_args, load_table_result))
-    handle(p.tp, ThriftHandler("detect_column_types", _detect_column_types, detect_column_types_args, detect_column_types_result))
-    handle(p.tp, ThriftHandler("create_table", _create_table, create_table_args, create_table_result))
-    handle(p.tp, ThriftHandler("import_table", _import_table, import_table_args, import_table_result))
-    handle(p.tp, ThriftHandler("import_geo_table", _import_geo_table, import_geo_table_args, import_geo_table_result))
-    handle(p.tp, ThriftHandler("import_table_status", _import_table_status, import_table_status_args, import_table_status_result))
-    handle(p.tp, ThriftHandler("get_first_geo_file_in_archive", _get_first_geo_file_in_archive, get_first_geo_file_in_archive_args, get_first_geo_file_in_archive_result))
-    handle(p.tp, ThriftHandler("get_all_files_in_archive", _get_all_files_in_archive, get_all_files_in_archive_args, get_all_files_in_archive_result))
-    handle(p.tp, ThriftHandler("start_query", _start_query, start_query_args, start_query_result))
-    handle(p.tp, ThriftHandler("execute_first_step", _execute_first_step, execute_first_step_args, execute_first_step_result))
-    handle(p.tp, ThriftHandler("broadcast_serialized_rows", _broadcast_serialized_rows, broadcast_serialized_rows_args, broadcast_serialized_rows_result))
-    handle(p.tp, ThriftHandler("start_render_query", _start_render_query, start_render_query_args, start_render_query_result))
-    handle(p.tp, ThriftHandler("execute_next_render_step", _execute_next_render_step, execute_next_render_step_args, execute_next_render_step_result))
-    handle(p.tp, ThriftHandler("insert_data", _insert_data, insert_data_args, insert_data_result))
-    handle(p.tp, ThriftHandler("checkpoint", _checkpoint, checkpoint_args, checkpoint_result))
-    handle(p.tp, ThriftHandler("get_table_descriptor", _get_table_descriptor, get_table_descriptor_args, get_table_descriptor_result))
-    handle(p.tp, ThriftHandler("get_row_descriptor", _get_row_descriptor, get_row_descriptor_args, get_row_descriptor_result))
-    handle(p.tp, ThriftHandler("get_roles", _get_roles, get_roles_args, get_roles_result))
-    handle(p.tp, ThriftHandler("get_db_objects_for_grantee", _get_db_objects_for_grantee, get_db_objects_for_grantee_args, get_db_objects_for_grantee_result))
-    handle(p.tp, ThriftHandler("get_db_object_privs", _get_db_object_privs, get_db_object_privs_args, get_db_object_privs_result))
-    handle(p.tp, ThriftHandler("get_all_roles_for_user", _get_all_roles_for_user, get_all_roles_for_user_args, get_all_roles_for_user_result))
-    handle(p.tp, ThriftHandler("set_license_key", _set_license_key, set_license_key_args, set_license_key_result))
-    handle(p.tp, ThriftHandler("get_license_claims", _get_license_claims, get_license_claims_args, get_license_claims_result))
-    p
-  end
-  function _connect(inp::connect_args)
-    try
-      result = connect(inp.user, inp.passwd, inp.dbname)
-      return connect_result(result)
-    catch ex
-      exret = connect_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _connect
-  function _disconnect(inp::disconnect_args)
-    try
-      disconnect(inp.session)
-      return disconnect_result()
-    catch ex
-      exret = disconnect_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _disconnect
-  function _get_server_status(inp::get_server_status_args)
-    try
-      result = get_server_status(inp.session)
-      return get_server_status_result(result)
-    catch ex
-      exret = get_server_status_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_server_status
-  function _get_status(inp::get_status_args)
-    try
-      result = get_status(inp.session)
-      return get_status_result(result)
-    catch ex
-      exret = get_status_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_status
-  function _get_hardware_info(inp::get_hardware_info_args)
-    try
-      result = get_hardware_info(inp.session)
-      return get_hardware_info_result(result)
-    catch ex
-      exret = get_hardware_info_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_hardware_info
-  function _get_tables(inp::get_tables_args)
-    try
-      result = get_tables(inp.session)
-      return get_tables_result(result)
-    catch ex
-      exret = get_tables_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_tables
-  function _get_physical_tables(inp::get_physical_tables_args)
-    try
-      result = get_physical_tables(inp.session)
-      return get_physical_tables_result(result)
-    catch ex
-      exret = get_physical_tables_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_physical_tables
-  function _get_views(inp::get_views_args)
-    try
-      result = get_views(inp.session)
-      return get_views_result(result)
-    catch ex
-      exret = get_views_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_views
-  function _get_tables_meta(inp::get_tables_meta_args)
-    try
-      result = get_tables_meta(inp.session)
-      return get_tables_meta_result(result)
-    catch ex
-      exret = get_tables_meta_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_tables_meta
-  function _get_table_details(inp::get_table_details_args)
-    try
-      result = get_table_details(inp.session, inp.table_name)
-      return get_table_details_result(result)
-    catch ex
-      exret = get_table_details_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_table_details
-  function _get_internal_table_details(inp::get_internal_table_details_args)
-    try
-      result = get_internal_table_details(inp.session, inp.table_name)
-      return get_internal_table_details_result(result)
-    catch ex
-      exret = get_internal_table_details_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_internal_table_details
-  function _get_users(inp::get_users_args)
-    try
-      result = get_users(inp.session)
-      return get_users_result(result)
-    catch ex
-      exret = get_users_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_users
-  function _get_databases(inp::get_databases_args)
-    try
-      result = get_databases(inp.session)
-      return get_databases_result(result)
-    catch ex
-      exret = get_databases_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_databases
-  function _get_version(inp::get_version_args)
-    try
-      result = get_version()
-      return get_version_result(result)
-    catch ex
-      exret = get_version_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_version
-  function _start_heap_profile(inp::start_heap_profile_args)
-    try
-      start_heap_profile(inp.session)
-      return start_heap_profile_result()
-    catch ex
-      exret = start_heap_profile_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _start_heap_profile
-  function _stop_heap_profile(inp::stop_heap_profile_args)
-    try
-      stop_heap_profile(inp.session)
-      return stop_heap_profile_result()
-    catch ex
-      exret = stop_heap_profile_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _stop_heap_profile
-  function _get_heap_profile(inp::get_heap_profile_args)
-    try
-      result = get_heap_profile(inp.session)
-      return get_heap_profile_result(result)
-    catch ex
-      exret = get_heap_profile_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_heap_profile
-  function _get_memory(inp::get_memory_args)
-    try
-      result = get_memory(inp.session, inp.memory_level)
-      return get_memory_result(result)
-    catch ex
-      exret = get_memory_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_memory
-  function _clear_cpu_memory(inp::clear_cpu_memory_args)
-    try
-      clear_cpu_memory(inp.session)
-      return clear_cpu_memory_result()
-    catch ex
-      exret = clear_cpu_memory_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _clear_cpu_memory
-  function _clear_gpu_memory(inp::clear_gpu_memory_args)
-    try
-      clear_gpu_memory(inp.session)
-      return clear_gpu_memory_result()
-    catch ex
-      exret = clear_gpu_memory_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _clear_gpu_memory
-  function _set_table_epoch(inp::set_table_epoch_args)
-    try
-      set_table_epoch(inp.session, inp.db_id, inp.table_id, inp.new_epoch)
-      return set_table_epoch_result()
-    catch ex
-      exret = set_table_epoch_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_table_epoch
-  function _set_table_epoch_by_name(inp::set_table_epoch_by_name_args)
-    try
-      set_table_epoch_by_name(inp.session, inp.table_name, inp.new_epoch)
-      return set_table_epoch_by_name_result()
-    catch ex
-      exret = set_table_epoch_by_name_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_table_epoch_by_name
-  _get_table_epoch(inp::get_table_epoch_args) = get_table_epoch_result(get_table_epoch(inp.session, inp.db_id, inp.table_id))
-  _get_table_epoch_by_name(inp::get_table_epoch_by_name_args) = get_table_epoch_by_name_result(get_table_epoch_by_name(inp.session, inp.table_name))
-  function _sql_execute(inp::sql_execute_args)
-    try
-      result = sql_execute(inp.session, inp.query, inp.column_format, inp.nonce, inp.first_n, inp.at_most_n)
-      return sql_execute_result(result)
-    catch ex
-      exret = sql_execute_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_execute
-  function _sql_execute_df(inp::sql_execute_df_args)
-    try
-      result = sql_execute_df(inp.session, inp.query, inp.device_type, inp.device_id, inp.first_n)
-      return sql_execute_df_result(result)
-    catch ex
-      exret = sql_execute_df_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_execute_df
-  function _sql_execute_gdf(inp::sql_execute_gdf_args)
-    try
-      result = sql_execute_gdf(inp.session, inp.query, inp.device_id, inp.first_n)
-      return sql_execute_gdf_result(result)
-    catch ex
-      exret = sql_execute_gdf_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_execute_gdf
-  function _deallocate_df(inp::deallocate_df_args)
-    try
-      deallocate_df(inp.session, inp.df, inp.device_type, inp.device_id)
-      return deallocate_df_result()
-    catch ex
-      exret = deallocate_df_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _deallocate_df
-  function _interrupt(inp::interrupt_args)
-    try
-      interrupt(inp.session)
-      return interrupt_result()
-    catch ex
-      exret = interrupt_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _interrupt
-  function _sql_validate(inp::sql_validate_args)
-    try
-      result = sql_validate(inp.session, inp.query)
-      return sql_validate_result(result)
-    catch ex
-      exret = sql_validate_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _sql_validate
-  function _get_completion_hints(inp::get_completion_hints_args)
-    try
-      result = get_completion_hints(inp.session, inp.sql, inp.cursor)
-      return get_completion_hints_result(result)
-    catch ex
-      exret = get_completion_hints_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_completion_hints
-  function _set_execution_mode(inp::set_execution_mode_args)
-    try
-      set_execution_mode(inp.session, inp.mode)
-      return set_execution_mode_result()
-    catch ex
-      exret = set_execution_mode_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_execution_mode
-  function _render_vega(inp::render_vega_args)
-    try
-      result = render_vega(inp.session, inp.widget_id, inp.vega_json, inp.compression_level, inp.nonce)
-      return render_vega_result(result)
-    catch ex
-      exret = render_vega_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _render_vega
-  function _get_result_row_for_pixel(inp::get_result_row_for_pixel_args)
-    try
-      result = get_result_row_for_pixel(inp.session, inp.widget_id, inp.pixel, inp.table_col_names, inp.column_format, inp.pixelRadius, inp.nonce)
-      return get_result_row_for_pixel_result(result)
-    catch ex
-      exret = get_result_row_for_pixel_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_result_row_for_pixel
-  function _get_frontend_view(inp::get_frontend_view_args)
-    try
-      result = get_frontend_view(inp.session, inp.view_name)
-      return get_frontend_view_result(result)
-    catch ex
-      exret = get_frontend_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_frontend_view
-  function _get_frontend_views(inp::get_frontend_views_args)
-    try
-      result = get_frontend_views(inp.session)
-      return get_frontend_views_result(result)
-    catch ex
-      exret = get_frontend_views_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_frontend_views
-  function _create_frontend_view(inp::create_frontend_view_args)
-    try
-      create_frontend_view(inp.session, inp.view_name, inp.view_state, inp.image_hash, inp.view_metadata)
-      return create_frontend_view_result()
-    catch ex
-      exret = create_frontend_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_frontend_view
-  function _delete_frontend_view(inp::delete_frontend_view_args)
-    try
-      delete_frontend_view(inp.session, inp.view_name)
-      return delete_frontend_view_result()
-    catch ex
-      exret = delete_frontend_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _delete_frontend_view
-  function _get_dashboard(inp::get_dashboard_args)
-    try
-      result = get_dashboard(inp.session, inp.dashboard_id)
-      return get_dashboard_result(result)
-    catch ex
-      exret = get_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_dashboard
-  function _get_dashboards(inp::get_dashboards_args)
-    try
-      result = get_dashboards(inp.session)
-      return get_dashboards_result(result)
-    catch ex
-      exret = get_dashboards_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_dashboards
-  function _create_dashboard(inp::create_dashboard_args)
-    try
-      result = create_dashboard(inp.session, inp.dashboard_name, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
-      return create_dashboard_result(result)
-    catch ex
-      exret = create_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_dashboard
-  function _replace_dashboard(inp::replace_dashboard_args)
-    try
-      replace_dashboard(inp.session, inp.dashboard_id, inp.dashboard_name, inp.dashboard_owner, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
-      return replace_dashboard_result()
-    catch ex
-      exret = replace_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _replace_dashboard
-  function _delete_dashboard(inp::delete_dashboard_args)
-    try
-      delete_dashboard(inp.session, inp.dashboard_id)
-      return delete_dashboard_result()
-    catch ex
-      exret = delete_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _delete_dashboard
-  function _share_dashboard(inp::share_dashboard_args)
-    try
-      share_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
-      return share_dashboard_result()
-    catch ex
-      exret = share_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _share_dashboard
-  function _unshare_dashboard(inp::unshare_dashboard_args)
-    try
-      unshare_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
-      return unshare_dashboard_result()
-    catch ex
-      exret = unshare_dashboard_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _unshare_dashboard
-  function _get_dashboard_grantees(inp::get_dashboard_grantees_args)
-    try
-      result = get_dashboard_grantees(inp.session, inp.dashboard_id)
-      return get_dashboard_grantees_result(result)
-    catch ex
-      exret = get_dashboard_grantees_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_dashboard_grantees
-  function _get_link_view(inp::get_link_view_args)
-    try
-      result = get_link_view(inp.session, inp.link)
-      return get_link_view_result(result)
-    catch ex
-      exret = get_link_view_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_link_view
-  function _create_link(inp::create_link_args)
-    try
-      result = create_link(inp.session, inp.view_state, inp.view_metadata)
-      return create_link_result(result)
-    catch ex
-      exret = create_link_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_link
-  function _load_table_binary(inp::load_table_binary_args)
-    try
-      load_table_binary(inp.session, inp.table_name, inp.rows)
-      return load_table_binary_result()
-    catch ex
-      exret = load_table_binary_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table_binary
-  function _load_table_binary_columnar(inp::load_table_binary_columnar_args)
-    try
-      load_table_binary_columnar(inp.session, inp.table_name, inp.cols)
-      return load_table_binary_columnar_result()
-    catch ex
-      exret = load_table_binary_columnar_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table_binary_columnar
-  function _load_table_binary_arrow(inp::load_table_binary_arrow_args)
-    try
-      load_table_binary_arrow(inp.session, inp.table_name, inp.arrow_stream)
-      return load_table_binary_arrow_result()
-    catch ex
-      exret = load_table_binary_arrow_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table_binary_arrow
-  function _load_table(inp::load_table_args)
-    try
-      load_table(inp.session, inp.table_name, inp.rows)
-      return load_table_result()
-    catch ex
-      exret = load_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _load_table
-  function _detect_column_types(inp::detect_column_types_args)
-    try
-      result = detect_column_types(inp.session, inp.file_name, inp.copy_params)
-      return detect_column_types_result(result)
-    catch ex
-      exret = detect_column_types_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _detect_column_types
-  function _create_table(inp::create_table_args)
-    try
-      create_table(inp.session, inp.table_name, inp.row_desc, inp.table_type)
-      return create_table_result()
-    catch ex
-      exret = create_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _create_table
-  function _import_table(inp::import_table_args)
-    try
-      import_table(inp.session, inp.table_name, inp.file_name, inp.copy_params)
-      return import_table_result()
-    catch ex
-      exret = import_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _import_table
-  function _import_geo_table(inp::import_geo_table_args)
-    try
-      import_geo_table(inp.session, inp.table_name, inp.file_name, inp.copy_params, inp.row_desc)
-      return import_geo_table_result()
-    catch ex
-      exret = import_geo_table_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _import_geo_table
-  function _import_table_status(inp::import_table_status_args)
-    try
-      result = import_table_status(inp.session, inp.import_id)
-      return import_table_status_result(result)
-    catch ex
-      exret = import_table_status_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _import_table_status
-  function _get_first_geo_file_in_archive(inp::get_first_geo_file_in_archive_args)
-    try
-      result = get_first_geo_file_in_archive(inp.session, inp.archive_path, inp.copy_params)
-      return get_first_geo_file_in_archive_result(result)
-    catch ex
-      exret = get_first_geo_file_in_archive_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_first_geo_file_in_archive
-  function _get_all_files_in_archive(inp::get_all_files_in_archive_args)
-    try
-      result = get_all_files_in_archive(inp.session, inp.archive_path, inp.copy_params)
-      return get_all_files_in_archive_result(result)
-    catch ex
-      exret = get_all_files_in_archive_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_all_files_in_archive
-  function _start_query(inp::start_query_args)
-    try
-      result = start_query(inp.session, inp.query_ra, inp.just_explain)
-      return start_query_result(result)
-    catch ex
-      exret = start_query_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _start_query
-  function _execute_first_step(inp::execute_first_step_args)
-    try
-      result = execute_first_step(inp.pending_query)
-      return execute_first_step_result(result)
-    catch ex
-      exret = execute_first_step_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _execute_first_step
-  function _broadcast_serialized_rows(inp::broadcast_serialized_rows_args)
-    try
-      broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.query_id)
-      return broadcast_serialized_rows_result()
-    catch ex
-      exret = broadcast_serialized_rows_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _broadcast_serialized_rows
-  function _start_render_query(inp::start_render_query_args)
-    try
-      result = start_render_query(inp.session, inp.widget_id, inp.node_idx, inp.vega_json)
-      return start_render_query_result(result)
-    catch ex
-      exret = start_render_query_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _start_render_query
-  function _execute_next_render_step(inp::execute_next_render_step_args)
-    try
-      result = execute_next_render_step(inp.pending_render, inp.merged_data)
-      return execute_next_render_step_result(result)
-    catch ex
-      exret = execute_next_render_step_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _execute_next_render_step
-  function _insert_data(inp::insert_data_args)
-    try
-      insert_data(inp.session, inp.insert_data)
-      return insert_data_result()
-    catch ex
-      exret = insert_data_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _insert_data
-  function _checkpoint(inp::checkpoint_args)
-    try
-      checkpoint(inp.session, inp.db_id, inp.table_id)
-      return checkpoint_result()
-    catch ex
-      exret = checkpoint_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _checkpoint
-  function _get_table_descriptor(inp::get_table_descriptor_args)
-    try
-      result = get_table_descriptor(inp.session, inp.table_name)
-      return get_table_descriptor_result(result)
-    catch ex
-      exret = get_table_descriptor_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_table_descriptor
-  function _get_row_descriptor(inp::get_row_descriptor_args)
-    try
-      result = get_row_descriptor(inp.session, inp.table_name)
-      return get_row_descriptor_result(result)
-    catch ex
-      exret = get_row_descriptor_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_row_descriptor
-  function _get_roles(inp::get_roles_args)
-    try
-      result = get_roles(inp.session)
-      return get_roles_result(result)
-    catch ex
-      exret = get_roles_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_roles
-  function _get_db_objects_for_grantee(inp::get_db_objects_for_grantee_args)
-    try
-      result = get_db_objects_for_grantee(inp.session, inp.roleName)
-      return get_db_objects_for_grantee_result(result)
-    catch ex
-      exret = get_db_objects_for_grantee_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_db_objects_for_grantee
-  function _get_db_object_privs(inp::get_db_object_privs_args)
-    try
-      result = get_db_object_privs(inp.session, inp.objectName, inp._type)
-      return get_db_object_privs_result(result)
-    catch ex
-      exret = get_db_object_privs_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_db_object_privs
-  function _get_all_roles_for_user(inp::get_all_roles_for_user_args)
-    try
-      result = get_all_roles_for_user(inp.session, inp.userName)
-      return get_all_roles_for_user_result(result)
-    catch ex
-      exret = get_all_roles_for_user_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_all_roles_for_user
-  function _set_license_key(inp::set_license_key_args)
-    try
-      result = set_license_key(inp.session, inp.key, inp.nonce)
-      return set_license_key_result(result)
-    catch ex
-      exret = set_license_key_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _set_license_key
-  function _get_license_claims(inp::get_license_claims_args)
-    try
-      result = get_license_claims(inp.session, inp.nonce)
-      return get_license_claims_result(result)
-    catch ex
-      exret = get_license_claims_result()
-      isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-      rethrow()
-    end # try
-  end #function _get_license_claims
-end # mutable struct MapDProcessor
-process(p::MapDProcessor, inp::TProtocol, outp::TProtocol) = process(p.tp, inp, outp)
-distribute(p::MapDProcessor) = distribute(p.tp)
+# # Processor for MapD service (to be used in server implementation)
+# mutable struct MapDProcessor <: TProcessor
+#   tp::ThriftProcessor
+#   function MapDProcessor()
+#     p = new(ThriftProcessor())
+#     handle(p.tp, ThriftHandler("connect", _connect, connect_args, connect_result))
+#     handle(p.tp, ThriftHandler("disconnect", _disconnect, disconnect_args, disconnect_result))
+#     handle(p.tp, ThriftHandler("get_server_status", _get_server_status, get_server_status_args, get_server_status_result))
+#     handle(p.tp, ThriftHandler("get_status", _get_status, get_status_args, get_status_result))
+#     handle(p.tp, ThriftHandler("get_hardware_info", _get_hardware_info, get_hardware_info_args, get_hardware_info_result))
+#     handle(p.tp, ThriftHandler("get_tables", _get_tables, get_tables_args, get_tables_result))
+#     handle(p.tp, ThriftHandler("get_physical_tables", _get_physical_tables, get_physical_tables_args, get_physical_tables_result))
+#     handle(p.tp, ThriftHandler("get_views", _get_views, get_views_args, get_views_result))
+#     handle(p.tp, ThriftHandler("get_tables_meta", _get_tables_meta, get_tables_meta_args, get_tables_meta_result))
+#     handle(p.tp, ThriftHandler("get_table_details", _get_table_details, get_table_details_args, get_table_details_result))
+#     handle(p.tp, ThriftHandler("get_internal_table_details", _get_internal_table_details, get_internal_table_details_args, get_internal_table_details_result))
+#     handle(p.tp, ThriftHandler("get_users", _get_users, get_users_args, get_users_result))
+#     handle(p.tp, ThriftHandler("get_databases", _get_databases, get_databases_args, get_databases_result))
+#     handle(p.tp, ThriftHandler("get_version", _get_version, get_version_args, get_version_result))
+#     handle(p.tp, ThriftHandler("start_heap_profile", _start_heap_profile, start_heap_profile_args, start_heap_profile_result))
+#     handle(p.tp, ThriftHandler("stop_heap_profile", _stop_heap_profile, stop_heap_profile_args, stop_heap_profile_result))
+#     handle(p.tp, ThriftHandler("get_heap_profile", _get_heap_profile, get_heap_profile_args, get_heap_profile_result))
+#     handle(p.tp, ThriftHandler("get_memory", _get_memory, get_memory_args, get_memory_result))
+#     handle(p.tp, ThriftHandler("clear_cpu_memory", _clear_cpu_memory, clear_cpu_memory_args, clear_cpu_memory_result))
+#     handle(p.tp, ThriftHandler("clear_gpu_memory", _clear_gpu_memory, clear_gpu_memory_args, clear_gpu_memory_result))
+#     handle(p.tp, ThriftHandler("set_table_epoch", _set_table_epoch, set_table_epoch_args, set_table_epoch_result))
+#     handle(p.tp, ThriftHandler("set_table_epoch_by_name", _set_table_epoch_by_name, set_table_epoch_by_name_args, set_table_epoch_by_name_result))
+#     handle(p.tp, ThriftHandler("get_table_epoch", _get_table_epoch, get_table_epoch_args, get_table_epoch_result))
+#     handle(p.tp, ThriftHandler("get_table_epoch_by_name", _get_table_epoch_by_name, get_table_epoch_by_name_args, get_table_epoch_by_name_result))
+#     handle(p.tp, ThriftHandler("sql_execute", _sql_execute, sql_execute_args, sql_execute_result))
+#     handle(p.tp, ThriftHandler("sql_execute_df", _sql_execute_df, sql_execute_df_args, sql_execute_df_result))
+#     handle(p.tp, ThriftHandler("sql_execute_gdf", _sql_execute_gdf, sql_execute_gdf_args, sql_execute_gdf_result))
+#     handle(p.tp, ThriftHandler("deallocate_df", _deallocate_df, deallocate_df_args, deallocate_df_result))
+#     handle(p.tp, ThriftHandler("interrupt", _interrupt, interrupt_args, interrupt_result))
+#     handle(p.tp, ThriftHandler("sql_validate", _sql_validate, sql_validate_args, sql_validate_result))
+#     handle(p.tp, ThriftHandler("get_completion_hints", _get_completion_hints, get_completion_hints_args, get_completion_hints_result))
+#     handle(p.tp, ThriftHandler("set_execution_mode", _set_execution_mode, set_execution_mode_args, set_execution_mode_result))
+#     handle(p.tp, ThriftHandler("render_vega", _render_vega, render_vega_args, render_vega_result))
+#     handle(p.tp, ThriftHandler("get_result_row_for_pixel", _get_result_row_for_pixel, get_result_row_for_pixel_args, get_result_row_for_pixel_result))
+#     handle(p.tp, ThriftHandler("get_frontend_view", _get_frontend_view, get_frontend_view_args, get_frontend_view_result))
+#     handle(p.tp, ThriftHandler("get_frontend_views", _get_frontend_views, get_frontend_views_args, get_frontend_views_result))
+#     handle(p.tp, ThriftHandler("create_frontend_view", _create_frontend_view, create_frontend_view_args, create_frontend_view_result))
+#     handle(p.tp, ThriftHandler("delete_frontend_view", _delete_frontend_view, delete_frontend_view_args, delete_frontend_view_result))
+#     handle(p.tp, ThriftHandler("get_dashboard", _get_dashboard, get_dashboard_args, get_dashboard_result))
+#     handle(p.tp, ThriftHandler("get_dashboards", _get_dashboards, get_dashboards_args, get_dashboards_result))
+#     handle(p.tp, ThriftHandler("create_dashboard", _create_dashboard, create_dashboard_args, create_dashboard_result))
+#     handle(p.tp, ThriftHandler("replace_dashboard", _replace_dashboard, replace_dashboard_args, replace_dashboard_result))
+#     handle(p.tp, ThriftHandler("delete_dashboard", _delete_dashboard, delete_dashboard_args, delete_dashboard_result))
+#     handle(p.tp, ThriftHandler("share_dashboard", _share_dashboard, share_dashboard_args, share_dashboard_result))
+#     handle(p.tp, ThriftHandler("unshare_dashboard", _unshare_dashboard, unshare_dashboard_args, unshare_dashboard_result))
+#     handle(p.tp, ThriftHandler("get_dashboard_grantees", _get_dashboard_grantees, get_dashboard_grantees_args, get_dashboard_grantees_result))
+#     handle(p.tp, ThriftHandler("get_link_view", _get_link_view, get_link_view_args, get_link_view_result))
+#     handle(p.tp, ThriftHandler("create_link", _create_link, create_link_args, create_link_result))
+#     handle(p.tp, ThriftHandler("load_table_binary", _load_table_binary, load_table_binary_args, load_table_binary_result))
+#     handle(p.tp, ThriftHandler("load_table_binary_columnar", _load_table_binary_columnar, load_table_binary_columnar_args, load_table_binary_columnar_result))
+#     handle(p.tp, ThriftHandler("load_table_binary_arrow", _load_table_binary_arrow, load_table_binary_arrow_args, load_table_binary_arrow_result))
+#     handle(p.tp, ThriftHandler("load_table", _load_table, load_table_args, load_table_result))
+#     handle(p.tp, ThriftHandler("detect_column_types", _detect_column_types, detect_column_types_args, detect_column_types_result))
+#     handle(p.tp, ThriftHandler("create_table", _create_table, create_table_args, create_table_result))
+#     handle(p.tp, ThriftHandler("import_table", _import_table, import_table_args, import_table_result))
+#     handle(p.tp, ThriftHandler("import_geo_table", _import_geo_table, import_geo_table_args, import_geo_table_result))
+#     handle(p.tp, ThriftHandler("import_table_status", _import_table_status, import_table_status_args, import_table_status_result))
+#     handle(p.tp, ThriftHandler("get_first_geo_file_in_archive", _get_first_geo_file_in_archive, get_first_geo_file_in_archive_args, get_first_geo_file_in_archive_result))
+#     handle(p.tp, ThriftHandler("get_all_files_in_archive", _get_all_files_in_archive, get_all_files_in_archive_args, get_all_files_in_archive_result))
+#     handle(p.tp, ThriftHandler("start_query", _start_query, start_query_args, start_query_result))
+#     handle(p.tp, ThriftHandler("execute_first_step", _execute_first_step, execute_first_step_args, execute_first_step_result))
+#     handle(p.tp, ThriftHandler("broadcast_serialized_rows", _broadcast_serialized_rows, broadcast_serialized_rows_args, broadcast_serialized_rows_result))
+#     handle(p.tp, ThriftHandler("start_render_query", _start_render_query, start_render_query_args, start_render_query_result))
+#     handle(p.tp, ThriftHandler("execute_next_render_step", _execute_next_render_step, execute_next_render_step_args, execute_next_render_step_result))
+#     handle(p.tp, ThriftHandler("insert_data", _insert_data, insert_data_args, insert_data_result))
+#     handle(p.tp, ThriftHandler("checkpoint", _checkpoint, checkpoint_args, checkpoint_result))
+#     handle(p.tp, ThriftHandler("get_table_descriptor", _get_table_descriptor, get_table_descriptor_args, get_table_descriptor_result))
+#     handle(p.tp, ThriftHandler("get_row_descriptor", _get_row_descriptor, get_row_descriptor_args, get_row_descriptor_result))
+#     handle(p.tp, ThriftHandler("get_roles", _get_roles, get_roles_args, get_roles_result))
+#     handle(p.tp, ThriftHandler("get_db_objects_for_grantee", _get_db_objects_for_grantee, get_db_objects_for_grantee_args, get_db_objects_for_grantee_result))
+#     handle(p.tp, ThriftHandler("get_db_object_privs", _get_db_object_privs, get_db_object_privs_args, get_db_object_privs_result))
+#     handle(p.tp, ThriftHandler("get_all_roles_for_user", _get_all_roles_for_user, get_all_roles_for_user_args, get_all_roles_for_user_result))
+#     handle(p.tp, ThriftHandler("set_license_key", _set_license_key, set_license_key_args, set_license_key_result))
+#     handle(p.tp, ThriftHandler("get_license_claims", _get_license_claims, get_license_claims_args, get_license_claims_result))
+#     p
+#   end
+#   function _connect(inp::connect_args)
+#     try
+#       result = connect(inp.user, inp.passwd, inp.dbname)
+#       return connect_result(result)
+#     catch ex
+#       exret = connect_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _connect
+#   function _disconnect(inp::disconnect_args)
+#     try
+#       disconnect(inp.session)
+#       return disconnect_result()
+#     catch ex
+#       exret = disconnect_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _disconnect
+#   function _get_server_status(inp::get_server_status_args)
+#     try
+#       result = get_server_status(inp.session)
+#       return get_server_status_result(result)
+#     catch ex
+#       exret = get_server_status_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_server_status
+#   function _get_status(inp::get_status_args)
+#     try
+#       result = get_status(inp.session)
+#       return get_status_result(result)
+#     catch ex
+#       exret = get_status_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_status
+#   function _get_hardware_info(inp::get_hardware_info_args)
+#     try
+#       result = get_hardware_info(inp.session)
+#       return get_hardware_info_result(result)
+#     catch ex
+#       exret = get_hardware_info_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_hardware_info
+#   function _get_tables(inp::get_tables_args)
+#     try
+#       result = get_tables(inp.session)
+#       return get_tables_result(result)
+#     catch ex
+#       exret = get_tables_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_tables
+#   function _get_physical_tables(inp::get_physical_tables_args)
+#     try
+#       result = get_physical_tables(inp.session)
+#       return get_physical_tables_result(result)
+#     catch ex
+#       exret = get_physical_tables_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_physical_tables
+#   function _get_views(inp::get_views_args)
+#     try
+#       result = get_views(inp.session)
+#       return get_views_result(result)
+#     catch ex
+#       exret = get_views_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_views
+#   function _get_tables_meta(inp::get_tables_meta_args)
+#     try
+#       result = get_tables_meta(inp.session)
+#       return get_tables_meta_result(result)
+#     catch ex
+#       exret = get_tables_meta_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_tables_meta
+#   function _get_table_details(inp::get_table_details_args)
+#     try
+#       result = get_table_details(inp.session, inp.table_name)
+#       return get_table_details_result(result)
+#     catch ex
+#       exret = get_table_details_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_table_details
+#   function _get_internal_table_details(inp::get_internal_table_details_args)
+#     try
+#       result = get_internal_table_details(inp.session, inp.table_name)
+#       return get_internal_table_details_result(result)
+#     catch ex
+#       exret = get_internal_table_details_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_internal_table_details
+#   function _get_users(inp::get_users_args)
+#     try
+#       result = get_users(inp.session)
+#       return get_users_result(result)
+#     catch ex
+#       exret = get_users_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_users
+#   function _get_databases(inp::get_databases_args)
+#     try
+#       result = get_databases(inp.session)
+#       return get_databases_result(result)
+#     catch ex
+#       exret = get_databases_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_databases
+#   function _get_version(inp::get_version_args)
+#     try
+#       result = get_version()
+#       return get_version_result(result)
+#     catch ex
+#       exret = get_version_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_version
+#   function _start_heap_profile(inp::start_heap_profile_args)
+#     try
+#       start_heap_profile(inp.session)
+#       return start_heap_profile_result()
+#     catch ex
+#       exret = start_heap_profile_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _start_heap_profile
+#   function _stop_heap_profile(inp::stop_heap_profile_args)
+#     try
+#       stop_heap_profile(inp.session)
+#       return stop_heap_profile_result()
+#     catch ex
+#       exret = stop_heap_profile_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _stop_heap_profile
+#   function _get_heap_profile(inp::get_heap_profile_args)
+#     try
+#       result = get_heap_profile(inp.session)
+#       return get_heap_profile_result(result)
+#     catch ex
+#       exret = get_heap_profile_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_heap_profile
+#   function _get_memory(inp::get_memory_args)
+#     try
+#       result = get_memory(inp.session, inp.memory_level)
+#       return get_memory_result(result)
+#     catch ex
+#       exret = get_memory_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_memory
+#   function _clear_cpu_memory(inp::clear_cpu_memory_args)
+#     try
+#       clear_cpu_memory(inp.session)
+#       return clear_cpu_memory_result()
+#     catch ex
+#       exret = clear_cpu_memory_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _clear_cpu_memory
+#   function _clear_gpu_memory(inp::clear_gpu_memory_args)
+#     try
+#       clear_gpu_memory(inp.session)
+#       return clear_gpu_memory_result()
+#     catch ex
+#       exret = clear_gpu_memory_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _clear_gpu_memory
+#   function _set_table_epoch(inp::set_table_epoch_args)
+#     try
+#       set_table_epoch(inp.session, inp.db_id, inp.table_id, inp.new_epoch)
+#       return set_table_epoch_result()
+#     catch ex
+#       exret = set_table_epoch_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _set_table_epoch
+#   function _set_table_epoch_by_name(inp::set_table_epoch_by_name_args)
+#     try
+#       set_table_epoch_by_name(inp.session, inp.table_name, inp.new_epoch)
+#       return set_table_epoch_by_name_result()
+#     catch ex
+#       exret = set_table_epoch_by_name_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _set_table_epoch_by_name
+#   _get_table_epoch(inp::get_table_epoch_args) = get_table_epoch_result(get_table_epoch(inp.session, inp.db_id, inp.table_id))
+#   _get_table_epoch_by_name(inp::get_table_epoch_by_name_args) = get_table_epoch_by_name_result(get_table_epoch_by_name(inp.session, inp.table_name))
+#   function _sql_execute(inp::sql_execute_args)
+#     try
+#       result = sql_execute(inp.session, inp.query, inp.column_format, inp.nonce, inp.first_n, inp.at_most_n)
+#       return sql_execute_result(result)
+#     catch ex
+#       exret = sql_execute_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _sql_execute
+#   function _sql_execute_df(inp::sql_execute_df_args)
+#     try
+#       result = sql_execute_df(inp.session, inp.query, inp.device_type, inp.device_id, inp.first_n)
+#       return sql_execute_df_result(result)
+#     catch ex
+#       exret = sql_execute_df_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _sql_execute_df
+#   function _sql_execute_gdf(inp::sql_execute_gdf_args)
+#     try
+#       result = sql_execute_gdf(inp.session, inp.query, inp.device_id, inp.first_n)
+#       return sql_execute_gdf_result(result)
+#     catch ex
+#       exret = sql_execute_gdf_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _sql_execute_gdf
+#   function _deallocate_df(inp::deallocate_df_args)
+#     try
+#       deallocate_df(inp.session, inp.df, inp.device_type, inp.device_id)
+#       return deallocate_df_result()
+#     catch ex
+#       exret = deallocate_df_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _deallocate_df
+#   function _interrupt(inp::interrupt_args)
+#     try
+#       interrupt(inp.session)
+#       return interrupt_result()
+#     catch ex
+#       exret = interrupt_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _interrupt
+#   function _sql_validate(inp::sql_validate_args)
+#     try
+#       result = sql_validate(inp.session, inp.query)
+#       return sql_validate_result(result)
+#     catch ex
+#       exret = sql_validate_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _sql_validate
+#   function _get_completion_hints(inp::get_completion_hints_args)
+#     try
+#       result = get_completion_hints(inp.session, inp.sql, inp.cursor)
+#       return get_completion_hints_result(result)
+#     catch ex
+#       exret = get_completion_hints_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_completion_hints
+#   function _set_execution_mode(inp::set_execution_mode_args)
+#     try
+#       set_execution_mode(inp.session, inp.mode)
+#       return set_execution_mode_result()
+#     catch ex
+#       exret = set_execution_mode_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _set_execution_mode
+#   function _render_vega(inp::render_vega_args)
+#     try
+#       result = render_vega(inp.session, inp.widget_id, inp.vega_json, inp.compression_level, inp.nonce)
+#       return render_vega_result(result)
+#     catch ex
+#       exret = render_vega_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _render_vega
+#   function _get_result_row_for_pixel(inp::get_result_row_for_pixel_args)
+#     try
+#       result = get_result_row_for_pixel(inp.session, inp.widget_id, inp.pixel, inp.table_col_names, inp.column_format, inp.pixelRadius, inp.nonce)
+#       return get_result_row_for_pixel_result(result)
+#     catch ex
+#       exret = get_result_row_for_pixel_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_result_row_for_pixel
+#   function _get_frontend_view(inp::get_frontend_view_args)
+#     try
+#       result = get_frontend_view(inp.session, inp.view_name)
+#       return get_frontend_view_result(result)
+#     catch ex
+#       exret = get_frontend_view_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_frontend_view
+#   function _get_frontend_views(inp::get_frontend_views_args)
+#     try
+#       result = get_frontend_views(inp.session)
+#       return get_frontend_views_result(result)
+#     catch ex
+#       exret = get_frontend_views_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_frontend_views
+#   function _create_frontend_view(inp::create_frontend_view_args)
+#     try
+#       create_frontend_view(inp.session, inp.view_name, inp.view_state, inp.image_hash, inp.view_metadata)
+#       return create_frontend_view_result()
+#     catch ex
+#       exret = create_frontend_view_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _create_frontend_view
+#   function _delete_frontend_view(inp::delete_frontend_view_args)
+#     try
+#       delete_frontend_view(inp.session, inp.view_name)
+#       return delete_frontend_view_result()
+#     catch ex
+#       exret = delete_frontend_view_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _delete_frontend_view
+#   function _get_dashboard(inp::get_dashboard_args)
+#     try
+#       result = get_dashboard(inp.session, inp.dashboard_id)
+#       return get_dashboard_result(result)
+#     catch ex
+#       exret = get_dashboard_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_dashboard
+#   function _get_dashboards(inp::get_dashboards_args)
+#     try
+#       result = get_dashboards(inp.session)
+#       return get_dashboards_result(result)
+#     catch ex
+#       exret = get_dashboards_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_dashboards
+#   function _create_dashboard(inp::create_dashboard_args)
+#     try
+#       result = create_dashboard(inp.session, inp.dashboard_name, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
+#       return create_dashboard_result(result)
+#     catch ex
+#       exret = create_dashboard_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _create_dashboard
+#   function _replace_dashboard(inp::replace_dashboard_args)
+#     try
+#       replace_dashboard(inp.session, inp.dashboard_id, inp.dashboard_name, inp.dashboard_owner, inp.dashboard_state, inp.image_hash, inp.dashboard_metadata)
+#       return replace_dashboard_result()
+#     catch ex
+#       exret = replace_dashboard_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _replace_dashboard
+#   function _delete_dashboard(inp::delete_dashboard_args)
+#     try
+#       delete_dashboard(inp.session, inp.dashboard_id)
+#       return delete_dashboard_result()
+#     catch ex
+#       exret = delete_dashboard_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _delete_dashboard
+#   function _share_dashboard(inp::share_dashboard_args)
+#     try
+#       share_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
+#       return share_dashboard_result()
+#     catch ex
+#       exret = share_dashboard_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _share_dashboard
+#   function _unshare_dashboard(inp::unshare_dashboard_args)
+#     try
+#       unshare_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
+#       return unshare_dashboard_result()
+#     catch ex
+#       exret = unshare_dashboard_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _unshare_dashboard
+#   function _get_dashboard_grantees(inp::get_dashboard_grantees_args)
+#     try
+#       result = get_dashboard_grantees(inp.session, inp.dashboard_id)
+#       return get_dashboard_grantees_result(result)
+#     catch ex
+#       exret = get_dashboard_grantees_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_dashboard_grantees
+#   function _get_link_view(inp::get_link_view_args)
+#     try
+#       result = get_link_view(inp.session, inp.link)
+#       return get_link_view_result(result)
+#     catch ex
+#       exret = get_link_view_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_link_view
+#   function _create_link(inp::create_link_args)
+#     try
+#       result = create_link(inp.session, inp.view_state, inp.view_metadata)
+#       return create_link_result(result)
+#     catch ex
+#       exret = create_link_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _create_link
+#   function _load_table_binary(inp::load_table_binary_args)
+#     try
+#       load_table_binary(inp.session, inp.table_name, inp.rows)
+#       return load_table_binary_result()
+#     catch ex
+#       exret = load_table_binary_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _load_table_binary
+#   function _load_table_binary_columnar(inp::load_table_binary_columnar_args)
+#     try
+#       load_table_binary_columnar(inp.session, inp.table_name, inp.cols)
+#       return load_table_binary_columnar_result()
+#     catch ex
+#       exret = load_table_binary_columnar_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _load_table_binary_columnar
+#   function _load_table_binary_arrow(inp::load_table_binary_arrow_args)
+#     try
+#       load_table_binary_arrow(inp.session, inp.table_name, inp.arrow_stream)
+#       return load_table_binary_arrow_result()
+#     catch ex
+#       exret = load_table_binary_arrow_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _load_table_binary_arrow
+#   function _load_table(inp::load_table_args)
+#     try
+#       load_table(inp.session, inp.table_name, inp.rows)
+#       return load_table_result()
+#     catch ex
+#       exret = load_table_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _load_table
+#   function _detect_column_types(inp::detect_column_types_args)
+#     try
+#       result = detect_column_types(inp.session, inp.file_name, inp.copy_params)
+#       return detect_column_types_result(result)
+#     catch ex
+#       exret = detect_column_types_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _detect_column_types
+#   function _create_table(inp::create_table_args)
+#     try
+#       create_table(inp.session, inp.table_name, inp.row_desc, inp.table_type)
+#       return create_table_result()
+#     catch ex
+#       exret = create_table_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _create_table
+#   function _import_table(inp::import_table_args)
+#     try
+#       import_table(inp.session, inp.table_name, inp.file_name, inp.copy_params)
+#       return import_table_result()
+#     catch ex
+#       exret = import_table_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _import_table
+#   function _import_geo_table(inp::import_geo_table_args)
+#     try
+#       import_geo_table(inp.session, inp.table_name, inp.file_name, inp.copy_params, inp.row_desc)
+#       return import_geo_table_result()
+#     catch ex
+#       exret = import_geo_table_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _import_geo_table
+#   function _import_table_status(inp::import_table_status_args)
+#     try
+#       result = import_table_status(inp.session, inp.import_id)
+#       return import_table_status_result(result)
+#     catch ex
+#       exret = import_table_status_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _import_table_status
+#   function _get_first_geo_file_in_archive(inp::get_first_geo_file_in_archive_args)
+#     try
+#       result = get_first_geo_file_in_archive(inp.session, inp.archive_path, inp.copy_params)
+#       return get_first_geo_file_in_archive_result(result)
+#     catch ex
+#       exret = get_first_geo_file_in_archive_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_first_geo_file_in_archive
+#   function _get_all_files_in_archive(inp::get_all_files_in_archive_args)
+#     try
+#       result = get_all_files_in_archive(inp.session, inp.archive_path, inp.copy_params)
+#       return get_all_files_in_archive_result(result)
+#     catch ex
+#       exret = get_all_files_in_archive_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_all_files_in_archive
+#   function _start_query(inp::start_query_args)
+#     try
+#       result = start_query(inp.session, inp.query_ra, inp.just_explain)
+#       return start_query_result(result)
+#     catch ex
+#       exret = start_query_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _start_query
+#   function _execute_first_step(inp::execute_first_step_args)
+#     try
+#       result = execute_first_step(inp.pending_query)
+#       return execute_first_step_result(result)
+#     catch ex
+#       exret = execute_first_step_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _execute_first_step
+#   function _broadcast_serialized_rows(inp::broadcast_serialized_rows_args)
+#     try
+#       broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.query_id)
+#       return broadcast_serialized_rows_result()
+#     catch ex
+#       exret = broadcast_serialized_rows_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _broadcast_serialized_rows
+#   function _start_render_query(inp::start_render_query_args)
+#     try
+#       result = start_render_query(inp.session, inp.widget_id, inp.node_idx, inp.vega_json)
+#       return start_render_query_result(result)
+#     catch ex
+#       exret = start_render_query_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _start_render_query
+#   function _execute_next_render_step(inp::execute_next_render_step_args)
+#     try
+#       result = execute_next_render_step(inp.pending_render, inp.merged_data)
+#       return execute_next_render_step_result(result)
+#     catch ex
+#       exret = execute_next_render_step_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _execute_next_render_step
+#   function _insert_data(inp::insert_data_args)
+#     try
+#       insert_data(inp.session, inp.insert_data)
+#       return insert_data_result()
+#     catch ex
+#       exret = insert_data_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _insert_data
+#   function _checkpoint(inp::checkpoint_args)
+#     try
+#       checkpoint(inp.session, inp.db_id, inp.table_id)
+#       return checkpoint_result()
+#     catch ex
+#       exret = checkpoint_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _checkpoint
+#   function _get_table_descriptor(inp::get_table_descriptor_args)
+#     try
+#       result = get_table_descriptor(inp.session, inp.table_name)
+#       return get_table_descriptor_result(result)
+#     catch ex
+#       exret = get_table_descriptor_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_table_descriptor
+#   function _get_row_descriptor(inp::get_row_descriptor_args)
+#     try
+#       result = get_row_descriptor(inp.session, inp.table_name)
+#       return get_row_descriptor_result(result)
+#     catch ex
+#       exret = get_row_descriptor_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_row_descriptor
+#   function _get_roles(inp::get_roles_args)
+#     try
+#       result = get_roles(inp.session)
+#       return get_roles_result(result)
+#     catch ex
+#       exret = get_roles_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_roles
+#   function _get_db_objects_for_grantee(inp::get_db_objects_for_grantee_args)
+#     try
+#       result = get_db_objects_for_grantee(inp.session, inp.roleName)
+#       return get_db_objects_for_grantee_result(result)
+#     catch ex
+#       exret = get_db_objects_for_grantee_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_db_objects_for_grantee
+#   function _get_db_object_privs(inp::get_db_object_privs_args)
+#     try
+#       result = get_db_object_privs(inp.session, inp.objectName, inp._type)
+#       return get_db_object_privs_result(result)
+#     catch ex
+#       exret = get_db_object_privs_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_db_object_privs
+#   function _get_all_roles_for_user(inp::get_all_roles_for_user_args)
+#     try
+#       result = get_all_roles_for_user(inp.session, inp.userName)
+#       return get_all_roles_for_user_result(result)
+#     catch ex
+#       exret = get_all_roles_for_user_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_all_roles_for_user
+#   function _set_license_key(inp::set_license_key_args)
+#     try
+#       result = set_license_key(inp.session, inp.key, inp.nonce)
+#       return set_license_key_result(result)
+#     catch ex
+#       exret = set_license_key_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _set_license_key
+#   function _get_license_claims(inp::get_license_claims_args)
+#     try
+#       result = get_license_claims(inp.session, inp.nonce)
+#       return get_license_claims_result(result)
+#     catch ex
+#       exret = get_license_claims_result()
+#       isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+#       rethrow()
+#     end # try
+#   end #function _get_license_claims
+# end # mutable struct MapDProcessor
+# process(p::MapDProcessor, inp::TProtocol, outp::TProtocol) = process(p.tp, inp, outp)
+# distribute(p::MapDProcessor) = distribute(p.tp)
 
 # Client implementation for MapD service
 mutable struct MapDClient <: MapDClientBase
