@@ -1,8 +1,40 @@
-######################################## internals
 mutable struct OmniSciConnection
     session::TSessionId
     c::MapDClient
 end
+
+#For functions below, value for is_null should be known based on the dispatched type
+#Left as keyword just in case my assumption incorrect
+function TStringValue(str_val::Rational, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  Thrift.set_field!(val, :str_val, string(convert(Float64, str_val)))
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, AbstractString}
+  val = OmniSci.TStringValue()
+  Thrift.set_field!(val, :str_val, string(str_val))
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::T, is_null::Bool = true) where T <: Union{Missing, Nothing}
+  val = OmniSci.TStringValue()
+  Thrift.set_field!(val, :str_val, string(str_val))
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringRow(cols::Vector{TStringValue})
+    tsr = OmniSci.TStringRow()
+    Thrift.set_field!(tsr, :cols, cols)
+    return tsr
+end
+
+TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
+
+TStringRow(x::DataFrameRow{DataFrame}) = TStringRow(vec(convert(Array, x)))
 
 #REPL display; show method for Juno uses inline tree display
 Base.show(io::IO, ::MIME"text/plain", m::OmniSciConnection) = print(io, "Connected to $(m.c.p.t.host):$(m.c.p.t.port)")
