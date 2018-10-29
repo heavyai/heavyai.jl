@@ -356,7 +356,7 @@ load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}
 """
 function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
 
-    df_to_array = [OmniSci.TStringRow(x) for x in eachrow(df)]
+    df_to_array = [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]
     load_table(conn, table_name, df_to_array)
     println("Table '$(table_name)' loaded")
 

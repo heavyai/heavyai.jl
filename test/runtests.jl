@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random
+using OmniSci, Test, Dates, Random, DataFrames
 
 #defaults for OmniSci
 host="localhost"
@@ -83,7 +83,7 @@ df = DataFrame([intcol, floatcol, rationalcol, stringcol])
 load_table(conn, "test", df)
 
 #load data rowwise from Vector{TStringRow}
-load_table(conn, "test", [OmniSci.TStringRow(x) for x in eachrow(df)])
+load_table(conn, "test", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)])
 
 
 ######################################## not exported (essentially, OmniSci internal)
