@@ -69,6 +69,23 @@ sql_execute(conn, "grant testuser to mapd2")
 roleuser = get_all_roles_for_user(conn, "mapd2")
 @test typeof(roleuser) == DataFrame
 
+#load data to table from dataframe
+sql_execute(conn, "create table test (col1 int, col2 float, col3 float, col4 text encoding dict(32))")
+
+#Define an example dataframe
+intcol = [4,3,2,1]
+floatcol = [3.0, 4.1, 2.69, 3.8]
+rationalcol = [3//2, 4//7, 9//72, 90/112]
+stringcol = ["hello", "world", "omnisci", "gpu"]
+df = DataFrame([intcol, floatcol, rationalcol, stringcol])
+
+#load data rowwise from dataframe
+load_table(conn, "test", df)
+
+#load data rowwise from Vector{TStringRow}
+load_table(conn, "test", [OmniSci.TStringRow(x) for x in eachrow(df)])
+
+
 ######################################## not exported (essentially, OmniSci internal)
 
 clear_cpu = OmniSci.clear_cpu_memory(conn)
@@ -108,18 +125,12 @@ cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0
 
 #render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
 #get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
-#load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})
-#load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})
-
-#Thrift arrays
-#load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})
-
-#Long-term, hopefully just this
-#load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
-
 #sharedash = share_dashboard(conn, cdash, [""], [""], OmniSci.TDashboardPermissions(false))
-
 #unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
 
-#Probably useful to implement, can take a dataframe and infer its create statement
+#load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})
+#load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})  #Thrift arrays
+#load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8}) #Long-term, hopefully just this
+
+#Probably useful to implement, use to take a dataframe and infer its create statement
 #create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)

@@ -350,6 +350,18 @@ load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_strea
 load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}) =
     load_table(conn.c, conn.session, table_name, rows)
 
+"""
+    load_table(conn::OmniSciConnection, table_name::String, rows::DataFrame)
+
+"""
+function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
+
+    df_to_array = [OmniSci.TStringRow(x) for x in eachrow(df)]
+    load_table(conn, table_name, df_to_array)
+    println("Table '$(table_name)' loaded")
+
+end
+
 # """
 #     detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
 #
