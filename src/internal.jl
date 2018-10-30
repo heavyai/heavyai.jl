@@ -37,7 +37,7 @@ TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
 TStringRow(x::DataFrameRow{DataFrame}) = TStringRow(vec(convert(Array, x)))
 
 #REPL display; show method for Juno uses inline tree display
-Base.show(io::IO, ::MIME"text/plain", m::OmniSciConnection) = print(io, "Connected to $(m.c.p.t.host):$(m.c.p.t.port)")
+Base.show(io::IO, ::MIME"text/plain", m::OmniSciConnection) = println(io, "Connected to $(m.c.p.t.host):$(m.c.p.t.port)")
 
 function load_buffer(handle::Vector{UInt8}, size::Int)
 

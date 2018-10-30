@@ -17,7 +17,7 @@ makedocs(
 
 deploydocs(
     repo = "github.com/omnisci/OmniSci.jl.git",
-    julia = "1.0",
+    #julia = "1.0",
     deps=nothing,
     make=nothing,
     target = "build"

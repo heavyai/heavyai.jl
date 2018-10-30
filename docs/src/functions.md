@@ -1,4 +1,4 @@
-These functions constitute the main interface for working with OmniSci.
+These functions constitute the main interface for working with OmniSci. If a function is not exported for the package, the assumption is that an end-user shouldn't need to use it. If you find otherwise, please [open an issue](https://github.com/omnisci/OmniSci.jl/issues) for discussion.
 
 ## Authentication
 
@@ -9,9 +9,9 @@ disconnect
 
 ## Querying Data
 ```@docs
+sql_execute
 sql_execute_df
 sql_execute_gdf
-sql_execute
 ```
 
 ## Loading Data
