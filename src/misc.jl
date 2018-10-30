@@ -405,7 +405,7 @@ end
     create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
 
 """
-create_table(conn::OmniSciConnection, table_name::Sgetdbs = get_dashboards(conn)tring, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
+create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
     create_table(conn.c, conn.session, table_name, row_desc, table_type.value)
 
 """
