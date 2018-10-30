@@ -44,8 +44,8 @@ Connection to localhost:9091 closed
 """
 function disconnect(conn::OmniSciConnection)
 
-    disconnect(conn.c, conn.session) #consider printing to console that disconnection happened
-    print("Connection to $(conn.c.p.t.host):$(conn.c.p.t.port) closed")
+    disconnect(conn.c, conn.session)
+    println("Connection to $(conn.c.p.t.host):$(conn.c.p.t.port) closed")
 
 end
 
@@ -57,8 +57,15 @@ Displays properties of OmniSci server, such as version and rendering capabilitie
 # Examples
 ```julia-repl
 julia> status = get_status(conn)
-1-element Array{TServerStatus,1}:
- TServerStatus(false, "4.2.0dev-20181003-0206b9f92c", false, 1539095178, "ee", "aggregator", false)
+OmniSci.TServerStatus
+
+  read_only: false
+  version: 4.1.3-20180926-66c2aee949
+  rendering_enabled: false
+  start_time: 1540579280
+  edition: ce
+  host_name: aggregator
+  poly_rendering_enabled: false
 ```
 """
 get_status(conn::OmniSciConnection) =
@@ -73,50 +80,57 @@ GPU and CPU information.
 # Examples
 ```julia-repl
 julia> hardware = get_hardware_info(conn)
-TClusterHardwareInfo(THardwareInfo[THardwareInfo(0, 12, 0, 0, "", TGpuSpecification[])])
+OmniSci.TClusterHardwareInfo(OmniSci.THardwareInfo[THardwareInfo(0, 12, 0, 0, "", OmniSci.TGpuSpecification[])])
 ```
 """
 get_hardware_info(conn::OmniSciConnection) =
     get_hardware_info(conn.c, conn.session)
 
 """
-    get_tables_meta(conn::OmniSciConnection, as_df::Bool = true)
+    get_tables_meta(conn::OmniSciConnection; as_df::Bool = true)
 
 Get metadata for tables in database specified in `connect()`.
 
 # Examples
 ```julia-repl
 julia> metad = get_tables_meta(conn)
-5×6 DataFrame. Omitted printing of 1 columns
-│ Row │ is_replicated │ is_view │ max_rows            │ num_cols │ shard_count │
-│     │ Bool          │ Bool    │ Int64               │ Int64    │ Int64       │
-├─────┼───────────────┼─────────┼─────────────────────┼──────────┼─────────────┤
-│ 1   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │
-│ 2   │ false         │ false   │ 4611686018427387904 │ 6        │ 0           │
-│ 3   │ false         │ false   │ 4611686018427387904 │ 64       │ 0           │
-│ 4   │ false         │ false   │ 4611686018427387904 │ 56       │ 0           │
-│ 5   │ false         │ false   │ 4611686018427387904 │ 42       │ 0           │
+5×6 DataFrame
+│ Row │ is_replicated │ is_view │ max_rows            │ num_cols │ shard_count │ table_name        │
+│     │ Bool          │ Bool    │ Int64               │ Int64    │ Int64       │ String            │
+├─────┼───────────────┼─────────┼─────────────────────┼──────────┼─────────────┼───────────────────┤
+│ 1   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ omnisci_states    │
+│ 2   │ false         │ false   │ 4611686018427387904 │ 6        │ 0           │ omnisci_counties  │
+│ 3   │ false         │ false   │ 4611686018427387904 │ 64       │ 0           │ omnisci_countries │
+│ 4   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ test2             │
+│ 5   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ test              │
 ```
 """
-get_tables_meta(conn::OmniSciConnection, as_df::Bool = true) =
+get_tables_meta(conn::OmniSciConnection; as_df::Bool = true) =
     as_df ? DataFrame(get_tables_meta(conn.c, conn.session)) : get_tables_meta(conn.c, conn.session)
 
 """
-    get_table_details(conn::OmniSciConnection, table_name::String, as_df::Bool = true)
+    get_table_details(conn::OmniSciConnection, table_name::String; as_df::Bool = true)
 
 Get table details such as column names and types.
 
 # Examples
 ```julia-repl
-julia> tbl_detail = get_table_details(conn, "mapd_states")
-TTableDetails(TColumnType[TColumnType("id", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, "", false, false), TColumnType("abbr", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, "", false, false), TColumnType("name", TTypeInfo(6, 4, true, false, 0, 0, 32, -1), false, "", false, false), TColumnType("mapd_geo", TTypeInfo(16, 6, true, false, 23, 4326, 32, -1), false, "", false, false)], 32000000, 2097152, 4611686018427387904, "", 0, "[]", false, 0)
+julia> tbl_detail = get_table_details(conn, "omnisci_states")
+4×21 DataFrame. Omitted printing of 13 columns
+│ Row │ col_name    │ col_type │ comp_param │ encoding │ is_array │ is_physical │ is_reserved_keyword │ is_system │
+│     │ String      │ Int32    │ Int32      │ Int32    │ Bool     │ Bool        │ Bool                │ Bool      │
+├─────┼─────────────┼──────────┼────────────┼──────────┼──────────┼─────────────┼─────────────────────┼───────────┤
+│ 1   │ id          │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │
+│ 2   │ abbr        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │
+│ 3   │ name        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │
+│ 4   │ omnisci_geo │ 16       │ 32         │ 6        │ false    │ false       │ false               │ false     │
 ```
 """
-get_table_details(conn::OmniSciConnection, table_name::String, as_df::Bool = true) =
+get_table_details(conn::OmniSciConnection, table_name::String; as_df::Bool = true) =
     as_df ? DataFrame(get_table_details(conn.c, conn.session, table_name)) : get_table_details(conn.c, conn.session, table_name)
 
 """
-    get_users(conn::OmniSciConnection, as_df::Bool = true)
+    get_users(conn::OmniSciConnection; as_df::Bool = true)
 
 Get list of users who have access to database specified in `connect()`.
 
@@ -148,12 +162,20 @@ julia> db = get_databases(conn)
 │ 1   │ mapd    │ mapd     │
 ```
 """
-get_databases(conn::OmniSciConnection, as_df::Bool=true) =
+get_databases(conn::OmniSciConnection; as_df::Bool=true) =
     as_df ? DataFrame(get_databases(conn.c, conn.session)) : get_databases(conn.c, conn.session)
 
 """
     get_memory(conn::OmniSciConnection, memory_level::String)
 
+Get memory profile from current session. Acceptable values for `memory_level` are "cpu" or "gpu".
+
+# Examples
+```julia-repl
+julia> gm = OmniSci.get_memory(conn, "cpu")
+1-element Array{OmniSci.TNodeMemoryInfo,1}:
+ OmniSci.TNodeMemoryInfo("", 512, 25692761, 8388608, false, OmniSci.TMemoryData[TMemoryData(0, 0, 26, 0, [1, 2, 1, 0], 0, false), TMemoryData(0, 26, 26, 1, [1, 2, 2, 0], 0, false), TMemoryData(0, 52, 26, 2, [1, 2, 3, 0], 0, false), TMemoryData(0, 78, 26, 3, [1, 2, 4, 0], 0, false), TMemoryData(0, 104, 26, 4, [1, 2, 5, 0], 0, false), TMemoryData(0, 130, 533,5, [1, 2, 7, 0, 1], 0, false), TMemoryData(0, 663, 26, 6, [1, 2, 7, 0, 2], 0, false), TMemoryData(0, 689, 28, 7, [1, 2,8, 0, 1], 0, false), TMemoryData(0, 717, 26, 8, [1, 2, 8, 0, 2], 0, false), TMemoryData(0, 743, 28, 9, [1, 2, 9, 0, 1],0, false), TMemoryData(0, 771, 26, 10, [1, 2, 9, 0, 2], 0, false), TMemoryData(0, 797, 204, 11, [1, 2, 10, 0], 0, false), TMemoryData(0, 1001, 26, 12, [1, 2, 11, 0], 0, false), TMemoryData(0, 1027, 8387581, 0, Int64[], 0, true)])
+```
 """
 function get_memory(conn::OmniSciConnection, memory_level::String)
 
@@ -164,12 +186,24 @@ end
 """
     clear_cpu_memory(conn::OmniSciConnection)
 
+Clears CPU memory. This function returns `nothing`.
+
+# Examples
+```julia-repl
+julia> cm = OmniSci.clear_cpu_memory(conn)
+```
 """
 clear_cpu_memory(conn::OmniSciConnection) =
     clear_cpu_memory(conn.c, conn.session)
 
 """
     clear_gpu_memory(conn::OmniSciConnection)
+
+Clears GPU memory. This function returns `nothing`.
+
+# Examples
+```julia-repl
+julia> cgm = OmniSci.clear_gpu_memory(conn)
 
 """
 clear_gpu_memory(conn::OmniSciConnection) =
