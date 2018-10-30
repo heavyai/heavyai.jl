@@ -179,14 +179,14 @@ end # mutable struct TDetectResult
 #   TImportStatus() = (o=new(); fillunset(o); o)
 # end # mutable struct TImportStatus
 
-mutable struct TFrontendView <: Thrift.TMsg
-  view_name::String
-  view_state::String
-  image_hash::String
-  update_time::String
-  view_metadata::String
-  TFrontendView() = (o=new(); fillunset(o); o)
-end # mutable struct TFrontendView
+# mutable struct TFrontendView <: Thrift.TMsg
+#   view_name::String
+#   view_state::String
+#   image_hash::String
+#   update_time::String
+#   view_metadata::String
+#   TFrontendView() = (o=new(); fillunset(o); o)
+# end # mutable struct TFrontendView
 
 mutable struct TDashboard <: Thrift.TMsg
   dashboard_name::String
@@ -211,11 +211,11 @@ mutable struct TServerStatus <: Thrift.TMsg
   TServerStatus() = (o=new(); fillunset(o); o)
 end # mutable struct TServerStatus
 
-mutable struct TPixel <: Thrift.TMsg
-  x::Int64
-  y::Int64
-  TPixel() = (o=new(); fillunset(o); o)
-end # mutable struct TPixel
+# mutable struct TPixel <: Thrift.TMsg
+#   x::Int64
+#   y::Int64
+#   TPixel() = (o=new(); fillunset(o); o)
+# end # mutable struct TPixel
 #
 # mutable struct TPixelTableRowResult <: Thrift.TMsg
 #   pixel::TPixel
@@ -319,99 +319,99 @@ mutable struct TColumnRange <: Thrift.TMsg
   TColumnRange() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnRange
 
-mutable struct TDictionaryGeneration <: Thrift.TMsg
-  dict_id::Int32
-  entry_count::Int64
-  TDictionaryGeneration() = (o=new(); fillunset(o); o)
-end # mutable struct TDictionaryGeneration
+# mutable struct TDictionaryGeneration <: Thrift.TMsg
+#   dict_id::Int32
+#   entry_count::Int64
+#   TDictionaryGeneration() = (o=new(); fillunset(o); o)
+# end # mutable struct TDictionaryGeneration
+#
+# mutable struct TTableGeneration <: Thrift.TMsg
+#   table_id::Int32
+#   tuple_count::Int64
+#   start_rowid::Int64
+#   TTableGeneration() = (o=new(); fillunset(o); o)
+# end # mutable struct TTableGeneration
 
-mutable struct TTableGeneration <: Thrift.TMsg
-  table_id::Int32
-  tuple_count::Int64
-  start_rowid::Int64
-  TTableGeneration() = (o=new(); fillunset(o); o)
-end # mutable struct TTableGeneration
+# mutable struct TPendingQuery <: Thrift.TMsg
+#   id::TQueryId
+#   column_ranges::Vector{TColumnRange}
+#   dictionary_generations::Vector{TDictionaryGeneration}
+#   table_generations::Vector{TTableGeneration}
+#   TPendingQuery() = (o=new(); fillunset(o); o)
+# end # mutable struct TPendingQuery
 
-mutable struct TPendingQuery <: Thrift.TMsg
-  id::TQueryId
-  column_ranges::Vector{TColumnRange}
-  dictionary_generations::Vector{TDictionaryGeneration}
-  table_generations::Vector{TTableGeneration}
-  TPendingQuery() = (o=new(); fillunset(o); o)
-end # mutable struct TPendingQuery
+# mutable struct TVarLen <: Thrift.TMsg
+#   payload::Vector{UInt8}
+#   is_null::Bool
+#   TVarLen() = (o=new(); fillunset(o); o)
+# end # mutable struct TVarLen
+#
+# mutable struct TDataBlockPtr <: Thrift.TMsg
+#   fixed_len_data::Vector{UInt8}
+#   var_len_data::Vector{TVarLen}
+#   TDataBlockPtr() = (o=new(); fillunset(o); o)
+# end # mutable struct TDataBlockPtr
+# meta(t::Type{TDataBlockPtr}) = meta(t, Symbol[:fixed_len_data,:var_len_data], Int[], Dict{Symbol,Any}())
+#
+# mutable struct TInsertData <: Thrift.TMsg
+#   db_id::Int32
+#   table_id::Int32
+#   column_ids::Vector{Int32}
+#   data::Vector{TDataBlockPtr}
+#   num_rows::Int64
+#   TInsertData() = (o=new(); fillunset(o); o)
+# end # mutable struct TInsertData
+#
+# mutable struct TPendingRenderQuery <: Thrift.TMsg
+#   id::TQueryId
+#   TPendingRenderQuery() = (o=new(); fillunset(o); o)
+# end # mutable struct TPendingRenderQuery
 
-mutable struct TVarLen <: Thrift.TMsg
-  payload::Vector{UInt8}
-  is_null::Bool
-  TVarLen() = (o=new(); fillunset(o); o)
-end # mutable struct TVarLen
-
-mutable struct TDataBlockPtr <: Thrift.TMsg
-  fixed_len_data::Vector{UInt8}
-  var_len_data::Vector{TVarLen}
-  TDataBlockPtr() = (o=new(); fillunset(o); o)
-end # mutable struct TDataBlockPtr
-meta(t::Type{TDataBlockPtr}) = meta(t, Symbol[:fixed_len_data,:var_len_data], Int[], Dict{Symbol,Any}())
-
-mutable struct TInsertData <: Thrift.TMsg
-  db_id::Int32
-  table_id::Int32
-  column_ids::Vector{Int32}
-  data::Vector{TDataBlockPtr}
-  num_rows::Int64
-  TInsertData() = (o=new(); fillunset(o); o)
-end # mutable struct TInsertData
-
-mutable struct TPendingRenderQuery <: Thrift.TMsg
-  id::TQueryId
-  TPendingRenderQuery() = (o=new(); fillunset(o); o)
-end # mutable struct TPendingRenderQuery
-
-mutable struct TRenderParseResult <: Thrift.TMsg
-  merge_type::Int32
-  node_id::Int32
-  execution_time_ms::Int64
-  render_time_ms::Int64
-  total_time_ms::Int64
-  TRenderParseResult() = (o=new(); fillunset(o); o)
-end # mutable struct TRenderParseResult
-
-mutable struct TRawRenderPassDataResult <: Thrift.TMsg
-  num_channels::Int32
-  pixels::Vector{UInt8}
-  row_ids_A::Vector{UInt8}
-  row_ids_B::Vector{UInt8}
-  table_ids::Vector{UInt8}
-  accum_data::Vector{UInt8}
-  TRawRenderPassDataResult() = (o=new(); fillunset(o); o)
-end # mutable struct TRawRenderPassDataResult
-
-const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
-
-mutable struct TRawPixelData <: Thrift.TMsg
-  width::Int32
-  height::Int32
-  render_pass_map::TRenderPassMap
-  TRawPixelData() = (o=new(); fillunset(o); o)
-end # mutable struct TRawPixelData
-
-mutable struct TRenderDatum <: Thrift.TMsg
-  _type::Int32
-  cnt::Int32
-  value::Vector{UInt8}
-  TRenderDatum() = (o=new(); fillunset(o); o)
-end # mutable struct TRenderDatum
-
-const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
-
-mutable struct TRenderStepResult <: Thrift.TMsg
-  merge_data::TRenderAggDataMap
-  raw_pixel_data::TRawPixelData
-  execution_time_ms::Int64
-  render_time_ms::Int64
-  total_time_ms::Int64
-  TRenderStepResult() = (o=new(); fillunset(o); o)
-end # mutable struct TRenderStepResult
+# mutable struct TRenderParseResult <: Thrift.TMsg
+#   merge_type::Int32
+#   node_id::Int32
+#   execution_time_ms::Int64
+#   render_time_ms::Int64
+#   total_time_ms::Int64
+#   TRenderParseResult() = (o=new(); fillunset(o); o)
+# end # mutable struct TRenderParseResult
+#
+# mutable struct TRawRenderPassDataResult <: Thrift.TMsg
+#   num_channels::Int32
+#   pixels::Vector{UInt8}
+#   row_ids_A::Vector{UInt8}
+#   row_ids_B::Vector{UInt8}
+#   table_ids::Vector{UInt8}
+#   accum_data::Vector{UInt8}
+#   TRawRenderPassDataResult() = (o=new(); fillunset(o); o)
+# end # mutable struct TRawRenderPassDataResult
+#
+# const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
+#
+# mutable struct TRawPixelData <: Thrift.TMsg
+#   width::Int32
+#   height::Int32
+#   render_pass_map::TRenderPassMap
+#   TRawPixelData() = (o=new(); fillunset(o); o)
+# end # mutable struct TRawPixelData
+#
+# mutable struct TRenderDatum <: Thrift.TMsg
+#   _type::Int32
+#   cnt::Int32
+#   value::Vector{UInt8}
+#   TRenderDatum() = (o=new(); fillunset(o); o)
+# end # mutable struct TRenderDatum
+#
+# const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+#
+# mutable struct TRenderStepResult <: Thrift.TMsg
+#   merge_data::TRenderAggDataMap
+#   raw_pixel_data::TRawPixelData
+#   execution_time_ms::Int64
+#   render_time_ms::Int64
+#   total_time_ms::Int64
+#   TRenderStepResult() = (o=new(); fillunset(o); o)
+# end # mutable struct TRenderStepResult
 
 mutable struct TDatabasePermissions <: Thrift.TMsg
   create_::Bool
@@ -1006,65 +1006,65 @@ meta(t::Type{render_vega_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dic
 
 # types encapsulating arguments and return values of method get_frontend_view
 
-mutable struct get_frontend_view_args <: Thrift.TMsg
-  session::TSessionId
-  view_name::String
-  get_frontend_view_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_frontend_view_args
-
-mutable struct get_frontend_view_result
-  success::TFrontendView
-  e::TMapDException
-  get_frontend_view_result() = (o=new(); fillunset(o); o)
-  get_frontend_view_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_frontend_view_result
-meta(t::Type{get_frontend_view_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_frontend_view_args <: Thrift.TMsg
+#   session::TSessionId
+#   view_name::String
+#   get_frontend_view_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_frontend_view_args
+#
+# mutable struct get_frontend_view_result
+#   success::TFrontendView
+#   e::TMapDException
+#   get_frontend_view_result() = (o=new(); fillunset(o); o)
+#   get_frontend_view_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_frontend_view_result
+# meta(t::Type{get_frontend_view_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_frontend_views
 
-mutable struct get_frontend_views_args <: Thrift.TMsg
-  session::TSessionId
-  get_frontend_views_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_frontend_views_args
-
-mutable struct get_frontend_views_result
-  success::Vector{TFrontendView}
-  e::TMapDException
-  get_frontend_views_result() = (o=new(); fillunset(o); o)
-  get_frontend_views_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_frontend_views_result
-meta(t::Type{get_frontend_views_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_frontend_views_args <: Thrift.TMsg
+#   session::TSessionId
+#   get_frontend_views_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_frontend_views_args
+#
+# mutable struct get_frontend_views_result
+#   success::Vector{TFrontendView}
+#   e::TMapDException
+#   get_frontend_views_result() = (o=new(); fillunset(o); o)
+#   get_frontend_views_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_frontend_views_result
+# meta(t::Type{get_frontend_views_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method create_frontend_view
 
-mutable struct create_frontend_view_args <: Thrift.TMsg
-  session::TSessionId
-  view_name::String
-  view_state::String
-  image_hash::String
-  view_metadata::String
-  create_frontend_view_args() = (o=new(); fillunset(o); o)
-end # mutable struct create_frontend_view_args
-
-mutable struct create_frontend_view_result
-  e::TMapDException
-  create_frontend_view_result() = (o=new(); fillunset(o); o)
-end # mutable struct create_frontend_view_result
-meta(t::Type{create_frontend_view_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct create_frontend_view_args <: Thrift.TMsg
+#   session::TSessionId
+#   view_name::String
+#   view_state::String
+#   image_hash::String
+#   view_metadata::String
+#   create_frontend_view_args() = (o=new(); fillunset(o); o)
+# end # mutable struct create_frontend_view_args
+#
+# mutable struct create_frontend_view_result
+#   e::TMapDException
+#   create_frontend_view_result() = (o=new(); fillunset(o); o)
+# end # mutable struct create_frontend_view_result
+# meta(t::Type{create_frontend_view_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method delete_frontend_view
 
-mutable struct delete_frontend_view_args <: Thrift.TMsg
-  session::TSessionId
-  view_name::String
-  delete_frontend_view_args() = (o=new(); fillunset(o); o)
-end # mutable struct delete_frontend_view_args
-
-mutable struct delete_frontend_view_result
-  e::TMapDException
-  delete_frontend_view_result() = (o=new(); fillunset(o); o)
-end # mutable struct delete_frontend_view_result
-meta(t::Type{delete_frontend_view_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct delete_frontend_view_args <: Thrift.TMsg
+#   session::TSessionId
+#   view_name::String
+#   delete_frontend_view_args() = (o=new(); fillunset(o); o)
+# end # mutable struct delete_frontend_view_args
+#
+# mutable struct delete_frontend_view_result
+#   e::TMapDException
+#   delete_frontend_view_result() = (o=new(); fillunset(o); o)
+# end # mutable struct delete_frontend_view_result
+# meta(t::Type{delete_frontend_view_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_dashboard
 
@@ -1329,19 +1329,19 @@ meta(t::Type{create_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any
 
 # types encapsulating arguments and return values of method import_table
 
-mutable struct import_table_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  file_name::String
-  copy_params::TCopyParams
-  import_table_args() = (o=new(); fillunset(o); o)
-end # mutable struct import_table_args
-
-mutable struct import_table_result
-  e::TMapDException
-  import_table_result() = (o=new(); fillunset(o); o)
-end # mutable struct import_table_result
-meta(t::Type{import_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct import_table_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   file_name::String
+#   copy_params::TCopyParams
+#   import_table_args() = (o=new(); fillunset(o); o)
+# end # mutable struct import_table_args
+#
+# mutable struct import_table_result
+#   e::TMapDException
+#   import_table_result() = (o=new(); fillunset(o); o)
+# end # mutable struct import_table_result
+# meta(t::Type{import_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method import_geo_table
 
@@ -1522,35 +1522,35 @@ meta(t::Type{import_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any
 
 # types encapsulating arguments and return values of method get_table_descriptor
 
-mutable struct get_table_descriptor_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  get_table_descriptor_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_table_descriptor_args
-
-mutable struct get_table_descriptor_result
-  success::TTableDescriptor
-  e::TMapDException
-  get_table_descriptor_result() = (o=new(); fillunset(o); o)
-  get_table_descriptor_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_table_descriptor_result
-meta(t::Type{get_table_descriptor_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
-# types encapsulating arguments and return values of method get_row_descriptor
-
-mutable struct get_row_descriptor_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  get_row_descriptor_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_row_descriptor_args
-
-mutable struct get_row_descriptor_result
-  success::TRowDescriptor
-  e::TMapDException
-  get_row_descriptor_result() = (o=new(); fillunset(o); o)
-  get_row_descriptor_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_row_descriptor_result
-meta(t::Type{get_row_descriptor_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_table_descriptor_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   get_table_descriptor_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_table_descriptor_args
+#
+# mutable struct get_table_descriptor_result
+#   success::TTableDescriptor
+#   e::TMapDException
+#   get_table_descriptor_result() = (o=new(); fillunset(o); o)
+#   get_table_descriptor_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_table_descriptor_result
+# meta(t::Type{get_table_descriptor_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+#
+# # types encapsulating arguments and return values of method get_row_descriptor
+#
+# mutable struct get_row_descriptor_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   get_row_descriptor_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_row_descriptor_args
+#
+# mutable struct get_row_descriptor_result
+#   success::TRowDescriptor
+#   e::TMapDException
+#   get_row_descriptor_result() = (o=new(); fillunset(o); o)
+#   get_row_descriptor_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_row_descriptor_result
+# meta(t::Type{get_row_descriptor_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_roles
 
