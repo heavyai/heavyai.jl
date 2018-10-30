@@ -1,13 +1,11 @@
 using OmniSci, Test, Dates, Random, DataFrames
 
-#defaults for OmniSci
+#defaults for OmniSci CPU Docker image
 host="localhost"
 user="mapd"
 passwd="HyperInteractive"
 port=9091
 dbname="mapd"
-
-######################################## completed tests
 
 #set up connection just to disconnect
 conn_d = connect(host, port , user, passwd, dbname)
@@ -85,6 +83,17 @@ load_table(conn, "test", df)
 #load data rowwise from Vector{TStringRow}
 load_table(conn, "test", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)])
 
+#TODO: create a show method and/or return as dataframe
+hware = get_hardware_info(conn)
+@test typeof(hware) == OmniSci.TClusterHardwareInfo
+
+gobj = get_db_objects_for_grantee(conn, "testuser")
+@test typeof(gobj) == Vector{OmniSci.TDBObject}
+
+#TODO: Figure out IPC
+cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
+@test typeof(cpu_arrow) == OmniSci.TDataFrame
+
 
 ######################################## not exported (essentially, OmniSci internal)
 
@@ -105,32 +114,3 @@ mem = OmniSci.get_memory(conn, "cpu")
 
 #not exported, needs to be hooked up in OmniSci core
 #OmniSci.interrupt(conn::OmniSciConnection)
-
-
-
-
-
-######################################## Need work
-
-#TODO: create a show method and/or return as dataframe
-hware = get_hardware_info(conn)
-@test typeof(hware) == OmniSci.TClusterHardwareInfo
-
-gobj = get_db_objects_for_grantee(conn, "testuser")
-@test typeof(gobj) == Vector{OmniSci.TDBObject}
-
-#TODO: Figure out IPC
-cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
-@test typeof(cpu_arrow) == OmniSci.TDataFrame
-
-#render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
-#get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Int)
-#sharedash = share_dashboard(conn, cdash, [""], [""], OmniSci.TDashboardPermissions(false))
-#unshare_dashboard(conn::OmniSciConnection, dashboard_id::Int, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
-
-#load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})
-#load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})  #Thrift arrays
-#load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8}) #Long-term, hopefully just this
-
-#Probably useful to implement, use to take a dataframe and infer its create statement
-#create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
