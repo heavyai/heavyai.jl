@@ -144,11 +144,11 @@ julia> users = get_users(conn)
 │ 1   │ mapd   │
 ```
 """
-get_users(conn::OmniSciConnection, as_df::Bool = true) =
+get_users(conn::OmniSciConnection; as_df::Bool = true) =
     as_df ? DataFrame(Dict(:users => get_users(conn.c, conn.session))) : get_users(conn.c, conn.session)
 
 """
-    get_databases(conn::OmniSciConnection, as_df::Bool=true)
+    get_databases(conn::OmniSciConnection; as_df::Bool=true)
 
 Get list of databases.
 
@@ -212,32 +212,41 @@ clear_gpu_memory(conn::OmniSciConnection) =
 ######################################## query, render
 
 """
-    sql_execute(conn::OmniSciConnection, query::String, first_n::Int = -1, at_most_n::Int = -1)
+    sql_execute(conn::OmniSciConnection, query::String; first_n::Int = -1, at_most_n::Int = -1, as_df::Bool = true)
+
+Execute a SQL query.
 
 """
-function sql_execute(conn::OmniSciConnection, query::String, first_n::Int = -1, at_most_n::Int = -1)
+function sql_execute(conn::OmniSciConnection, query::String; first_n::Int = -1, at_most_n::Int = -1, as_df::Bool = true)
 
-    first_n > 0 && at_most_n > 0 ? error("Only one of first_n and at_most_n can be set at one time") : nothing
+    #asserting here, rather than pass a bad query and getting an TMapDException
+    @assert (first_n < 0 || at_most_n < 0) "Only one of 'first_n' and 'at_most_n' can be set at one time"
 
     #true hard-coded for column_format, as its not clear there is any benefit to providing row-wise parsing (slow)
     result = sql_execute(conn.c, conn.session, query, true, randstring(32), Int32(first_n), Int32(at_most_n))
 
-    return DataFrame(result)
+    as_df ? DataFrame(result) : result
 
 end
 
 """
     sql_execute_df(conn::OmniSciConnection, query::String, device_type::Int, device_id::Int, first_n::Int = -1)
 
+Execute a SQL query using Apache Arrow IPC (CPU). This method requires running the code in the same environment where
+OmniSci is running.
+
 """
 sql_execute_df(conn::OmniSciConnection, query::String, device_type::Int, device_id::Int, first_n::Int = -1) =
     sql_execute_df(conn.c, conn.session, query, Int32(device_type), Int32(device_id), Int32(first_n))
 
 """
-    sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int, first_n::Int = -1)
+    sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int; first_n::Int = -1)
+
+Execute a SQL query using Apache Arrow IPC (GPU). This method requires running the code in the same environment where
+OmniSci is running.
 
 """
-sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int, first_n::Int = -1) =
+sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int; first_n::Int = -1) =
     sql_execute_gdf(conn.c, conn.session, query, Int32(device_id), Int32(first_n))
 
 """
@@ -277,15 +286,8 @@ render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compress
 
 ######################################## dashboard
 
-# """
-#     get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
-#
-# """
-# get_dashboard(conn::OmniSciConnection, dashboard_id::Integer)  =
-#     get_dashboard(conn.c, conn.session, Int32(dashboard_id))
-
 """
-    get_dashboards(conn::OmniSciConnection, as_df::Bool = true)
+    get_dashboards(conn::OmniSciConnection; as_df::Bool = true)
 
 Gets dashboards that user submitted during connect() can access.
 
@@ -306,7 +308,7 @@ julia> getdbs = get_dashboards(conn)
 ```
 
 """
-get_dashboards(conn::OmniSciConnection, as_df::Bool = true) =
+get_dashboards(conn::OmniSciConnection; as_df::Bool = true) =
     as_df ? DataFrame(get_dashboards(conn.c, conn.session)) : get_dashboards(conn.c, conn.session)
 
 """
@@ -387,6 +389,9 @@ load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}
 """
     load_table(conn::OmniSciConnection, table_name::String, rows::DataFrame)
 
+Load a dataframe into OmniSci. This method loads data row-wise and converts data elements to string before upload.
+Currently, this method requires the table to already exist on OmniSci.
+
 """
 function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
 
@@ -396,26 +401,12 @@ function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
 
 end
 
-# """
-#     detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams)
-#
-# """
-# detect_column_types(conn::OmniSciConnection, file_name::String, copy_params::TCopyParams) =
-#     detect_column_types(conn.c, conn.session, file_name, copy_params)
-
 """
     create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
 
 """
-create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
+create_table(conn::OmniSciConnection, table_name::Sgetdbs = get_dashboards(conn)tring, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
     create_table(conn.c, conn.session, table_name, row_desc, table_type.value)
-
-# """
-#     import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams)
-#
-# """
-# import_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams) =
-#     import_table(conn.c, conn.session, table_name, file_name, copy_params)
 
 """
     import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
@@ -424,20 +415,14 @@ create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescript
 import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor) =
     import_geo_table(conn.c, conn.session, table_name, file_name, copy_params, row_desc)
 
-# """
-#     import_table_status(conn::OmniSciConnection, import_id::String)
-#
-# """
-# import_table_status(conn::OmniSciConnection, import_id::String) =
-#     import_table_status(conn.c, conn.session, import_id)
 
 ######################################## object privileges
 
 """
-    get_roles(conn::OmniSciConnection, as_df::Bool = true)
+    get_roles(conn::OmniSciConnection; as_df::Bool = true)
 
 """
-get_roles(conn::OmniSciConnection, as_df::Bool = true) =
+get_roles(conn::OmniSciConnection; as_df::Bool = true) =
     as_df ? DataFrame(Dict(:roles => get_roles(conn.c, conn.session))) : get_roles(conn.c, conn.session)
 
 """
@@ -457,11 +442,11 @@ get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)
     get_db_object_privs(conn.c, conn.session, objectName, Int32(type_))
 
 """
-    get_all_roles_for_user(conn::OmniSciConnection, userName::String, as_df::Bool = true)
+    get_all_roles_for_user(conn::OmniSciConnection, userName::String; as_df::Bool = true)
 
 
 """
-get_all_roles_for_user(conn::OmniSciConnection, userName::String, as_df::Bool = true) =
+get_all_roles_for_user(conn::OmniSciConnection, userName::String; as_df::Bool = true) =
     as_df ? DataFrame(Dict("roles" => get_all_roles_for_user(conn.c, conn.session, userName))) : get_all_roles_for_user(conn.c, conn.session, userName)
 
 ######################################## licensing
