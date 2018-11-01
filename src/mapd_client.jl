@@ -583,27 +583,27 @@ function get_dashboard_grantees(c::MapDClient, session::TSessionId, dashboard_id
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_dashboard_grantees
 
-# Client callable method for load_table_binary
-function load_table_binary(c::MapDClient, session::TSessionId, table_name::String, rows::Vector{TRow})
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "load_table_binary", Thrift.MessageType.CALL, c.seqid)
-  inp = load_table_binary_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :table_name, table_name)
-  Thrift.set_field!(inp, :rows, rows)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, load_table_binary_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function load_table_binary
+# # Client callable method for load_table_binary
+# function load_table_binary(c::MapDClient, session::TSessionId, table_name::String, rows::Vector{TRow})
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "load_table_binary", Thrift.MessageType.CALL, c.seqid)
+#   inp = load_table_binary_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.set_field!(inp, :table_name, table_name)
+#   Thrift.set_field!(inp, :rows, rows)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, load_table_binary_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   nothing
+# end # function load_table_binary
 
 # Client callable method for load_table_binary_columnar
 function load_table_binary_columnar(c::MapDClient, session::TSessionId, table_name::String, cols::Vector{TColumn})

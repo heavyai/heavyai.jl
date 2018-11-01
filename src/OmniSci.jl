@@ -19,7 +19,7 @@ export get_frontend_view, get_frontend_views
 export create_frontend_view, delete_frontend_view
 export get_dashboards, get_dashboard_grantees
 export create_dashboard, replace_dashboard, delete_dashboard, share_dashboard, unshare_dashboard
-export load_table_binary, load_table_binary_columnar, load_table_binary_arrow, load_table
+export load_table_binary_columnar, load_table_binary_arrow, load_table
 export detect_column_types, create_table, import_table, import_geo_table, import_table_status
 export get_roles, get_all_roles_for_user
 export get_db_objects_for_grantee, get_db_object_privs
