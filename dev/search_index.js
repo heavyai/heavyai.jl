@@ -113,27 +113,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions/#OmniSci.load_table_binary_columnar",
+    "page": "Functions",
+    "title": "OmniSci.load_table_binary_columnar",
+    "category": "function",
+    "text": "load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})\n\n\n\n\n\nload_table_binary_columnar(conn::OmniSciConnection, table_name::String, df::DataFrame)\n\n\n\n\n\n"
+},
+
+{
     "location": "functions/#OmniSci.load_table_binary_arrow",
     "page": "Functions",
     "title": "OmniSci.load_table_binary_arrow",
     "category": "function",
     "text": "load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.load_table_binary",
-    "page": "Functions",
-    "title": "OmniSci.load_table_binary",
-    "category": "function",
-    "text": "load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.load_table_binary_columnar",
-    "page": "Functions",
-    "title": "OmniSci.load_table_binary_columnar",
-    "category": "function",
-    "text": "load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})\n\n\n\n\n\n"
 },
 
 {
@@ -149,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "Loading Data",
     "category": "section",
-    "text": "create_table\nload_table\nload_table_binary_arrow\nload_table_binary\nload_table_binary_columnar\nimport_geo_table"
+    "text": "create_table\nload_table\nload_table_binary_columnar\nload_table_binary_arrow\nimport_geo_table"
 },
 
 {
