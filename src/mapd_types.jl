@@ -784,21 +784,6 @@ mutable struct get_dashboard_grantees_result
 end # mutable struct get_dashboard_grantees_result
 meta(t::Type{get_dashboard_grantees_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
-# types encapsulating arguments and return values of method load_table_binary
-
-mutable struct load_table_binary_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  rows::Vector{TRow}
-  load_table_binary_args() = (o=new(); fillunset(o); o)
-end # mutable struct load_table_binary_args
-
-mutable struct load_table_binary_result
-  e::TMapDException
-  load_table_binary_result() = (o=new(); fillunset(o); o)
-end # mutable struct load_table_binary_result
-meta(t::Type{load_table_binary_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
-
 # types encapsulating arguments and return values of method load_table_binary_columnar
 
 mutable struct load_table_binary_columnar_args <: Thrift.TMsg

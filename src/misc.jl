@@ -359,18 +359,18 @@ get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer) =
 ######################################## import
 
 """
-    load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow})
-
-"""
-load_table_binary(conn::OmniSciConnection, table_name::String, rows::Vector{TRow}) =
-    load_table_binary(conn.c, conn.session, table_name, rows)
-
-"""
     load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})
 
 """
 load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn}) =
     load_table_binary_columnar(conn.c, conn.session, table_name, cols)
+
+"""
+    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, df::DataFrame)
+
+"""
+load_table_binary_columnar(conn::OmniSciConnection, table_name::String, df::DataFrame) =
+    load_table_binary_columnar(conn, table_name, [TColumn(df[x]) for x in 1:ncol(df)])
 
 """
     load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
