@@ -78,10 +78,27 @@ stringcol = ["hello", "world", "omnisci", "gpu"]
 df = DataFrame([intcol, floatcol, rationalcol, stringcol])
 
 #load data rowwise from dataframe
-load_table(conn, "test", df)
+#TODO: does this need an @test in front of it?
+load_table(conn, "test", df) == nothing
 
 #load data rowwise from Vector{TStringRow}
+#TODO: does this need an @test in front of it?
 load_table(conn, "test", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)])
+
+#set up for load_table_binary_columnar
+intcol = [4,3,missing,1]
+floatcol = [3.0, missing, 2.69, 3.8]
+rationalcol = [missing, 4//7, 9//72, 90/112]
+stringcol = ["hello", "world", "omnisci", "gpu"]
+df = DataFrame([intcol, floatcol, rationalcol, stringcol])
+
+#load table columnwise
+#TODO: does this need an @test in front of it?
+load_table_binary_columnar(conn, "test", df)
+
+#load data from Vector{TColumn}
+#TODO: does this need an @test in front of it?
+load_table_binary_columnar(conn, test, [TColumn(df[x]) for x in 1:ncol(df)])
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
