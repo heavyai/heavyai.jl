@@ -98,7 +98,7 @@ load_table_binary_columnar(conn, "test", df)
 
 #load data from Vector{TColumn}
 #TODO: does this need an @test in front of it?
-load_table_binary_columnar(conn, test, [TColumn(df[x]) for x in 1:ncol(df)])
+load_table_binary_columnar(conn, "test", [TColumn(df[x]) for x in 1:ncol(df)])
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
