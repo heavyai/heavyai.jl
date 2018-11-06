@@ -129,67 +129,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions/#OmniSci.import_geo_table",
-    "page": "Functions",
-    "title": "OmniSci.import_geo_table",
-    "category": "function",
-    "text": "import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)\n\n\n\n\n\n"
-},
-
-{
     "location": "functions/#Loading-Data-1",
     "page": "Functions",
     "title": "Loading Data",
     "category": "section",
-    "text": "create_table\nload_table\nload_table_binary_columnar\nload_table_binary_arrow\nimport_geo_table"
-},
-
-{
-    "location": "functions/#OmniSci.get_tables_meta",
-    "page": "Functions",
-    "title": "OmniSci.get_tables_meta",
-    "category": "function",
-    "text": "get_tables_meta(conn::OmniSciConnection; as_df::Bool = true)\n\nGet metadata for tables in database specified in connect().\n\nExamples\n\njulia> metad = get_tables_meta(conn)\n5×6 DataFrame\n│ Row │ is_replicated │ is_view │ max_rows            │ num_cols │ shard_count │ table_name        │\n│     │ Bool          │ Bool    │ Int64               │ Int64    │ Int64       │ String            │\n├─────┼───────────────┼─────────┼─────────────────────┼──────────┼─────────────┼───────────────────┤\n│ 1   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ omnisci_states    │\n│ 2   │ false         │ false   │ 4611686018427387904 │ 6        │ 0           │ omnisci_counties  │\n│ 3   │ false         │ false   │ 4611686018427387904 │ 64       │ 0           │ omnisci_countries │\n│ 4   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ test2             │\n│ 5   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ test              │\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.get_table_details",
-    "page": "Functions",
-    "title": "OmniSci.get_table_details",
-    "category": "function",
-    "text": "get_table_details(conn::OmniSciConnection, table_name::String; as_df::Bool = true)\n\nGet table details such as column names and types.\n\nExamples\n\njulia> tbl_detail = get_table_details(conn, \"omnisci_states\")\n4×21 DataFrame. Omitted printing of 13 columns\n│ Row │ col_name    │ col_type │ comp_param │ encoding │ is_array │ is_physical │ is_reserved_keyword │ is_system │\n│     │ String      │ Int32    │ Int32      │ Int32    │ Bool     │ Bool        │ Bool                │ Bool      │\n├─────┼─────────────┼──────────┼────────────┼──────────┼──────────┼─────────────┼─────────────────────┼───────────┤\n│ 1   │ id          │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │\n│ 2   │ abbr        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │\n│ 3   │ name        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │\n│ 4   │ omnisci_geo │ 16       │ 32         │ 6        │ false    │ false       │ false               │ false     │\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#Table-Metadata-1",
-    "page": "Functions",
-    "title": "Table Metadata",
-    "category": "section",
-    "text": "get_tables_meta\nget_table_details"
-},
-
-{
-    "location": "functions/#OmniSci.create_dashboard",
-    "page": "Functions",
-    "title": "OmniSci.create_dashboard",
-    "category": "function",
-    "text": "create_dashboard(conn::OmniSciConnection, dashboard_name::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.share_dashboard",
-    "page": "Functions",
-    "title": "OmniSci.share_dashboard",
-    "category": "function",
-    "text": "share_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.unshare_dashboard",
-    "page": "Functions",
-    "title": "OmniSci.unshare_dashboard",
-    "category": "function",
-    "text": "unshare_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)\n\n\n\n\n\n"
+    "text": "create_table\nload_table\nload_table_binary_columnar\nload_table_binary_arrow"
 },
 
 {
@@ -209,22 +153,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions/#OmniSci.replace_dashboard",
-    "page": "Functions",
-    "title": "OmniSci.replace_dashboard",
-    "category": "function",
-    "text": "replace_dashboard(conn::OmniSciConnection, dashboard_id::Integer, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.delete_dashboard",
-    "page": "Functions",
-    "title": "OmniSci.delete_dashboard",
-    "category": "function",
-    "text": "delete_dashboard(conn::OmniSciConnection, dashboard_id::Integer)\n\n\n\n\n\n"
-},
-
-{
     "location": "functions/#OmniSci.render_vega",
     "page": "Functions",
     "title": "OmniSci.render_vega",
@@ -237,7 +165,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "Dashboards",
     "category": "section",
-    "text": "create_dashboard\nshare_dashboard\nunshare_dashboard\nget_dashboards\nget_dashboard_grantees\nreplace_dashboard\ndelete_dashboard\nrender_vega"
+    "text": "get_dashboards\nget_dashboard_grantees\nrender_vega"
+},
+
+{
+    "location": "functions/#OmniSci.get_tables_meta",
+    "page": "Functions",
+    "title": "OmniSci.get_tables_meta",
+    "category": "function",
+    "text": "get_tables_meta(conn::OmniSciConnection; as_df::Bool = true)\n\nGet metadata for tables in database specified in connect().\n\nExamples\n\njulia> metad = get_tables_meta(conn)\n5×6 DataFrame\n│ Row │ is_replicated │ is_view │ max_rows            │ num_cols │ shard_count │ table_name        │\n│     │ Bool          │ Bool    │ Int64               │ Int64    │ Int64       │ String            │\n├─────┼───────────────┼─────────┼─────────────────────┼──────────┼─────────────┼───────────────────┤\n│ 1   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ omnisci_states    │\n│ 2   │ false         │ false   │ 4611686018427387904 │ 6        │ 0           │ omnisci_counties  │\n│ 3   │ false         │ false   │ 4611686018427387904 │ 64       │ 0           │ omnisci_countries │\n│ 4   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ test2             │\n│ 5   │ false         │ false   │ 4611686018427387904 │ 4        │ 0           │ test              │\n\n\n\n\n\n"
+},
+
+{
+    "location": "functions/#OmniSci.get_table_details",
+    "page": "Functions",
+    "title": "OmniSci.get_table_details",
+    "category": "function",
+    "text": "get_table_details(conn::OmniSciConnection, table_name::String; as_df::Bool = true)\n\nGet table details such as column names and types.\n\nExamples\n\njulia> tbl_detail = get_table_details(conn, \"omnisci_states\")\n4×21 DataFrame. Omitted printing of 13 columns\n│ Row │ col_name    │ col_type │ comp_param │ encoding │ is_array │ is_physical │ is_reserved_keyword │ is_system │\n│     │ String      │ Int32    │ Int32      │ Int32    │ Bool     │ Bool        │ Bool                │ Bool      │\n├─────┼─────────────┼──────────┼────────────┼──────────┼──────────┼─────────────┼─────────────────────┼───────────┤\n│ 1   │ id          │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │\n│ 2   │ abbr        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │\n│ 3   │ name        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │\n│ 4   │ omnisci_geo │ 16       │ 32         │ 6        │ false    │ false       │ false               │ false     │\n\n\n\n\n\n"
 },
 
 {
@@ -309,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "Metadata",
     "category": "section",
-    "text": "get_databases\nget_users\nget_roles\nget_hardware_info\nget_status\nget_all_roles_for_user\nget_db_objects_for_grantee\nget_db_object_privs"
+    "text": "get_tables_meta\nget_table_details\nget_databases\nget_users\nget_roles\nget_hardware_info\nget_status\nget_all_roles_for_user\nget_db_objects_for_grantee\nget_db_object_privs"
 },
 
 {
