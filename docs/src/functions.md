@@ -22,26 +22,17 @@ load_table_binary_columnar
 load_table_binary_arrow
 ```
 
-## Table Metadata
-```@docs
-get_tables_meta
-get_table_details
-```
-
 ## Dashboards
 ```@docs
-create_dashboard
-share_dashboard
-unshare_dashboard
 get_dashboards
 get_dashboard_grantees
-replace_dashboard
-delete_dashboard
 render_vega
 ```
 
 ## Metadata
 ```@docs
+get_tables_meta
+get_table_details
 get_databases
 get_users
 get_roles

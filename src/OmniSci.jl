@@ -16,7 +16,6 @@ export get_users, get_databases
 export sql_execute, sql_execute_df, sql_execute_gdf
 export render_vega
 export get_dashboards, get_dashboard_grantees
-export create_dashboard, replace_dashboard, delete_dashboard, share_dashboard, unshare_dashboard
 export load_table_binary_columnar, load_table_binary_arrow, load_table
 export create_table, import_table
 export get_roles, get_all_roles_for_user

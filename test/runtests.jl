@@ -39,7 +39,7 @@ se = sql_execute(conn, "select * from omnisci_counties")
 @test size(se) == (3250, 6)
 
 #cdash represents id of dashboard created, use for later tests
-cdash = create_dashboard(conn, randstring(10), "state", "image", "metadata")
+cdash = OmniSci.create_dashboard(conn, randstring(10), "state", "image", "metadata")
 @test cdash > 0
 
 getdbs = get_dashboards(conn)
@@ -48,14 +48,8 @@ getdbs = get_dashboards(conn)
 gr = get_roles(conn)
 @test typeof(gr) == DataFrame
 
-replacedash = replace_dashboard(conn, cdash, "", "mapd", "newstate", "newhash", "newmetadata")
-@test typeof(replacedash) == Nothing
-
 getdashgrant = get_dashboard_grantees(conn, cdash)
 @test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
-
-ddash = delete_dashboard(conn, cdash)
-@test typeof(ddash) == Nothing
 
 tbl_details = get_table_details(conn, "omnisci_counties")
 @test typeof(tbl_details) == DataFrame
