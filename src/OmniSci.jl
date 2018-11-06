@@ -23,13 +23,15 @@ export get_roles, get_all_roles_for_user
 export get_db_objects_for_grantee, get_db_object_privs
 export DataFrame
 
-include("mapd_enums.jl") #hand-maintained code for more convenient enums
-include("mapd_types.jl") #slightly modified from Thrift.jl for circular type fix
-include("mapd_client.jl") #should be same as output by Thrift.jl, except where methods deleted
+#Thrift interface code, mostly generated from Thrift.jl
+include("thrift_code/enums.jl") #hand-maintained code for more convenient enums
+include("thrift_code/types.jl") #slightly modified from Thrift.jl for circular type fix
+include("thrift_code/client.jl") #same as output by Thrift.jl, except where methods deleted
+
+#Package code
 include("internal.jl")
 include("ipc.jl")
-include("misc.jl") #for hand-maintained code
-include("dataframes.jl")
-include("show.jl")
+include("client.jl")
+include("dataframe_show.jl")
 
 end # module OmniSci
