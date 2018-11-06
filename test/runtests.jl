@@ -98,9 +98,6 @@ load_table_binary_columnar(conn, "test", [TColumn(df[x]) for x in 1:ncol(df)])
 hware = get_hardware_info(conn)
 @test typeof(hware) == OmniSci.TClusterHardwareInfo
 
-gobj = get_db_objects_for_grantee(conn, "testuser")
-@test typeof(gobj) == Vector{OmniSci.TDBObject}
-
 #TODO: Figure out IPC
 cpu_arrow = sql_execute_df(conn,  "select id from omnisci_counties limit 100", 0, 0)
 @test typeof(cpu_arrow) == OmniSci.TDataFrame

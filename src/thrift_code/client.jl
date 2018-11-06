@@ -599,51 +599,6 @@ function get_roles(c::MapDClient, session::TSessionId)
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_roles
 
-# Client callable method for get_db_objects_for_grantee
-function get_db_objects_for_grantee(c::MapDClient, session::TSessionId, roleName::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_db_objects_for_grantee", Thrift.MessageType.CALL, c.seqid)
-  inp = get_db_objects_for_grantee_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :roleName, roleName)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_db_objects_for_grantee_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_db_objects_for_grantee
-
-# Client callable method for get_db_object_privs
-function get_db_object_privs(c::MapDClient, session::TSessionId, objectName::String, _type::Int32)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_db_object_privs", Thrift.MessageType.CALL, c.seqid)
-  inp = get_db_object_privs_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :objectName, objectName)
-  Thrift.set_field!(inp, :_type, _type)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_db_object_privs_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_db_object_privs
-
 # Client callable method for get_all_roles_for_user
 function get_all_roles_for_user(c::MapDClient, session::TSessionId, userName::String)
   p = c.p

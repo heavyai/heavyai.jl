@@ -320,36 +320,6 @@ create_dashboard(conn::OmniSciConnection, dashboard_name::String, dashboard_stat
     create_dashboard(conn.c, conn.session, dashboard_name, dashboard_state, image_hash, dashboard_metadata)
 
 """
-    replace_dashboard(conn::OmniSciConnection, dashboard_id::Integer, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
-
-
-"""
-replace_dashboard(conn::OmniSciConnection, dashboard_id::Integer, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String) =
-    replace_dashboard(conn.c, conn.session, Int32(dashboard_id), dashboard_name, dashboard_owner, dashboard_state, image_hash, dashboard_metadata)
-
-"""
-    delete_dashboard(conn::OmniSciConnection, dashboard_id::Integer)
-
-"""
-delete_dashboard(conn::OmniSciConnection, dashboard_id::Integer) =
-    delete_dashboard(conn.c, conn.session, Int32(dashboard_id))
-
-"""
-    share_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
-
-"""
-share_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions) =
-    share_dashboard(conn.c, conn.session, Int32(dashboard_id), groups, objects, permissions)
-
-"""
-    unshare_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
-
-
-"""
-unshare_dashboard(conn::OmniSciConnection, dashboard_id::Integer, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions) =
-    unshare_dashboard(conn.c, conn.session, Int32(dashboard_id), groups, objects, permissions)
-
-"""
     get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer)
 
 """
@@ -417,22 +387,6 @@ create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescript
 """
 get_roles(conn::OmniSciConnection; as_df::Bool = true) =
     as_df ? DataFrame(Dict(:roles => get_roles(conn.c, conn.session))) : get_roles(conn.c, conn.session)
-
-"""
-    get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)
-
-
-"""
-get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String) =
-    get_db_objects_for_grantee(conn.c, conn.session, roleName)
-
-"""
-    get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)
-
-
-"""
-get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer) =
-    get_db_object_privs(conn.c, conn.session, objectName, Int32(type_))
 
 """
     get_all_roles_for_user(conn::OmniSciConnection, userName::String; as_df::Bool = true)

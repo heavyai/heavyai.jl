@@ -19,7 +19,6 @@ export get_dashboards, get_dashboard_grantees
 export load_table_binary_columnar, load_table_binary_arrow, load_table
 export create_table, import_table
 export get_roles, get_all_roles_for_user
-export get_db_objects_for_grantee, get_db_object_privs
 export DataFrame
 
 #Thrift interface code, mostly generated from Thrift.jl

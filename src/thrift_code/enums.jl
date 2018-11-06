@@ -39,8 +39,8 @@ end
 
 @scopedenum TPartitionDetail DEFAULT=Int32(0) REPLICATED=Int32(1) SHARDED=Int32(2) OTHER=Int32(3)
 
-@scopedenum TMergeType UNION=Int32(0) REDUCE=Int32(1)
+#@scopedenum TMergeType UNION=Int32(0) REDUCE=Int32(1)
 
-@scopedenum TExpressionRangeType INVALID=Int32(0) INTEGER=Int32(1) FLOAT=Int32(2) DOUBLE=Int32(3)
+#@scopedenum TExpressionRangeType INVALID=Int32(0) INTEGER=Int32(1) FLOAT=Int32(2) DOUBLE=Int32(3)
 
-@scopedenum TDBObjectType AbstractDBObjectType=Int32(0) DatabaseDBObjectType=Int32(1) TableDBObjectType=Int32(2) DashboardDBObjectType=Int32(3) ViewDBObjectType=Int32(4)
+#@scopedenum TDBObjectType AbstractDBObjectType=Int32(0) DatabaseDBObjectType=Int32(1) TableDBObjectType=Int32(2) DashboardDBObjectType=Int32(3) ViewDBObjectType=Int32(4)

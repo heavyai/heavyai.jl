@@ -794,39 +794,6 @@ mutable struct get_roles_result
 end # mutable struct get_roles_result
 meta(t::Type{get_roles_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
-# types encapsulating arguments and return values of method get_db_objects_for_grantee
-
-mutable struct get_db_objects_for_grantee_args <: Thrift.TMsg
-  session::TSessionId
-  roleName::String
-  get_db_objects_for_grantee_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_db_objects_for_grantee_args
-
-mutable struct get_db_objects_for_grantee_result
-  success::Vector{TDBObject}
-  e::TMapDException
-  get_db_objects_for_grantee_result() = (o=new(); fillunset(o); o)
-  get_db_objects_for_grantee_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_db_objects_for_grantee_result
-meta(t::Type{get_db_objects_for_grantee_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
-# types encapsulating arguments and return values of method get_db_object_privs
-
-mutable struct get_db_object_privs_args <: Thrift.TMsg
-  session::TSessionId
-  objectName::String
-  _type::Int32
-  get_db_object_privs_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_db_object_privs_args
-
-mutable struct get_db_object_privs_result
-  success::Vector{TDBObject}
-  e::TMapDException
-  get_db_object_privs_result() = (o=new(); fillunset(o); o)
-  get_db_object_privs_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_db_object_privs_result
-meta(t::Type{get_db_object_privs_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
 # types encapsulating arguments and return values of method get_all_roles_for_user
 
 mutable struct get_all_roles_for_user_args <: Thrift.TMsg
