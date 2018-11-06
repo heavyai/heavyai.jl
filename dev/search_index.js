@@ -233,27 +233,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions/#OmniSci.get_db_objects_for_grantee",
-    "page": "Functions",
-    "title": "OmniSci.get_db_objects_for_grantee",
-    "category": "function",
-    "text": "get_db_objects_for_grantee(conn::OmniSciConnection, roleName::String)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.get_db_object_privs",
-    "page": "Functions",
-    "title": "OmniSci.get_db_object_privs",
-    "category": "function",
-    "text": "get_db_object_privs(conn::OmniSciConnection, objectName::String, type_::Integer)\n\n\n\n\n\n"
-},
-
-{
     "location": "functions/#Metadata-1",
     "page": "Functions",
     "title": "Metadata",
     "category": "section",
-    "text": "get_tables_meta\nget_table_details\nget_databases\nget_users\nget_roles\nget_hardware_info\nget_status\nget_all_roles_for_user\nget_db_objects_for_grantee\nget_db_object_privs"
+    "text": "get_tables_meta\nget_table_details\nget_databases\nget_users\nget_roles\nget_hardware_info\nget_status\nget_all_roles_for_user"
 },
 
 {
