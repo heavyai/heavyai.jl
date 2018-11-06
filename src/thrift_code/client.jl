@@ -466,101 +466,6 @@ function create_dashboard(c::MapDClient, session::TSessionId, dashboard_name::St
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function create_dashboard
 
-# Client callable method for replace_dashboard
-function replace_dashboard(c::MapDClient, session::TSessionId, dashboard_id::Int32, dashboard_name::String, dashboard_owner::String, dashboard_state::String, image_hash::String, dashboard_metadata::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "replace_dashboard", Thrift.MessageType.CALL, c.seqid)
-  inp = replace_dashboard_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :dashboard_id, dashboard_id)
-  Thrift.set_field!(inp, :dashboard_name, dashboard_name)
-  Thrift.set_field!(inp, :dashboard_owner, dashboard_owner)
-  Thrift.set_field!(inp, :dashboard_state, dashboard_state)
-  Thrift.set_field!(inp, :image_hash, image_hash)
-  Thrift.set_field!(inp, :dashboard_metadata, dashboard_metadata)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, replace_dashboard_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function replace_dashboard
-
-# Client callable method for delete_dashboard
-function delete_dashboard(c::MapDClient, session::TSessionId, dashboard_id::Int32)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "delete_dashboard", Thrift.MessageType.CALL, c.seqid)
-  inp = delete_dashboard_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :dashboard_id, dashboard_id)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, delete_dashboard_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function delete_dashboard
-
-# Client callable method for share_dashboard
-function share_dashboard(c::MapDClient, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "share_dashboard", Thrift.MessageType.CALL, c.seqid)
-  inp = share_dashboard_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :dashboard_id, dashboard_id)
-  Thrift.set_field!(inp, :groups, groups)
-  Thrift.set_field!(inp, :objects, objects)
-  Thrift.set_field!(inp, :permissions, permissions)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, share_dashboard_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function share_dashboard
-
-# Client callable method for unshare_dashboard
-function unshare_dashboard(c::MapDClient, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "unshare_dashboard", Thrift.MessageType.CALL, c.seqid)
-  inp = unshare_dashboard_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :dashboard_id, dashboard_id)
-  Thrift.set_field!(inp, :groups, groups)
-  Thrift.set_field!(inp, :objects, objects)
-  Thrift.set_field!(inp, :permissions, permissions)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, unshare_dashboard_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function unshare_dashboard
-
 # Client callable method for get_dashboard_grantees
 function get_dashboard_grantees(c::MapDClient, session::TSessionId, dashboard_id::Int32)
   p = c.p
@@ -672,30 +577,6 @@ function create_table(c::MapDClient, session::TSessionId, table_name::String, ro
   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
   nothing
 end # function create_table
-
-# Client callable method for import_geo_table
-function import_geo_table(c::MapDClient, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "import_geo_table", Thrift.MessageType.CALL, c.seqid)
-  inp = import_geo_table_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :table_name, table_name)
-  Thrift.set_field!(inp, :file_name, file_name)
-  Thrift.set_field!(inp, :copy_params, copy_params)
-  Thrift.set_field!(inp, :row_desc, row_desc)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, import_geo_table_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function import_geo_table
 
 # Client callable method for get_roles
 function get_roles(c::MapDClient, session::TSessionId)
