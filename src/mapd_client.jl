@@ -673,30 +673,6 @@ function create_table(c::MapDClient, session::TSessionId, table_name::String, ro
   nothing
 end # function create_table
 
-# Client callable method for import_geo_table
-function import_geo_table(c::MapDClient, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "import_geo_table", Thrift.MessageType.CALL, c.seqid)
-  inp = import_geo_table_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :table_name, table_name)
-  Thrift.set_field!(inp, :file_name, file_name)
-  Thrift.set_field!(inp, :copy_params, copy_params)
-  Thrift.set_field!(inp, :row_desc, row_desc)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, import_geo_table_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function import_geo_table
-
 # Client callable method for get_roles
 function get_roles(c::MapDClient, session::TSessionId)
   p = c.p

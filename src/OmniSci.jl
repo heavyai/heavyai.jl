@@ -15,20 +15,19 @@ export get_tables_meta, get_table_details
 export get_users, get_databases
 export sql_execute, sql_execute_df, sql_execute_gdf
 export render_vega
-export get_frontend_view, get_frontend_views
-export create_frontend_view, delete_frontend_view
 export get_dashboards, get_dashboard_grantees
 export create_dashboard, replace_dashboard, delete_dashboard, share_dashboard, unshare_dashboard
 export load_table_binary_columnar, load_table_binary_arrow, load_table
-export detect_column_types, create_table, import_table, import_geo_table, import_table_status
+export create_table, import_table
 export get_roles, get_all_roles_for_user
 export get_db_objects_for_grantee, get_db_object_privs
 export DataFrame
 
 include("mapd_enums.jl") #hand-maintained code for more convenient enums
 include("mapd_types.jl") #slightly modified from Thrift.jl for circular type fix
-include("mapd_client.jl") #should be same as output by Thrift.jl
+include("mapd_client.jl") #should be same as output by Thrift.jl, except where methods deleted
 include("internal.jl")
+include("ipc.jl")
 include("misc.jl") #for hand-maintained code
 include("dataframes.jl")
 include("show.jl")

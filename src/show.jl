@@ -10,3 +10,6 @@ function Base.show(io::IO, ::MIME"text/plain", m::Vector{TServerStatus})
     end
 
 end
+
+#REPL display; show method for Juno uses inline tree display
+Base.show(io::IO, ::MIME"text/plain", m::OmniSciConnection) = println(io, "Connected to $(m.c.p.t.host):$(m.c.p.t.port)")

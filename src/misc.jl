@@ -408,13 +408,6 @@ end
 create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
     create_table(conn.c, conn.session, table_name, row_desc, table_type.value)
 
-"""
-    import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
-
-"""
-import_geo_table(conn::OmniSciConnection, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor) =
-    import_geo_table(conn.c, conn.session, table_name, file_name, copy_params, row_desc)
-
 
 ######################################## object privileges
 

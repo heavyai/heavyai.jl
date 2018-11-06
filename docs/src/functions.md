@@ -20,7 +20,6 @@ create_table
 load_table
 load_table_binary_columnar
 load_table_binary_arrow
-import_geo_table
 ```
 
 ## Table Metadata
