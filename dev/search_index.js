@@ -157,7 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.render_vega",
     "category": "function",
-    "text": "render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)\n\n\n\n\n\n"
+    "text": "render_vega(conn::OmniSciConnection, vega_json::String, compression_level::Int = 0)\n\nRender an OmniSci-flavored Vega specification using the backend rendering engine. Note that OmniSci does not currently support the full Vega specification; this method is mostly useful for rendering choropleths and related geospatial charts.\n\ncompression_level ranges from 0 (low compression, faster) to 9 (high compression, slower).\n\nExamples\n\njulia> vg = {\"width\" : 1024, \"height\" : 1024...}\n\njulia> vega_json = render_vega(conn, vg)\n\n\n\n\n\n"
 },
 
 {
