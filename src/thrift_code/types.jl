@@ -763,21 +763,21 @@ meta(t::Type{load_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}(
 
 # types encapsulating arguments and return values of method create_table
 
-mutable struct create_table_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  row_desc::TRowDescriptor
-  table_type::Int32
-  create_params::TCreateParams
-  create_table_args() = (o=new(); fillunset(o); o)
-end # mutable struct create_table_args
-meta(t::Type{create_table_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0)))
-
-mutable struct create_table_result
-  e::TMapDException
-  create_table_result() = (o=new(); fillunset(o); o)
-end # mutable struct create_table_result
-meta(t::Type{create_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct create_table_args <: Thrift.TMsg
+#   session::TSessionId
+#   table_name::String
+#   row_desc::TRowDescriptor
+#   table_type::Int32
+#   create_params::TCreateParams
+#   create_table_args() = (o=new(); fillunset(o); o)
+# end # mutable struct create_table_args
+# meta(t::Type{create_table_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0)))
+#
+# mutable struct create_table_result
+#   e::TMapDException
+#   create_table_result() = (o=new(); fillunset(o); o)
+# end # mutable struct create_table_result
+# meta(t::Type{create_table_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_roles
 
