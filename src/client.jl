@@ -278,11 +278,27 @@ set_execution_mode(conn::OmniSciConnection, mode::TExecuteMode.Enum) =
     set_execution_mode(conn.c, conn.session, mode.value)
 
 """
-    render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int)
+    render_vega(conn::OmniSciConnection, vega_json::String, compression_level::Int = 0)
 
+Render an OmniSci-flavored Vega specification using the backend rendering engine. Note that OmniSci does
+not currently support the full Vega specification; this method is mostly useful for rendering choropleths and
+related geospatial charts.
+
+compression_level ranges from 0 (low compression, faster) to 9 (high compression, slower).
+
+# Examples
+```julia-repl
+julia> vg = {"width" : 1024, "height" : 1024...}
+
+julia> vega_json = render_vega(conn, vg)
+```
 """
-render_vega(conn::OmniSciConnection, widget_id::Int, vega_json::String, compression_level::Int) =
-    render_vega(conn.c, conn.session, Int64(widget_id), vega_json, Int32(compression_level), randstring(32))
+function render_vega(conn::OmniSciConnection, vega_json::String, compression_level::Int = 0)
+
+    @assert (compression_level >= 0 && compression_level <= 9) "compression_level ranges from 0 (low compression, faster) to 9 (high compression, slower)"
+    render_vega(conn.c, conn.session, Int64(1), vega_json, Int32(compression_level), randstring(32))
+
+end
 
 ######################################## dashboard
 
