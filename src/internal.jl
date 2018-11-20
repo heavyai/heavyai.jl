@@ -1,7 +1,37 @@
+########################### Common/Utils ###########################
+
 mutable struct OmniSciConnection
     session::TSessionId
     c::MapDClient
 end
+
+#Find which field in the struct the data actually is
+function findvalues(x::OmniSci.TColumn)
+    for f in propertynames(x.data)
+        n = length(getfield(x.data, f))
+        if n > 0
+            return (f, eltype(getfield(x.data, f)), n)
+        end
+    end
+end
+
+#Take two vectors, values and nulls, make into a single vector
+#TODO: Figure out if its possible to further minimize allocations
+function squashbitmask(x::TColumn)
+
+    #Get location of data from struct, eltype of vector and its length
+    valuescol, ltype, n = findvalues(x)
+
+    #Build/fill new vector based on missingness
+    A = Vector{Union{ltype, Missing}}(undef, n)
+    @simd for i = 1:n
+        @inbounds A[i] = ifelse(x.nulls[i], missing, getfield(x.data, valuescol)[i])
+    end
+
+    return A
+end
+
+########################### Typedefs for load_table method ###########################
 
 #For functions below, value for is_null should be known based on the dispatched type
 #Left as keyword just in case my assumption incorrect
@@ -12,7 +42,7 @@ function TStringValue(str_val::Rational, is_null::Bool = false)
   return val
 end
 
-function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, AbstractString}
+function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, AbstractString, TimeType}
   val = OmniSci.TStringValue()
   Thrift.set_field!(val, :str_val, string(str_val))
   Thrift.set_field!(val, :is_null, is_null)
@@ -34,6 +64,8 @@ end
 
 TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
 TStringRow(x::DataFrameRow{DataFrame}) = TStringRow(vec(convert(Array, x)))
+
+########################### Typedefs for load_table_binary_columnar method ###########################
 
 function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{Int8, Int16, Int32, Int64}
 
@@ -96,29 +128,4 @@ function TColumn(x::AbstractVector{<:Union{Missing, AbstractString}})
     Thrift.set_field!(tc, :data, tcd)
 
     return tc
-end
-
-#Find which field in the struct the data actually is
-function findvalues(x::OmniSci.TColumn)
-    for f in propertynames(x.data)
-        n = length(getfield(x.data, f))
-        if n > 0
-            return (f, eltype(getfield(x.data, f)), n)
-        end
-    end
-end
-
-#Take two vectors, values and nulls, make into a single vector
-function squashbitmask(x::TColumn)
-
-    #Get location of data from struct, eltype of vector and its length
-    valuescol, ltype, n = findvalues(x)
-
-    #Build/fill new vector based on missingness
-    A = Vector{Union{ltype, Missing}}(undef, n)
-    @simd for i = 1:n
-        @inbounds A[i] = ifelse(x.nulls[i], missing, getfield(x.data, valuescol)[i])
-    end
-
-    return A
 end

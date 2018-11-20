@@ -62,37 +62,63 @@ roleuser = get_all_roles_for_user(conn, "mapd2")
 @test typeof(roleuser) == DataFrame
 
 #load data to table from dataframe
-sql_execute(conn, "create table test (col1 int, col2 float, col3 float, col4 text encoding dict(32))")
+sql = """
+create table test (
+col1 tinyint,
+col2 smallint,
+col3 integer,
+col4 bigint,
+col5 float,
+col6 double,
+col7 decimal(7,2),
+col8 text,
+col9 text encoding dict(32),
+col10 boolean,
+col11 date,
+col12 time,
+col13 timestamp
+)
+"""
+
+sql_execute(conn, sql)
 
 #Define an example dataframe
-intcol = [4,3,2,1]
-floatcol = [3.0, 4.1, 2.69, 3.8]
-rationalcol = [3//2, 4//7, 9//72, 90/112]
-stringcol = ["hello", "world", "omnisci", "gpu"]
-df = DataFrame([intcol, floatcol, rationalcol, stringcol])
+tinyintcol = Int8[4,3,2,1]
+smallintcol = Int16[4,3,2,1]
+intcol = Int32[4,3,2,1]
+bigintcol = Int64[4,3,2,1]
+floatcol = Float32[3.0, 4.1, 2.69, 3.8]
+doublecol = [3//2, 4//7, 9//72, 90/112] #testing julia rational, OmniSci double
+decimalcol = [3.0, 4.1, 2.69, 3.8]
+textcol = ["hello", "world", "omnisci", "gpu"]
+boolcol = [true, false, true, true]
+datecol = [Date(2013,7,1), Date(2013,7,1), Date(2013,7,1), Date(2013,7,1)]
+timecol = [Time(4), Time(5), Time(6), Time(7)]
+tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
+
+df = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
+                decimalcol, textcol, textcol, boolcol, datecol, timecol, tscol])
 
 #load data rowwise from dataframe
-#TODO: does this need an @test in front of it?
-load_table(conn, "test", df) == nothing
+@test load_table(conn, "test", df) == nothing
 
 #load data rowwise from Vector{TStringRow}
-#TODO: does this need an @test in front of it?
-load_table(conn, "test", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)])
+@test load_table(conn, "test", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
-#set up for load_table_binary_columnar
-intcol = [4,3,missing,1]
-floatcol = [3.0, missing, 2.69, 3.8]
-rationalcol = [missing, 4//7, 9//72, 90/112]
-stringcol = ["hello", "world", "omnisci", "gpu"]
-df = DataFrame([intcol, floatcol, rationalcol, stringcol])
+#Define an example dataframe
+intcol2 = [4,3,2,1]
+floatcol2 = [3.0, 4.1, 2.69, 3.8]
+rationalcol2 = [3//2, 4//7, 9//72, 90/112]
+stringcol2 = ["hello", "world", "omnisci", "gpu"]
+df2 = DataFrame([intcol2, floatcol2, rationalcol2, stringcol2])
+
+sql_execute(conn, "create table test2 (col1 int, col2 float, col3 float, col4 text encoding dict(32))")
 
 #load table columnwise
-#TODO: does this need an @test in front of it?
-load_table_binary_columnar(conn, "test", df)
+@test load_table_binary_columnar(conn, "test2", df) == nothing
 
 #load data from Vector{TColumn}
-#TODO: does this need an @test in front of it?
-load_table_binary_columnar(conn, "test", [TColumn(df[x]) for x in 1:ncol(df)])
+@test load_table_binary_columnar(conn, "test", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
@@ -116,9 +142,3 @@ glc = OmniSci.get_license_claims(conn)
 
 mem = OmniSci.get_memory(conn, "cpu")
 @test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}
-
-#not exported, needed for IPC, not for end users
-#OmniSci.deallocate_df(conn::OmniSciConnection, df::TDataFrame, device_type::Int, device_id::Int)
-
-#not exported, needs to be hooked up in OmniSci core
-#OmniSci.interrupt(conn::OmniSciConnection)
