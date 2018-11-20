@@ -118,7 +118,7 @@ sql_execute(conn, "create table test2 (col1 int, col2 float, col3 float, col4 te
 @test load_table_binary_columnar(conn, "test2", df2) == nothing
 
 #load data from Vector{TColumn}
-@test load_table_binary_columnar(conn, "test2", [TColumn(df[x]) for x in 1:ncol(df2)]) == nothing
+@test load_table_binary_columnar(conn, "test2", [TColumn(df2[x]) for x in 1:ncol(df2)]) == nothing
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
