@@ -42,6 +42,15 @@ function TStringValue(str_val::Rational, is_null::Bool = false)
   return val
 end
 
+function TStringValue(str_val::T, is_null::Bool = true) where T <: Union{Missing, Nothing}
+  val = OmniSci.TStringValue()
+  Thrift.set_field!(val, :str_val, string(str_val))
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+#TODO: Could this method just be the generic fallback for any type serializable with string()?
+#Or, should it stay to enforce that only certain julia types supported?
 function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, AbstractString, TimeType}
   val = OmniSci.TStringValue()
   Thrift.set_field!(val, :str_val, string(str_val))
@@ -49,12 +58,6 @@ function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, 
   return val
 end
 
-function TStringValue(str_val::T, is_null::Bool = true) where T <: Union{Missing, Nothing}
-  val = OmniSci.TStringValue()
-  Thrift.set_field!(val, :str_val, string(str_val))
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
 
 function TStringRow(cols::Vector{TStringValue})
     tsr = OmniSci.TStringRow()
