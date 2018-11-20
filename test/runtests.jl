@@ -115,10 +115,10 @@ df2 = DataFrame([intcol2, floatcol2, rationalcol2, stringcol2])
 sql_execute(conn, "create table test2 (col1 int, col2 float, col3 float, col4 text encoding dict(32))")
 
 #load table columnwise
-@test load_table_binary_columnar(conn, "test2", df) == nothing
+@test load_table_binary_columnar(conn, "test2", df2) == nothing
 
 #load data from Vector{TColumn}
-@test load_table_binary_columnar(conn, "test", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
+@test load_table_binary_columnar(conn, "test2", [TColumn(df[x]) for x in 1:ncol(df2)]) == nothing
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
