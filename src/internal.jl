@@ -31,6 +31,8 @@ function squashbitmask(x::TColumn)
     return A
 end
 
+seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)
+
 ########################### Typedefs for load_table method ###########################
 
 #For functions below, value for is_null should be known based on the dispatched type
@@ -80,11 +82,6 @@ function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{Int8, 
     tcd = TColumnData()
     Thrift.set_field!(tcd, :int_col, convert(Vector{Int64}, coalesce.(x, -1)))
 
-    #Set other fields to empty values of type...this appears to be a Thrift.jl specific issue
-    Thrift.set_field!(tcd, :real_col, Float64[])
-    Thrift.set_field!(tcd, :str_col, String[])
-    Thrift.set_field!(tcd, :arr_col, Any[])
-
     #Complete TColumn
     Thrift.set_field!(tc, :data, tcd)
 
@@ -100,11 +97,6 @@ function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{Abstra
     #Replace missing values with typed sentinel and convert to Vector{Int64} per API requirement
     tcd = TColumnData()
     Thrift.set_field!(tcd, :real_col, convert(Vector{Float64}, coalesce.(x, -1.0)))
-
-    #Set other fields without putting value...this appears to be a Thrift.jl specific issue
-    Thrift.set_field!(tcd, :int_col, Int64[])
-    Thrift.set_field!(tcd, :str_col, String[])
-    Thrift.set_field!(tcd, :arr_col, Any[])
 
     #Complete TColumn
     Thrift.set_field!(tc, :data, tcd)
@@ -122,13 +114,33 @@ function TColumn(x::AbstractVector{<:Union{Missing, AbstractString}})
     tcd = TColumnData()
     Thrift.set_field!(tcd, :str_col, convert(Vector{String}, coalesce.(x, "")))
 
-    #Set other fields without putting value...this appears to be a Thrift.jl specific issue
-    Thrift.set_field!(tcd, :int_col, Int64[])
-    Thrift.set_field!(tcd, :real_col, Float64[])
-    Thrift.set_field!(tcd, :arr_col, Any[])
+    #Complete TColumn
+    Thrift.set_field!(tc, :data, tcd)
+
+    return tc
+end
+
+function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
+
+    #Create TColumn, fill nulls column by checking for missingness
+    tc = TColumn()
+    Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
+
+    #Replace missing values with typed sentinel and convert to Vector{Int64} per API requirement
+    tcd = TColumnData()
+    Thrift.set_field!(tcd, :int_col, convert(Vector{Int64}, coalesce.(x, -1)))
 
     #Complete TColumn
     Thrift.set_field!(tc, :data, tcd)
 
     return tc
 end
+
+# Dispatches to Int
+TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(convert(Vector{Int}, datetime2unix.(x)))
+
+# Dispatches to DateTime, which dispatches to Int
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(convert(Vector{DateTime}, x))
+
+# Dispatches to Int
+TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
