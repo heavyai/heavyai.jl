@@ -105,11 +105,33 @@ df = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
 #load data rowwise from Vector{TStringRow}
 @test load_table(conn, "test", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
+sql2 = """
+create table test2 (
+col1 tinyint,
+col2 smallint,
+col3 integer,
+col4 bigint,
+col5 float,
+col6 double,
+col8 text,
+col9 text encoding dict(32),
+col10 boolean,
+col11 date,
+col12 time,
+col13 timestamp
+)
+"""
+
+sql_execute(conn, sql2)
+
+df2 = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
+                textcol, textcol, boolcol, datecol, timecol, tscol])
+
 #load table columnwise
-@test load_table_binary_columnar(conn, "test", df) == nothing
+@test load_table_binary_columnar(conn, "test2", df2) == nothing
 
 #load data from Vector{TColumn}
-@test load_table_binary_columnar(conn, "test", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
+@test load_table_binary_columnar(conn, "test2", [TColumn(df2[x]) for x in 1:ncol(df2)]) == nothing
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)

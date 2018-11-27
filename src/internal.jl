@@ -94,7 +94,7 @@ function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{Abstra
     tc = TColumn()
     Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
 
-    #Replace missing values with typed sentinel and convert to Vector{Int64} per API requirement
+    #Replace missing values with typed sentinel and convert to Vector{Float64} per API requirement
     tcd = TColumnData()
     Thrift.set_field!(tcd, :real_col, convert(Vector{Float64}, coalesce.(x, -1.0)))
 
