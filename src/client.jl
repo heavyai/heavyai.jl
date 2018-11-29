@@ -116,18 +116,31 @@ Get table details such as column names and types.
 # Examples
 ```julia-repl
 julia> tbl_detail = get_table_details(conn, "omnisci_states")
-4×21 DataFrame. Omitted printing of 13 columns
-│ Row │ col_name    │ col_type │ comp_param │ encoding │ is_array │ is_physical │ is_reserved_keyword │ is_system │
-│     │ String      │ Int32    │ Int32      │ Int32    │ Bool     │ Bool        │ Bool                │ Bool      │
-├─────┼─────────────┼──────────┼────────────┼──────────┼──────────┼─────────────┼─────────────────────┼───────────┤
-│ 1   │ id          │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │
-│ 2   │ abbr        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │
-│ 3   │ name        │ 6        │ 32         │ 4        │ false    │ false       │ false               │ false     │
-│ 4   │ omnisci_geo │ 16       │ 32         │ 6        │ false    │ false       │ false               │ false     │
+4×21 DataFrame. Omitted printing of 15 columns
+│ Row │ col_name    │ col_type     │ comp_param │ encoding │ is_array │ is_physical │
+│     │ String      │ DataType     │ Int32      │ String   │ Bool     │ Bool        │
+├─────┼─────────────┼──────────────┼────────────┼──────────┼──────────┼─────────────┤
+│ 1   │ id          │ String       │ 32         │ Dict     │ false    │ false       │
+│ 2   │ abbr        │ String       │ 32         │ Dict     │ false    │ false       │
+│ 3   │ name        │ String       │ 32         │ Dict     │ false    │ false       │
+│ 4   │ omnisci_geo │ MultiPolygon │ 32         │ GeoInt   │ false    │ false       │
 ```
 """
-get_table_details(conn::OmniSciConnection, table_name::String; as_df::Bool = true) =
-    as_df ? DataFrame(get_table_details(conn.c, conn.session, table_name)) : get_table_details(conn.c, conn.session, table_name)
+function get_table_details(conn::OmniSciConnection, table_name::String; as_df::Bool = true)
+
+    r = get_table_details(conn.c, conn.session, table_name)
+
+    #for dataframe, put enum values instead of keys for column type
+    #makes it easier to determine column types in load_table and sql_execute
+    if as_df
+        df = DataFrame(r)
+        df[:col_type] = getcolumntype.(df[:col_type])
+        df[:encoding] = getencodingtype.(df[:encoding])
+        return df
+    else
+        return r
+    end
+end
 
 """
     get_users(conn::OmniSciConnection; as_df::Bool = true)

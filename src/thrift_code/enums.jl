@@ -29,7 +29,46 @@ end
 #translated from auto-generated Thrift.jl to more ergonomic enum usage via macro
 @scopedenum TDatumType SMALLINT=Int32(0) INT=Int32(1) BIGINT=Int32(2) FLOAT=Int32(3) DECIMAL=Int32(4) DOUBLE=Int32(5) STR=Int32(6) TIME=Int32(7) TIMESTAMP=Int32(8) DATE=Int32(9) BOOL=Int32(10) INTERVAL_DAY_TIME=Int32(11) INTERVAL_YEAR_MONTH=Int32(12) POINT=Int32(13) LINESTRING=Int32(14) POLYGON=Int32(15) MULTIPOLYGON=Int32(16) TINYINT=Int32(17) GEOMETRY=Int32(18) GEOGRAPHY=Int32(19)
 
+function getcolumntype(x::Int32)
+    d = Dict(0 => Int16,  #SMALLINT
+             1 => Int32,  #INT
+             2 => Int64,  #BIGINT
+             3 => Float32, #FLOAT
+             4 => Dec64,  #DECIMAL
+             5 => Float64, #DOUBLE
+             6 => String,  #STR
+             7 => Time,  #TIME
+             8 => DateTime,  #TIMESTAMP
+             9 => Date,  #DATE
+             10 => Bool,  #BOOL
+             11 => String,  #INTERVAL_DAY_TIME
+             12 => String,  #INTERVAL_YEAR_MONTH
+             13 => Point,  #POINT
+             14 => LineString,  #LINESTRING
+             15 => Polygon,  #POLYGON
+             16 => MultiPolygon,  #MULTIPOLYGON
+             17 => Int8,  #TINYINT
+             18 => String,  #GEOMETRY
+             19 => String  #GEOGRAPHY
+    )
+
+    return d[x]
+end
+
 @scopedenum TEncodingType NONE=Int32(0) FIXED=Int32(1) RL=Int32(2) DIFF=Int32(3) DICT=Int32(4) SPARSE=Int32(5) GEOINT=Int32(6)
+
+function getencodingtype(x::Int32)
+    d = Dict(0 => "None",
+             1 => "Fixed",
+             2 => "RL",
+             3 => "Diff",
+             4 => "Dict",
+             5 => "Sparse",
+             6 => "GeoInt"
+    )
+
+    d[x]
+end
 
 @scopedenum TExecuteMode GPU=Int32(1) CPU=Int32(2)
 
@@ -37,10 +76,7 @@ end
 
 @scopedenum TTableType DELIMITED=Int32(0) POLYGON=Int32(1)
 
-@scopedenum TPartitionDetail DEFAULT=Int32(0) REPLICATED=Int32(1) SHARDED=Int32(2) OTHER=Int32(3)
-
+#@scopedenum TPartitionDetail DEFAULT=Int32(0) REPLICATED=Int32(1) SHARDED=Int32(2) OTHER=Int32(3)
 #@scopedenum TMergeType UNION=Int32(0) REDUCE=Int32(1)
-
 #@scopedenum TExpressionRangeType INVALID=Int32(0) INTEGER=Int32(1) FLOAT=Int32(2) DOUBLE=Int32(3)
-
 #@scopedenum TDBObjectType AbstractDBObjectType=Int32(0) DatabaseDBObjectType=Int32(1) TableDBObjectType=Int32(2) DashboardDBObjectType=Int32(3) ViewDBObjectType=Int32(4)
