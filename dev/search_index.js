@@ -109,7 +109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.load_table",
     "category": "function",
-    "text": "load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})\n\n\n\n\n\nload_table(conn::OmniSciConnection, table_name::String, rows::DataFrame)\n\nLoad a dataframe into OmniSci. This method loads data row-wise and converts data elements to string before upload. Currently, this method requires the table to already exist on OmniSci.\n\n\n\n\n\n"
+    "text": "load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})\n\n\n\n\n\nload_table(conn::OmniSciConnection, table_name::String, rows::DataFrame)\n\nLoad a dataframe into OmniSci. This method loads data row-wise, converting data elements to string before upload. Currently, this method requires the table to already exist on OmniSci.\n\nExamples\n\njulia> load_table(conn, \"test\", df)\n\n\n\n\n\n"
 },
 
 {
