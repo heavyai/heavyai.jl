@@ -75,10 +75,10 @@ end # mutable struct TColumn
 
 function Thrift.meta(t::Type{TColumnData})
     ThriftMeta(t, [
-        ThriftMetaAttribs(1, :int_col, 15, true, Any[], ThriftMeta[])
-        ThriftMetaAttribs(2, :real_col,15, true, Any[], ThriftMeta[])
-        ThriftMetaAttribs(3, :str_col, 15, true, Any[], ThriftMeta[])
-        ThriftMetaAttribs(4, :arr_col, 15, true, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TColumn")))])
+        ThriftMetaAttribs(1, :int_col, 15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(2, :real_col,15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(3, :str_col, 15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(4, :arr_col, 15, false, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TColumn")))])
     ])
 end
 
