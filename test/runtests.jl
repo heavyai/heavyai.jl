@@ -101,7 +101,7 @@ timecol = [Time(4), Time(5), Time(6), Time(7)]
 tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
 pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
 linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
-pointcol_native = GeoInterface.Point.(readgeom.(pointcol)),
+pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
 linecol_native = GeoInterface.LineString.(readgeom.(linecol))
 
 df = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
