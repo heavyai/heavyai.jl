@@ -112,7 +112,7 @@ tbldb = sql_execute(conn, "select * from test")
                              Union{Missing, Int32},
                              Union{Missing, Int64},
                              Union{Missing, Float32},
-                             Union{Missing, Float64}, 
+                             Union{Missing, Float64},
                              Union{Missing, Dec64},
                              Union{Missing, String},
                              Union{Missing, String},
