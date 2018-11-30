@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random, DataFrames
+using OmniSci, Test, Dates, Random, DataFrames, DecFP
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
