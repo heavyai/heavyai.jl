@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS
+using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
@@ -125,8 +125,8 @@ tbldb = sql_execute(conn, "select * from test")
                              Union{Missing, Date},
                              Union{Missing, Time},
                              Union{Missing, DateTime},
-                             Union{Missing, Point},
-                             Union{Missing, LineString}
+                             Union{Missing, GeoInterface.Point},
+                             Union{Missing, GeoInterface.LineString}
                              ]
 
 #Test polygon and multipolygon separately due to outstanding Thrift issue
