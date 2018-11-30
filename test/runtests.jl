@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface
+using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
@@ -146,6 +146,14 @@ polydf = DataFrame([polycol, mpolycol])
 
 @test load_table(conn, "polys", polydf) == nothing
 @test load_table(conn, "polys", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(polydf)]) == nothing
+
+#test loading native GeoInterface objects
+polydf_native = DataFrame([GeoInterface.Polygon.(readgeom.(polycol)),
+                           GeoInterface.MultiPolygon.(readgeom.(mpolycol))
+                           ])
+
+@test load_table(conn, "polys", polydf_native) == nothing
+@test load_table(conn, "polys", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(polydf_native)]) == nothing
 
 polydb = sql_execute(conn, "select * from polys")
 @test eltypes(polydb) == Type[Union{Missing, GeoInterface.Polygon}, Union{Missing, GeoInterface.MultiPolygon}]

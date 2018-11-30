@@ -57,6 +57,38 @@ seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x
 
 #For functions below, value for is_null should be known based on the dispatched type
 #Left as keyword just in case my assumption incorrect
+function TStringValue(str_val::GeoInterface.Point, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.Point(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::GeoInterface.LineString, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.LineString(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::GeoInterface.Polygon, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.Polygon(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::GeoInterface.MultiPolygon, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.MultiPolygon(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
 function TStringValue(str_val::Rational, is_null::Bool = false)
   val = OmniSci.TStringValue()
   Thrift.set_field!(val, :str_val, string(convert(Float64, str_val)))
