@@ -10,6 +10,8 @@ end
 convert(::Type{DateTime}, x::Int64) =  Dates.unix2datetime(x)
 convert(::Type{Date}, x::Int64) =  Date(Dates.unix2datetime(x))
 convert(::Type{Time}, x::Int64) = Time(x/3600, x % 3600)
+
+#conversions from WKT to GeoInterface types, to get typed df from sql_execute
 convert(::Type{GeoInterface.Point}, x::String) = GeoInterface.Point(LibGEOS.readgeom(x))
 convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(LibGEOS.readgeom(x))
 convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))

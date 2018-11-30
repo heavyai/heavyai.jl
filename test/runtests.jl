@@ -78,7 +78,9 @@ col11 date,
 col12 time,
 col13 timestamp,
 col14 point,
-col15 linestring
+col15 linestring,
+col16 point,
+col17 linestring
 )
 """
 
@@ -99,10 +101,12 @@ timecol = [Time(4), Time(5), Time(6), Time(7)]
 tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
 pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
 linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
+pointcol_native = GeoInterface.Point.(readgeom.(pointcol)),
+linecol_native = GeoInterface.LineString.(readgeom.(linecol))
 
 df = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
                 decimalcol, textcol, textcol, boolcol, datecol, timecol, tscol,
-                pointcol, linecol])
+                pointcol, linecol, pointcol_native, linecol_native])
 
 #load data rowwise from dataframe
 @test load_table(conn, "test", df) == nothing
@@ -125,6 +129,8 @@ tbldb = sql_execute(conn, "select * from test")
                              Union{Missing, Date},
                              Union{Missing, Time},
                              Union{Missing, DateTime},
+                             Union{Missing, GeoInterface.Point},
+                             Union{Missing, GeoInterface.LineString},
                              Union{Missing, GeoInterface.Point},
                              Union{Missing, GeoInterface.LineString}
                              ]
