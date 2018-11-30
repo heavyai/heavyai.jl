@@ -1,31 +1,47 @@
 ########################### Common/Utils ###########################
 
+#Convenience struct to pass `conn` each time instead of the parts
 mutable struct OmniSciConnection
     session::TSessionId
     c::MapDClient
 end
+
+#convert methods implicitly needed for squashbitmask
+convert(::Type{DateTime}, x::Int64) =  Dates.unix2datetime(x)
+convert(::Type{Date}, x::Int64) =  Date(Dates.unix2datetime(x))
+convert(::Type{Time}, x::Int64) = Time(x/3600, x % 3600)
 
 #Find which field in the struct the data actually is
 function findvalues(x::OmniSci.TColumn)
     for f in propertynames(x.data)
         n = length(getfield(x.data, f))
         if n > 0
-            return (f, eltype(getfield(x.data, f)), n)
+            return (f, n)
         end
     end
 end
 
 #Take two vectors, values and nulls, make into a single vector
 #TODO: Figure out if its possible to further minimize allocations
-function squashbitmask(x::TColumn)
+function squashbitmask(x::TColumn, typeinfo::Tuple{DataType, Bool})
 
     #Get location of data from struct, eltype of vector and its length
-    valuescol, ltype, n = findvalues(x)
+    valuescol, n = findvalues(x)
+
+    #unpack type info
+    ltype, nullable = typeinfo
 
     #Build/fill new vector based on missingness
-    A = Vector{Union{ltype, Missing}}(undef, n)
-    @simd for i = 1:n
-        @inbounds A[i] = ifelse(x.nulls[i], missing, getfield(x.data, valuescol)[i])
+    if nullable
+        A = Vector{Union{ltype, Missing}}(undef, n)
+        @simd for i = 1:n
+            @inbounds A[i] = ifelse(x.nulls[i], missing, getfield(x.data, valuescol)[i])
+        end
+    else
+        #Assumption here is that for columns without nulls, can cast directly
+        #Since whatever is in the x.data column should be valid values
+        #And appropriate convert methods defined
+        A = convert(Vector{ltype}, getfield(x.data, valuescol))
     end
 
     return A

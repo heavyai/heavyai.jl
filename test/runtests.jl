@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random, DataFrames
+using OmniSci, Test, Dates, Random, DataFrames, DecFP
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
@@ -104,6 +104,22 @@ df = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
 
 #load data rowwise from Vector{TStringRow}
 @test load_table(conn, "test", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
+
+#validate return types same as server
+tbldb = sql_execute(conn, "select * from test")
+@test eltypes(tbldb) == Type[Union{Missing, Int8},
+                             Union{Missing, Int16},
+                             Union{Missing, Int32},
+                             Union{Missing, Int64},
+                             Union{Missing, Float32},
+                             Union{Missing, Float64},
+                             Union{Missing, Dec64},
+                             Union{Missing, String},
+                             Union{Missing, String},
+                             Union{Missing, Bool},
+                             Union{Missing, Date},
+                             Union{Missing, Time},
+                             Union{Missing, DateTime}]
 
 sql2 = """
 create table test2 (

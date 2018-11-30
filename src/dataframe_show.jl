@@ -1,10 +1,13 @@
 function DataFrame(x::TQueryResult)
 
-    #get column name and whether column is nullable
+    #get column name
     colnames = [desc.col_name for desc in x.row_set.row_desc]
 
+    #get column types and nullable
+    coltypes = [(getcolumntype(desc.col_type._type), desc.col_type.nullable) for desc in x.row_set.row_desc]
+
     #collapse vectors into a single Vector{T, Missing} vector
-    mergecols = [squashbitmask(y) for y in x.row_set.columns]
+    mergecols = [squashbitmask(y, tup) for (y, tup) in zip(x.row_set.columns, coltypes)]
 
     #convert to DataFrame
     df = DataFrame(mergecols)
