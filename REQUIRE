@@ -3,3 +3,4 @@ Thrift 0.6.0
 DataFrames 0.14.1
 DecFP 0.4.6
 GeoInterface 0.4.0
+LibGEOS 0.4.1

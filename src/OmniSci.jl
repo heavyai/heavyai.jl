@@ -4,6 +4,7 @@ using Thrift, Random, Sockets, Distributed, DataFrames, Dates, DecFP, GeoInterfa
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Base: show, convert
 import DataFrames: DataFrame
+import LibGEOS: readgeom
 
 #### types and enums ####
 export TDatum, TColumn, TExecuteMode
