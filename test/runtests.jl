@@ -140,6 +140,15 @@ mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20,
 "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))",
 "MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))"]
 
+polysql = "create table polys (col1 polygon, col2 multipolygon)"
+sql_execute(conn, polysql)
+polydf = DataFrame([polycol, mpolycol])
+
+@test load_table(conn, "polys", polydf) == nothing
+@test load_table(conn, "polys", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(polydf)]) == nothing
+
+polydb = sql_execute(conn, "select * from polys")
+@test eltypes(polydb) == Type[Union{Missing, GeoInterface.Polygon}, Union{Missing, GeoInterface.MultiPolygon}]
 
 sql2 = """
 create table test2 (
