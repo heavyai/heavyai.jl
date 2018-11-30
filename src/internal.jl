@@ -10,10 +10,10 @@ end
 convert(::Type{DateTime}, x::Int64) =  Dates.unix2datetime(x)
 convert(::Type{Date}, x::Int64) =  Date(Dates.unix2datetime(x))
 convert(::Type{Time}, x::Int64) = Time(x/3600, x % 3600)
-convert(::Type{Point}, x::String) = GeoInterface.Point(LibGEOS.readgeom(x))
-convert(::Type{LineString}, x::String) = GeoInterface.LineString(LibGEOS.readgeom(x))
-convert(::Type{Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
-convert(::Type{MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
+convert(::Type{GeoInterface.Point}, x::String) = GeoInterface.Point(LibGEOS.readgeom(x))
+convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(LibGEOS.readgeom(x))
+convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
+convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
 
 #Find which field in the struct the data actually is
 function findvalues(x::OmniSci.TColumn)
