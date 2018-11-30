@@ -29,6 +29,8 @@ end
 #translated from auto-generated Thrift.jl to more ergonomic enum usage via macro
 @scopedenum TDatumType SMALLINT=Int32(0) INT=Int32(1) BIGINT=Int32(2) FLOAT=Int32(3) DECIMAL=Int32(4) DOUBLE=Int32(5) STR=Int32(6) TIME=Int32(7) TIMESTAMP=Int32(8) DATE=Int32(9) BOOL=Int32(10) INTERVAL_DAY_TIME=Int32(11) INTERVAL_YEAR_MONTH=Int32(12) POINT=Int32(13) LINESTRING=Int32(14) POLYGON=Int32(15) MULTIPOLYGON=Int32(16) TINYINT=Int32(17) GEOMETRY=Int32(18) GEOGRAPHY=Int32(19)
 
+#this function used to translate enum to Julia types
+#if a Julia type isn't defined, mark as String
 function getcolumntype(x::Int32)
     d = Dict(0 => Int16,  #SMALLINT
              1 => Int32,  #INT
@@ -43,10 +45,10 @@ function getcolumntype(x::Int32)
              10 => Bool,  #BOOL
              11 => String,  #INTERVAL_DAY_TIME
              12 => String,  #INTERVAL_YEAR_MONTH
-             13 => Point,  #POINT
-             14 => LineString,  #LINESTRING
-             15 => Polygon,  #POLYGON
-             16 => MultiPolygon,  #MULTIPOLYGON
+             13 => String,  #POINT
+             14 => String,  #LINESTRING
+             15 => String,  #POLYGON
+             16 => String,  #MULTIPOLYGON
              17 => Int8,  #TINYINT
              18 => String,  #GEOMETRY
              19 => String  #GEOGRAPHY
