@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random, DataFrames, DecFP
+using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
@@ -76,7 +76,11 @@ col9 text encoding dict(32),
 col10 boolean,
 col11 date,
 col12 time,
-col13 timestamp
+col13 timestamp,
+col14 point,
+col15 linestring,
+col16 point,
+col17 linestring
 )
 """
 
@@ -95,9 +99,14 @@ boolcol = [true, false, true, true]
 datecol = [Date(2013,7,1), Date(2013,7,1), Date(2013,7,1), Date(2013,7,1)]
 timecol = [Time(4), Time(5), Time(6), Time(7)]
 tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
+pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
+linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
+pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
+linecol_native = GeoInterface.LineString.(readgeom.(linecol))
 
 df = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
-                decimalcol, textcol, textcol, boolcol, datecol, timecol, tscol])
+                decimalcol, textcol, textcol, boolcol, datecol, timecol, tscol,
+                pointcol, linecol, pointcol_native, linecol_native])
 
 #load data rowwise from dataframe
 @test load_table(conn, "test", df) == nothing
@@ -119,7 +128,41 @@ tbldb = sql_execute(conn, "select * from test")
                              Union{Missing, Bool},
                              Union{Missing, Date},
                              Union{Missing, Time},
-                             Union{Missing, DateTime}]
+                             Union{Missing, DateTime},
+                             Union{Missing, GeoInterface.Point},
+                             Union{Missing, GeoInterface.LineString},
+                             Union{Missing, GeoInterface.Point},
+                             Union{Missing, GeoInterface.LineString}
+                             ]
+
+#Test polygon and multipolygon separately due to outstanding Thrift issue
+#https://github.com/tanmaykm/Thrift.jl/issues/51
+
+polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),
+(20 30, 35 35, 30 20, 20 30))", "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),
+(20 30, 35 35, 30 20, 20 30))"]
+mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))",
+"MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))",
+"MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))",
+"MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))"]
+
+polysql = "create table polys (col1 polygon, col2 multipolygon)"
+sql_execute(conn, polysql)
+polydf = DataFrame([polycol, mpolycol])
+
+@test load_table(conn, "polys", polydf) == nothing
+@test load_table(conn, "polys", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(polydf)]) == nothing
+
+#test loading native GeoInterface objects
+polydf_native = DataFrame([GeoInterface.Polygon.(readgeom.(polycol)),
+                           GeoInterface.MultiPolygon.(readgeom.(mpolycol))
+                           ])
+
+@test load_table(conn, "polys", polydf_native) == nothing
+@test load_table(conn, "polys", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(polydf_native)]) == nothing
+
+polydb = sql_execute(conn, "select * from polys")
+@test eltypes(polydb) == Type[Union{Missing, GeoInterface.Polygon}, Union{Missing, GeoInterface.MultiPolygon}]
 
 sql2 = """
 create table test2 (

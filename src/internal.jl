@@ -11,6 +11,12 @@ convert(::Type{DateTime}, x::Int64) =  Dates.unix2datetime(x)
 convert(::Type{Date}, x::Int64) =  Date(Dates.unix2datetime(x))
 convert(::Type{Time}, x::Int64) = Time(x/3600, x % 3600)
 
+#conversions from WKT to GeoInterface types, to get typed df from sql_execute
+convert(::Type{GeoInterface.Point}, x::String) = GeoInterface.Point(LibGEOS.readgeom(x))
+convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(LibGEOS.readgeom(x))
+convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
+convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
+
 #Find which field in the struct the data actually is
 function findvalues(x::OmniSci.TColumn)
     for f in propertynames(x.data)
@@ -53,6 +59,38 @@ seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x
 
 #For functions below, value for is_null should be known based on the dispatched type
 #Left as keyword just in case my assumption incorrect
+function TStringValue(str_val::GeoInterface.Point, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.Point(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::GeoInterface.LineString, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.LineString(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::GeoInterface.Polygon, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.Polygon(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
+function TStringValue(str_val::GeoInterface.MultiPolygon, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+  p = writegeom(LibGEOS.MultiPolygon(str_val))
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
 function TStringValue(str_val::Rational, is_null::Bool = false)
   val = OmniSci.TStringValue()
   Thrift.set_field!(val, :str_val, string(convert(Float64, str_val)))
