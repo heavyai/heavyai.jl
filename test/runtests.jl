@@ -209,8 +209,8 @@ clear_cpu = OmniSci.clear_cpu_memory(conn)
 execmode = OmniSci.set_execution_mode(conn, TExecuteMode.CPU)
 @test typeof(execmode) == Nothing
 
-glc = OmniSci.get_license_claims(conn)
-@test typeof(glc) == OmniSci.TLicenseInfo
+# glc = OmniSci.get_license_claims(conn)
+# @test typeof(glc) == OmniSci.TLicenseInfo
 
 mem = OmniSci.get_memory(conn, "cpu")
 @test typeof(mem) == Vector{OmniSci.TNodeMemoryInfo}

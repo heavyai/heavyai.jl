@@ -431,17 +431,17 @@ get_all_roles_for_user(conn::OmniSciConnection, userName::String; as_df::Bool = 
 
 ######################################## licensing
 
-"""
-    set_license_key(conn::OmniSciConnection, key::String)
-
-
-"""
-set_license_key(conn::OmniSciConnection, key::String) =
-    set_license_key(conn.c, conn.session, key, randstring(32))
-
-"""
-    get_license_claims(conn::OmniSciConnection)
-
-"""
-get_license_claims(conn::OmniSciConnection) =
-    get_license_claims(conn.c, conn.session, randstring(32))
+# """
+#     set_license_key(conn::OmniSciConnection, key::String)
+#
+#
+# """
+# set_license_key(conn::OmniSciConnection, key::String) =
+#     set_license_key(conn.c, conn.session, key, randstring(32))
+#
+# """
+#     get_license_claims(conn::OmniSciConnection)
+#
+# """
+# get_license_claims(conn::OmniSciConnection) =
+#     get_license_claims(conn.c, conn.session, randstring(32))
