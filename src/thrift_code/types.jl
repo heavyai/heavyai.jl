@@ -365,21 +365,6 @@ mutable struct disconnect_result
 end # mutable struct disconnect_result
 meta(t::Type{disconnect_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
-# # types encapsulating arguments and return values of method get_server_status
-#
-# mutable struct get_server_status_args <: Thrift.TMsg
-#   session::TSessionId
-#   get_server_status_args() = (o=new(); fillunset(o); o)
-# end # mutable struct get_server_status_args
-#
-# mutable struct get_server_status_result
-#   success::TServerStatus
-#   e::TMapDException
-#   get_server_status_result() = (o=new(); fillunset(o); o)
-#   get_server_status_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-# end # mutable struct get_server_status_result
-# meta(t::Type{get_server_status_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
 # types encapsulating arguments and return values of method get_status
 
 mutable struct get_status_args <: Thrift.TMsg
@@ -809,41 +794,6 @@ mutable struct get_all_roles_for_user_result
   get_all_roles_for_user_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
 end # mutable struct get_all_roles_for_user_result
 meta(t::Type{get_all_roles_for_user_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
-# # types encapsulating arguments and return values of method set_license_key
-#
-# mutable struct set_license_key_args <: Thrift.TMsg
-#   session::TSessionId
-#   key::String
-#   nonce::String
-#   set_license_key_args() = (o=new(); fillunset(o); o)
-# end # mutable struct set_license_key_args
-# meta(t::Type{set_license_key_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:nonce => ""))
-#
-# mutable struct set_license_key_result
-#   success::TLicenseInfo
-#   e::TMapDException
-#   set_license_key_result() = (o=new(); fillunset(o); o)
-#   set_license_key_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-# end # mutable struct set_license_key_result
-# meta(t::Type{set_license_key_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-#
-# # types encapsulating arguments and return values of method get_license_claims
-#
-# mutable struct get_license_claims_args <: Thrift.TMsg
-#   session::TSessionId
-#   nonce::String
-#   get_license_claims_args() = (o=new(); fillunset(o); o)
-# end # mutable struct get_license_claims_args
-# meta(t::Type{get_license_claims_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:nonce => ""))
-#
-# mutable struct get_license_claims_result
-#   success::TLicenseInfo
-#   e::TMapDException
-#   get_license_claims_result() = (o=new(); fillunset(o); o)
-#   get_license_claims_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-# end # mutable struct get_license_claims_result
-# meta(t::Type{get_license_claims_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # Client implementation for MapD service
 mutable struct MapDClient <: MapDClientBase

@@ -46,27 +46,6 @@ function disconnect(c::MapDClient, session::TSessionId)
   nothing
 end # function disconnect
 
-# # Client callable method for get_server_status
-# function get_server_status(c::MapDClient, session::TSessionId)
-#   p = c.p
-#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-#   Thrift.writeMessageBegin(p, "get_server_status", Thrift.MessageType.CALL, c.seqid)
-#   inp = get_server_status_args()
-#   Thrift.set_field!(inp, :session, session)
-#   Thrift.write(p, inp)
-#   Thrift.writeMessageEnd(p)
-#   Thrift.flush(p.t)
-#
-#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-#   outp = Thrift.read(p, get_server_status_result())
-#   Thrift.readMessageEnd(p)
-#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-# end # function get_server_status
-
 # Client callable method for get_status
 function get_status(c::MapDClient, session::TSessionId)
   p = c.p
@@ -620,48 +599,3 @@ function get_all_roles_for_user(c::MapDClient, session::TSessionId, userName::St
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_all_roles_for_user
-
-# # Client callable method for set_license_key
-# function set_license_key(c::MapDClient, session::TSessionId, key::String, nonce::String)
-#   p = c.p
-#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-#   Thrift.writeMessageBegin(p, "set_license_key", Thrift.MessageType.CALL, c.seqid)
-#   inp = set_license_key_args()
-#   Thrift.set_field!(inp, :session, session)
-#   Thrift.set_field!(inp, :key, key)
-#   Thrift.set_field!(inp, :nonce, nonce)
-#   Thrift.write(p, inp)
-#   Thrift.writeMessageEnd(p)
-#   Thrift.flush(p.t)
-#
-#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-#   outp = Thrift.read(p, set_license_key_result())
-#   Thrift.readMessageEnd(p)
-#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-# end # function set_license_key
-
-# # Client callable method for get_license_claims
-# function get_license_claims(c::MapDClient, session::TSessionId, nonce::String)
-#   p = c.p
-#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-#   Thrift.writeMessageBegin(p, "get_license_claims", Thrift.MessageType.CALL, c.seqid)
-#   inp = get_license_claims_args()
-#   Thrift.set_field!(inp, :session, session)
-#   Thrift.set_field!(inp, :nonce, nonce)
-#   Thrift.write(p, inp)
-#   Thrift.writeMessageEnd(p)
-#   Thrift.flush(p.t)
-#
-#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-#   outp = Thrift.read(p, get_license_claims_result())
-#   Thrift.readMessageEnd(p)
-#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-# end # function get_license_claims
