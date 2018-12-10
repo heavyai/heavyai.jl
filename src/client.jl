@@ -428,20 +428,3 @@ get_roles(conn::OmniSciConnection; as_df::Bool = true) =
 """
 get_all_roles_for_user(conn::OmniSciConnection, userName::String; as_df::Bool = true) =
     as_df ? DataFrame(Dict("roles" => get_all_roles_for_user(conn.c, conn.session, userName))) : get_all_roles_for_user(conn.c, conn.session, userName)
-
-######################################## licensing
-
-"""
-    set_license_key(conn::OmniSciConnection, key::String)
-
-
-"""
-set_license_key(conn::OmniSciConnection, key::String) =
-    set_license_key(conn.c, conn.session, key, randstring(32))
-
-"""
-    get_license_claims(conn::OmniSciConnection)
-
-"""
-get_license_claims(conn::OmniSciConnection) =
-    get_license_claims(conn.c, conn.session, randstring(32))
