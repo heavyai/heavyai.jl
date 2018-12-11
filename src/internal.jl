@@ -17,6 +17,9 @@ convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(Li
 convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
 convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
 
+DateTime(x::Missing) = missing
+datetime2unix(x::Missing) = missing
+
 #Find which field in the struct the data actually is
 function findvalues(x::OmniSci.TColumn)
     for f in propertynames(x.data)
@@ -218,7 +221,7 @@ end
 TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(convert(Vector{Int, Missing}, datetime2unix.(x)))
 
 # Dispatches to DateTime, which dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(convert(Vector{DateTime, Missing}, x))
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(DateTime.(x))
 
 # Dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
