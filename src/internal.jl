@@ -72,7 +72,7 @@ seconds_since_midnight(x::Missing) = missing
 #Left as keyword just in case my assumption incorrect
 
 # convert vectors to string representations for atomic types only
-function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType}}, is_null::Bool = false)
+function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Missing}}, is_null::Bool = false)
   val = OmniSci.TStringValue()
 
   #Write values into buffer to avoid any weird display issues
@@ -80,12 +80,14 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType}}, is
   write(io, "{")
 
   for val in str_val[1:end-1]
-    write(io, string(val))
+    val == missing ? val_ = "NA" : val_ = val
+    write(io, string(val_))
     write(io, ",")
   end
 
   #for last value in array, don't add trailing comma
-  write(io, string(str_val[end]))
+  str_val[end] == missing ? lastval = "NA" : lastval = val
+  write(io, string(lastval))
   write(io, "}")
 
   p = String(take!(io))
