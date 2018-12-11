@@ -238,7 +238,9 @@ function sql_execute(conn::OmniSciConnection, query::String; first_n::Int = -1, 
     #true hard-coded for column_format, as its not clear there is any benefit to providing row-wise parsing (slow)
     result = sql_execute(conn.c, conn.session, query, true, randstring(32), Int32(first_n), Int32(at_most_n))
 
-    as_df ? DataFrame(result) : result
+    #test if query string expected to return a df-like result
+    #minimizes returning 0x0 dataframe
+    as_df && startswith(lowercase(lstrip(query)), "select") ? DataFrame(result) : nothing
 
 end
 

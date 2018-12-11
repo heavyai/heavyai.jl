@@ -55,7 +55,7 @@ tbl_details = get_table_details(conn, "omnisci_counties")
 @test typeof(tbl_details) == DataFrame
 
 #get roles assigned to user
-sql_execute(conn, "create role testuser") #TODO: write convenience method when result unlikely to return a result instead of empty dataframe
+sql_execute(conn, "create role testuser")
 sql_execute(conn, "create user mapd2 (password = 'OmniSciRocks!', is_super = 'true')")
 sql_execute(conn, "grant testuser to mapd2")
 roleuser = get_all_roles_for_user(conn, "mapd2")
