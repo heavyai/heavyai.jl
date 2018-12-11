@@ -210,14 +210,21 @@ timestamp_array TIMESTAMP[])
 
 sql_execute(conn, sqlarray)
 
-tinyarrarr = [in   
-textarrarr = [textarray, textarray, textarray, textarray]
-boolarrarr = [boolarray, boolarray, boolarray, boolarray]
-intarrarr = [intarray, intarray, intarray, intarray]
-floatarrarr = [floatarray, floatarray, floatarray, floatarray]
+tinyarrarr = [tinyintcol, tinyintcol, tinyintcol, tinyintcol]
+intarrarr = [intcol, intcol, intcol, intcol]
+bigintarrarr = [bigintcol, bigintcol, bigintcol, bigintcol]
+textarrarr = [textcol, textcol, textcol, textcol]
+floatarrarr = [floatcol, floatcol, floatcol, floatcol]
+dblarrarr = [doublecol, doublecol, doublecol, doublecol]
+decarrarr = [decimalcol, decimalcol, decimalcol, decimalcol]
+boolarrarr = [boolcol, boolcol, boolcol, boolcol]
+datearrarr = [datecol, datecol, datecol, datecol]
+timearrarr = [timecol, timecol, timecol, timecol]
+tsarrarr = [tscol, tscol, tscol, tscol]
 
-dfarray = DataFrame([textarrarr, boolarrarr, intarrarr, floatarrarr])
-@test load_table(conn, "testarray", DataFrame([boolarrarr])) == nothing
+dfarray = DataFrame([tinyarrarr, intarrarr, bigintarrarr, textarrarr, floatarrarr,
+                    dblarrarr, decarrarr, boolarrarr, datearrarr, timearrarr, tsarrarr])
+@test load_table(conn, "arrayexamples", dfarray) == nothing
 
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
