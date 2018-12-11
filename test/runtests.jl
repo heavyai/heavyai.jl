@@ -25,18 +25,29 @@ sstatus = get_status(conn)
 users = get_users(conn)
 @test typeof(users) == DataFrame
 
+users_nodf = get_users(conn, as_df = false)
+@test typeof(users_nodf) == Vector{String}
+
 #get databases user specified during connect() can see
 databases = get_databases(conn)
 @test typeof(databases) == DataFrame
+
+databases_nodf = get_databases(conn, as_df = false)
+@test typeof(databases_nodf) == Vector{OmniSci.TDBInfo}
 
 #gets tables/views and their properties
 met = get_tables_meta(conn)
 @test typeof(met) == DataFrame
 
+met_nodf = get_tables_meta(conn, as_df = false)
+@test typeof(met_nodf) == Vector{OmniSci.TTableMeta}
+
 #execute query, return result via Thrift interface
 se = sql_execute(conn, "select * from omnisci_counties")
 @test typeof(se) == DataFrame
 @test size(se) == (3250, 6)
+@test eltypes(se) ==  [Union{Missing, String}, Union{Missing, String}, Union{Missing, String},
+                        Union{Missing, String}, Union{Missing, String}, Union{Missing, GeoInterface.MultiPolygon}]
 
 #cdash represents id of dashboard created, use for later tests
 cdash = OmniSci.create_dashboard(conn, randstring(10), "state", "image", "metadata")
@@ -45,14 +56,28 @@ cdash = OmniSci.create_dashboard(conn, randstring(10), "state", "image", "metada
 getdbs = get_dashboards(conn)
 @test typeof(getdbs) == DataFrame
 
+getdbs_nodf = get_dashboards(conn, as_df = false)
+@test typeof(getdbs_nodf) == Vector{OmniSci.TDashboard}
+
 gr = get_roles(conn)
 @test typeof(gr) == DataFrame
+
+gr_nodf = get_roles(conn, as_df = false)
+@test typeof(gr_nodf) == Vector{String}
 
 getdashgrant = get_dashboard_grantees(conn, cdash)
 @test typeof(getdashgrant) == Vector{OmniSci.TDashboardGrantees}
 
 tbl_details = get_table_details(conn, "omnisci_counties")
 @test typeof(tbl_details) == DataFrame
+@test size(tbl_details) == (6,21)
+@test names(tbl_details) == [:col_name, :col_type, :comp_param, :encoding, :is_array, :is_physical,
+                            :is_reserved_keyword, :is_system, :nullable, :precision, :scale,
+                            :size, :src_name, :fragment_size, :page_size, :max_rows, :view_sql,
+                            :shard_count, :key_metainfo, :is_temporary, :partition_detail]
+
+tbl_details_nodf = get_table_details(conn, "omnisci_counties", as_df = false)
+@test typeof(tbl_details_nodf) == OmniSci.TTableDetails
 
 #get roles assigned to user
 sql_execute(conn, "create role testuser")
@@ -60,6 +85,9 @@ sql_execute(conn, "create user mapd2 (password = 'OmniSciRocks!', is_super = 'tr
 sql_execute(conn, "grant testuser to mapd2")
 roleuser = get_all_roles_for_user(conn, "mapd2")
 @test typeof(roleuser) == DataFrame
+
+roleuser_nodf = get_all_roles_for_user(conn, "mapd2", as_df = false)
+@test typeof(roleuser_nodf) == Vector{String}
 
 #load data to table from dataframe
 sql = """
@@ -87,18 +115,18 @@ col17 linestring
 sql_execute(conn, sql)
 
 #Define an example dataframe
-tinyintcol = Int8[4,3,2,1]
-smallintcol = Int16[4,3,2,1]
-intcol = Int32[4,3,2,1]
-bigintcol = Int64[4,3,2,1]
-floatcol = Float32[3.0, 4.1, 2.69, 3.8]
-doublecol = [3//2, 4//7, 9//72, 90/112] #testing julia rational, OmniSci double
-decimalcol = [3.0, 4.1, 2.69, 3.8]
+tinyintcol = Union{Int8,Missing}[missing,3,2,1]
+smallintcol = Union{Int16,Missing}[4,missing,2,1]
+intcol = Union{Int32,Missing}[4,3,missing,1]
+bigintcol = Union{Int64,Missing}[4,3,2,missing]
+floatcol = Union{Float32,Missing}[missing, 4.1, 2.69, 3.8]
+doublecol = [3//2, missing, 9//72, 90/112] #testing julia rational, OmniSci double
+decimalcol = [3.0, 4.1, missing, 3.8]
 textcol = ["hello", "world", "omnisci", "gpu"]
-boolcol = [true, false, true, true]
-datecol = [Date(2013,7,1), Date(2013,7,1), Date(2013,7,1), Date(2013,7,1)]
-timecol = [Time(4), Time(5), Time(6), Time(7)]
-tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
+boolcol = [missing, false, true, true]
+datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
+timecol = [Time(4), Time(5), missing, Time(7)]
+tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
 pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
 linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
 pointcol_native = GeoInterface.Point.(readgeom.(pointcol))

@@ -17,6 +17,16 @@ convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(Li
 convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
 convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
 
+#Define these methods to avoid type piracy
+myDateTime(x::Missing) = missing
+myDateTime(x) = DateTime(x)
+
+mydatetime2unix(x::Missing) = missing
+mydatetime2unix(x) = datetime2unix(x)
+
+myInt64(x::Missing) = missing
+myInt64(x) = Int64(x)
+
 #Find which field in the struct the data actually is
 function findvalues(x::OmniSci.TColumn)
     for f in propertynames(x.data)
@@ -54,6 +64,7 @@ function squashbitmask(x::TColumn, typeinfo::Tuple{DataType, Bool})
 end
 
 seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)
+seconds_since_midnight(x::Missing) = missing
 
 ########################### Typedefs for load_table method ###########################
 
@@ -61,7 +72,7 @@ seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x
 #Left as keyword just in case my assumption incorrect
 
 # convert vectors to string representations for atomic types only
-function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType}}, is_null::Bool = false)
+function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Missing}}, is_null::Bool = false)
   val = OmniSci.TStringValue()
 
   #Write values into buffer to avoid any weird display issues
@@ -69,12 +80,14 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType}}, is
   write(io, "{")
 
   for val in str_val[1:end-1]
-    write(io, string(val))
+    ismissing(val) ? val_ = "NA" : val_ = val
+    write(io, string(val_))
     write(io, ",")
   end
 
   #for last value in array, don't add trailing comma
-  write(io, string(str_val[end]))
+  ismissing(str_val[end]) ? lastval = "NA" : lastval = str_val[end]
+  write(io, string(lastval))
   write(io, "}")
 
   p = String(take!(io))
@@ -215,10 +228,10 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
 end
 
 # Dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(convert(Vector{Int}, datetime2unix.(x)))
+TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(myInt64.(mydatetime2unix.(x)))
 
 # Dispatches to DateTime, which dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(convert(Vector{DateTime}, x))
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(myDateTime.(x))
 
 # Dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
