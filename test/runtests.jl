@@ -192,6 +192,33 @@ df2 = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol
 #load data from Vector{TColumn}
 @test load_table_binary_columnar(conn, "test2", [TColumn(df2[x]) for x in 1:ncol(df2)]) == nothing
 
+#### Test loading arrays rowwise
+sqlarray = """
+CREATE TABLE arrayexamples (
+tiny_int_array TINYINT[],
+int_array INTEGER[],
+big_int_array BIGINT[],
+text_array TEXT[],
+float_array FLOAT[],
+double_array DOUBLE[],
+decimal_array DECIMAL(18,6)[],
+boolean_array BOOLEAN[],
+date_array DATE[],
+time_array TIME[],
+timestamp_array TIMESTAMP[])
+"""
+
+sql_execute(conn, sqlarray)
+
+tinyarrarr = [in   
+textarrarr = [textarray, textarray, textarray, textarray]
+boolarrarr = [boolarray, boolarray, boolarray, boolarray]
+intarrarr = [intarray, intarray, intarray, intarray]
+floatarrarr = [floatarray, floatarray, floatarray, floatarray]
+
+dfarray = DataFrame([textarrarr, boolarrarr, intarrarr, floatarrarr])
+@test load_table(conn, "testarray", DataFrame([boolarrarr])) == nothing
+
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
 @test typeof(hware) == OmniSci.TClusterHardwareInfo

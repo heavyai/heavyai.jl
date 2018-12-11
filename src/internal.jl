@@ -59,6 +59,31 @@ seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x
 
 #For functions below, value for is_null should be known based on the dispatched type
 #Left as keyword just in case my assumption incorrect
+
+# convert vectors to string representations for atomic types only
+function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType}}, is_null::Bool = false)
+  val = OmniSci.TStringValue()
+
+  #Write values into buffer to avoid any weird display issues
+  io = IOBuffer()
+  write(io, "{")
+
+  for val in str_val[1:end-1]
+    write(io, string(val))
+    write(io, ",")
+  end
+
+  #for last value in array, don't add trailing comma
+  write(io, string(str_val[end]))
+  write(io, "}")
+
+  p = String(take!(io))
+
+  Thrift.set_field!(val, :str_val, p)
+  Thrift.set_field!(val, :is_null, is_null)
+  return val
+end
+
 function TStringValue(str_val::GeoInterface.Point, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.Point(str_val))
@@ -113,7 +138,6 @@ function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, 
   Thrift.set_field!(val, :is_null, is_null)
   return val
 end
-
 
 function TStringRow(cols::Vector{TStringValue})
     tsr = OmniSci.TStringRow()
