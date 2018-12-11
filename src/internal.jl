@@ -215,10 +215,10 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
 end
 
 # Dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(convert(Vector{Int}, datetime2unix.(x)))
+TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(convert(Vector{Int, Missing}, datetime2unix.(x)))
 
 # Dispatches to DateTime, which dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(convert(Vector{DateTime}, x))
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(convert(Vector{DateTime, Missing}, x))
 
 # Dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
