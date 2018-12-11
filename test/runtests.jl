@@ -115,18 +115,18 @@ col17 linestring
 sql_execute(conn, sql)
 
 #Define an example dataframe
-tinyintcol = Int8[4,3,2,1]
-smallintcol = Int16[4,3,2,1]
-intcol = Int32[4,3,2,1]
-bigintcol = Int64[4,3,2,1]
-floatcol = Float32[3.0, 4.1, 2.69, 3.8]
-doublecol = [3//2, 4//7, 9//72, 90/112] #testing julia rational, OmniSci double
-decimalcol = [3.0, 4.1, 2.69, 3.8]
+tinyintcol = Int8[missing,3,2,1]
+smallintcol = Int16[4,missing,2,1]
+intcol = Int32[4,3,missing,1]
+bigintcol = Int64[4,3,2,missing]
+floatcol = Float32[missing, 4.1, 2.69, 3.8]
+doublecol = [3//2, missing, 9//72, 90/112] #testing julia rational, OmniSci double
+decimalcol = [3.0, 4.1, missing, 3.8]
 textcol = ["hello", "world", "omnisci", "gpu"]
-boolcol = [true, false, true, true]
-datecol = [Date(2013,7,1), Date(2013,7,1), Date(2013,7,1), Date(2013,7,1)]
-timecol = [Time(4), Time(5), Time(6), Time(7)]
-tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
+boolcol = [missing, false, true, true]
+datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
+timecol = [Time(4), Time(5), missing, Time(7)]
+tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
 pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
 linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
 pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
