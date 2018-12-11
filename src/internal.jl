@@ -19,6 +19,7 @@ convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygo
 
 DateTime(x::Missing) = missing
 datetime2unix(x::Missing) = missing
+Int(x::Missing) = missing
 
 #Find which field in the struct the data actually is
 function findvalues(x::OmniSci.TColumn)
@@ -218,7 +219,7 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
 end
 
 # Dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(convert(Vector{Int, Missing}, datetime2unix.(x)))
+TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(Int.(datetime2unix.(x)))
 
 # Dispatches to DateTime, which dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(DateTime.(x))
