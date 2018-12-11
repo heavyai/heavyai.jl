@@ -115,11 +115,11 @@ col17 linestring
 sql_execute(conn, sql)
 
 #Define an example dataframe
-tinyintcol = Int8[missing,3,2,1]
-smallintcol = Int16[4,missing,2,1]
-intcol = Int32[4,3,missing,1]
-bigintcol = Int64[4,3,2,missing]
-floatcol = Float32[missing, 4.1, 2.69, 3.8]
+tinyintcol = Union{Int8,Missing}[missing,3,2,1]
+smallintcol = Union{Int16,Missing}[4,missing,2,1]
+intcol = Union{Int32,Missing}[4,3,missing,1]
+bigintcol = Union{Int64,Missing}[4,3,2,missing]
+floatcol = Union{Float32,Missing}[missing, 4.1, 2.69, 3.8]
 doublecol = [3//2, missing, 9//72, 90/112] #testing julia rational, OmniSci double
 decimalcol = [3.0, 4.1, missing, 3.8]
 textcol = ["hello", "world", "omnisci", "gpu"]
