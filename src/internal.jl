@@ -86,7 +86,7 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
   end
 
   #for last value in array, don't add trailing comma
-  str_val[end] == missing ? lastval = "NA" : lastval = val
+  str_val[end] == missing ? lastval = "NA" : lastval = str_val[end]
   write(io, string(lastval))
   write(io, "}")
 
