@@ -192,6 +192,40 @@ df2 = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol
 #load data from Vector{TColumn}
 @test load_table_binary_columnar(conn, "test2", [TColumn(df2[x]) for x in 1:ncol(df2)]) == nothing
 
+#### Test loading arrays rowwise
+sqlarray = """
+CREATE TABLE arrayexamples (
+tiny_int_array TINYINT[],
+int_array INTEGER[],
+big_int_array BIGINT[],
+text_array TEXT[],
+float_array FLOAT[],
+double_array DOUBLE[],
+decimal_array DECIMAL(18,6)[],
+boolean_array BOOLEAN[],
+date_array DATE[],
+time_array TIME[],
+timestamp_array TIMESTAMP[])
+"""
+
+sql_execute(conn, sqlarray)
+
+tinyarrarr = [tinyintcol, tinyintcol, tinyintcol, tinyintcol]
+intarrarr = [intcol, intcol, intcol, intcol]
+bigintarrarr = [bigintcol, bigintcol, bigintcol, bigintcol]
+textarrarr = [textcol, textcol, textcol, textcol]
+floatarrarr = [floatcol, floatcol, floatcol, floatcol]
+dblarrarr = [doublecol, doublecol, doublecol, doublecol]
+decarrarr = [decimalcol, decimalcol, decimalcol, decimalcol]
+boolarrarr = [boolcol, boolcol, boolcol, boolcol]
+datearrarr = [datecol, datecol, datecol, datecol]
+timearrarr = [timecol, timecol, timecol, timecol]
+tsarrarr = [tscol, tscol, tscol, tscol]
+
+dfarray = DataFrame([tinyarrarr, intarrarr, bigintarrarr, textarrarr, floatarrarr,
+                    dblarrarr, decarrarr, boolarrarr, datearrarr, timearrarr, tsarrarr])
+@test load_table(conn, "arrayexamples", dfarray) == nothing
+
 #TODO: create a show method and/or return as dataframe
 hware = get_hardware_info(conn)
 @test typeof(hware) == OmniSci.TClusterHardwareInfo
