@@ -19,7 +19,7 @@ convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygo
 
 DateTime(x::Missing) = missing
 datetime2unix(x::Missing) = missing
-Int(x::Missing) = missing
+Int64(x::Missing) = missing
 
 #Find which field in the struct the data actually is
 function findvalues(x::OmniSci.TColumn)
@@ -58,6 +58,7 @@ function squashbitmask(x::TColumn, typeinfo::Tuple{DataType, Bool})
 end
 
 seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)
+seconds_since_midnight(x::Missing) = missing
 
 ########################### Typedefs for load_table method ###########################
 
@@ -219,7 +220,7 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
 end
 
 # Dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(Int.(datetime2unix.(x)))
+TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(Int64.(datetime2unix.(x)))
 
 # Dispatches to DateTime, which dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(DateTime.(x))
