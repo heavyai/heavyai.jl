@@ -27,7 +27,7 @@ include("thrift_code/types.jl") #slightly modified from Thrift.jl for circular t
 include("thrift_code/client.jl") #same as output by Thrift.jl, except where methods deleted
 
 #Package code
-include("internal.jl")
+include("constructors.jl")
 include("ipc.jl")
 include("client.jl")
 include("dataframe_show.jl")
