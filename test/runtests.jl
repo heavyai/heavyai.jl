@@ -89,31 +89,6 @@ roleuser = get_all_roles_for_user(conn, "mapd2")
 roleuser_nodf = get_all_roles_for_user(conn, "mapd2", as_df = false)
 @test typeof(roleuser_nodf) == Vector{String}
 
-#load data to table from dataframe
-sql = """
-create table test (
-col1 tinyint,
-col2 smallint,
-col3 integer,
-col4 bigint,
-col5 float,
-col6 double,
-col7 decimal(7,2),
-col8 text,
-col9 text encoding dict(32),
-col10 boolean,
-col11 date,
-col12 time,
-col13 timestamp,
-col14 point,
-col15 linestring,
-col16 point,
-col17 linestring
-)
-"""
-
-sql_execute(conn, sql)
-
 #Define an example dataframe
 tinyintcol = Union{Int8,Missing}[missing,3,2,1]
 smallintcol = Union{Int16,Missing}[4,missing,2,1]
@@ -133,8 +108,10 @@ pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
 linecol_native = GeoInterface.LineString.(readgeom.(linecol))
 
 df = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
-                decimalcol, textcol, textcol, boolcol, datecol, timecol, tscol,
+                textcol, textcol, boolcol, datecol, timecol, tscol,
                 pointcol, linecol, pointcol_native, linecol_native])
+
+@test create_table(conn, "test", df) == nothing
 
 #load data rowwise from dataframe
 @test load_table(conn, "test", df) == nothing
@@ -150,7 +127,6 @@ tbldb = sql_execute(conn, "select * from test")
                              Union{Missing, Int64},
                              Union{Missing, Float32},
                              Union{Missing, Float64},
-                             Union{Missing, Dec64},
                              Union{Missing, String},
                              Union{Missing, String},
                              Union{Missing, Bool},

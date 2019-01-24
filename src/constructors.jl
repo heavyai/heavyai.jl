@@ -66,6 +66,59 @@ end
 seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)
 seconds_since_midnight(x::Missing) = missing
 
+#ensure valid col names
+#1. check if first character a number, prepend some valid string
+#2. check if in reserved word list, append _ if reserved
+function sanitizecolnames(x::Symbol)
+    str = string(x)
+end
+
+#convert julia types to OmniSci types
+function getsqlcoltype(x)
+
+    lookup = Dict(
+        #ints
+        Union{Missing, Int8} => "TINYINT",
+        Int8 => "TINYINT",
+        Union{Missing, Int16} => "SMALLINT",
+        Int16 => "SMALLINT",
+        Union{Missing, Int32} => "INTEGER",
+        Int32 => "INTEGER",
+        Union{Missing, Int64} => "BIGINT",
+        Int64 => "BIGINT",
+        #floats
+        Union{Missing, Float32} => "FLOAT",
+        Float32 => "FLOAT",
+        Union{Missing, Float64} => "DOUBLE",
+        Float64 => "DOUBLE",
+        #strings
+        Union{String, Missing} => "TEXT ENCODING DICT",
+        String => "TEXT ENCODING DICT",
+        #bool
+        Union{Missing, Bool} => "BOOLEAN",
+        Bool => "BOOLEAN",
+        #dates and time
+        Union{Missing, Date} => "DATE",
+        Date => "DATE",
+        Union{Missing, Time} => "TIME",
+        Time => "TIME",
+        Union{Missing, DateTime} => "TIMESTAMP",
+        DateTime => "TIMESTAMP",
+        #geospatial
+        Union{Missing, GeoInterface.Point} => "POINT",
+        GeoInterface.Point => "POINT",
+        Union{Missing, GeoInterface.LineString} => "LINESTRING",
+        GeoInterface.LineString => "LINESTRING",
+        Union{Missing, GeoInterface.Polygon} => "POLYGON",
+        GeoInterface.Polygon => "POLYGON",
+        Union{Missing, GeoInterface.MultiPolygon} => "MULTIPOLYGON",
+        GeoInterface.MultiPolygon => "MULTIPOLYGON"
+    )
+
+    get(lookup, x, "Unknown")
+
+end
+
 ########################### Typedefs for load_table method ###########################
 
 #For functions below, value for is_null should be known based on the dispatched type
