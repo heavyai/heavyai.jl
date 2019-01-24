@@ -18,7 +18,7 @@ function connect(host::String, port::Int, user::String, passwd::String, dbname::
     #create libuv socket and keep-alive
     tcp = Sockets.connect(host, port)
     err = ccall(:uv_tcp_keepalive, Cint, (Ptr{Nothing}, Cint, Cuint), tcp.handle, 1, 1)
-    err != 0 && error("error setting keepalive on socket")
+    err != 0 && error("Error setting keepalive on socket")
 
     Thrift.set_field!(socket, :io, tcp)
     #transport = TBufferedTransport(socket) # https://github.com/tanmaykm/Thrift.jl/issues/12
@@ -406,12 +406,12 @@ function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
 
 end
 
-"""
-    create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)
-
-"""
-create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum) =
-    create_table(conn.c, conn.session, table_name, row_desc, table_type.value)
+# """
+#     create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum, create_params::TCreateParams = TCreateParams(false))
+#
+# """
+# create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum, create_params::TCreateParams = TCreateParams(false)) =
+#     create_table(conn.c, conn.session, table_name, row_desc, table_type.value, create_params)
 
 
 ######################################## object privileges
