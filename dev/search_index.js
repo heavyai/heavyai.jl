@@ -97,38 +97,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions/#OmniSci.create_table",
-    "page": "Functions",
-    "title": "OmniSci.create_table",
-    "category": "function",
-    "text": "create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.load_table",
-    "page": "Functions",
-    "title": "OmniSci.load_table",
-    "category": "function",
-    "text": "load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})\n\n\n\n\n\nload_table(conn::OmniSciConnection, table_name::String, rows::DataFrame)\n\nLoad a dataframe into OmniSci. This method loads data row-wise, converting data elements to string before upload. Currently, this method requires the table to already exist on OmniSci.\n\nExamples\n\njulia> load_table(conn, \"test\", df)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.load_table_binary_columnar",
-    "page": "Functions",
-    "title": "OmniSci.load_table_binary_columnar",
-    "category": "function",
-    "text": "load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})\n\n\n\n\n\nload_table_binary_columnar(conn::OmniSciConnection, table_name::String, df::DataFrame)\n\n\n\n\n\n"
-},
-
-{
-    "location": "functions/#OmniSci.load_table_binary_arrow",
-    "page": "Functions",
-    "title": "OmniSci.load_table_binary_arrow",
-    "category": "function",
-    "text": "load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})\n\n\n\n\n\n"
-},
-
-{
     "location": "functions/#Loading-Data-1",
     "page": "Functions",
     "title": "Loading Data",
