@@ -212,7 +212,7 @@ function TStringRow(cols::Vector{TStringValue})
 end
 
 TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
-TStringRow(x::DataFrameRow{DataFrame}) = TStringRow(vec(convert(Array, x)))
+TStringRow(x::DataFrameRow{DataFrame}) = TStringRow(vec(permutedims(Vector(x))))
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
 
