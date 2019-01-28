@@ -24,6 +24,9 @@ myDateTime(x) = DateTime(x)
 mydatetime2unix(x::Missing) = missing
 mydatetime2unix(x) = datetime2unix(x)
 
+epochdays(x::Missing) = missing
+epochdays(x) = (x - Dates.Date("1970-01-01")).value
+
 myInt64(x::Missing) = missing
 myInt64(x) = Int64(x)
 
@@ -284,7 +287,7 @@ end
 TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(myInt64.(mydatetime2unix.(x)))
 
 # Dispatches to DateTime, which dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(myDateTime.(x))
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(epochdays.(x))
 
 # Dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))

@@ -179,11 +179,17 @@ end
    #load data rowwise from Vector{TStringRow}
    @test load_table(conn, "test_dates_times", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
+   #load data colwise from dataframe
+   @test load_table_binary_columnar(conn, "test_dates_times", df) == nothing
+
+   #load data colwise from Vector{TColumn}
+   @test load_table_binary_columnar(conn, "test_dates_times", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
+
    #test roundtrip of data
    tbldb = sql_execute(conn, "select * from test_dates_times")
-   @test size(tbldb) == (8,3)
+   @test size(tbldb) == (16,3)
    @test isequal(df, tbldb[1:4, :])
-   @test isequal(vcat(df, df), tbldb)
+   @test isequal(vcat(df, df, df, df), tbldb)
 end
 
 # @testset "load_table: geospatial" begin
