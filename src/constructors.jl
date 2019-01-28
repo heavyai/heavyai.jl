@@ -94,6 +94,9 @@ function getsqlcoltype(x)
         Float32 => "FLOAT",
         Union{Missing, Float64} => "DOUBLE",
         Float64 => "DOUBLE",
+        #rational: convert to float, rational not avail in OmniSci
+        Union{Missing, Rational} => "FLOAT",
+        Rational => "FLOAT",
         #strings
         Union{String, Missing} => "TEXT ENCODING DICT",
         String => "TEXT ENCODING DICT",
@@ -199,9 +202,8 @@ function TStringValue(str_val::T, is_null::Bool = true) where T <: Union{Missing
   return val
 end
 
-#TODO: Could this method just be the generic fallback for any type serializable with string()?
-#Or, should it stay to enforce that only certain julia types supported?
-function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, AbstractString, TimeType}
+#generic fallback for any type serializable with string()
+function TStringValue(str_val, is_null::Bool = false)
   val = OmniSci.TStringValue()
   Thrift.set_field!(val, :str_val, string(str_val))
   Thrift.set_field!(val, :is_null, is_null)

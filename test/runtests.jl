@@ -119,14 +119,14 @@ end
    @test typeof(roleuser_nodf) == Vector{String}
 end
 
-@testset "create_table, load_table/load_table_binary_columnar: int, float" begin
+@testset "create_table, load_table[_binary_columnar]: int, float/double" begin
 
    tinyintcol = Union{Int8,Missing}[missing,3,2,1]
    smallintcol = Union{Int16,Missing}[4,missing,2,1]
    intcol = Union{Int32,Missing}[4,3,missing,1]
    bigintcol = Union{Int64,Missing}[4,3,2,missing]
    floatcol = Union{Float32,Missing}[missing, 4.1, 2.69, 3.8]
-   doublecol = [3//2, missing, 9//72, 90/112] #testing julia rational, OmniSci double
+   doublecol = [3//2, missing, 9//72, 90/112]
 
    df = DataFrame(x1 = tinyintcol,
                   x2 = smallintcol,
@@ -160,7 +160,7 @@ end
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-@testset "create_table and load_table: dates/times" begin
+@testset "create_table, load_table[_binary_columnar]: dates/times" begin
    datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
    timecol = [Time(4), Time(5), missing, Time(7)]
    tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]

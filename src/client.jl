@@ -443,7 +443,7 @@ function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame
     #remove training comma (also removes trailing newline)
     query = query[1:end-2] * "\n);"
 
-    dryrun ? query : sql_execute(conn, query)
+    dryrun ? print(query) : sql_execute(conn, query)
 
 end
 
