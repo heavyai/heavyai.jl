@@ -119,7 +119,7 @@ end
    @test typeof(roleuser_nodf) == Vector{String}
 end
 
-@testset "create_table, load_table[_binary_columnar]: int, float/double" begin
+@testset "create and load: atomic types" begin
 
    tinyintcol = Union{Int8,Missing}[missing,3,2,1]
    smallintcol = Union{Int16,Missing}[4,missing,2,1]
@@ -127,13 +127,23 @@ end
    bigintcol = Union{Int64,Missing}[4,3,2,missing]
    floatcol = Union{Float32,Missing}[missing, 4.1, 2.69, 3.8]
    doublecol = [3//2, missing, 9//72, 90/112]
+   boolcol = [missing, false, true, true]
+   textcol = ["hello", "world", "omnisci", "gpu"]
+   datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
+   timecol = [Time(4), Time(5), missing, Time(7)]
+   tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
 
    df = DataFrame(x1 = tinyintcol,
                   x2 = smallintcol,
                   x3 = intcol,
                   x4 = bigintcol,
                   x5 = floatcol,
-                  x6 = doublecol)
+                  x6 = doublecol,
+                  x7 = boolcol,
+                  x8 = textcol,
+                  x9 = datecol,
+                  x10 = timecol,
+                  x11 = tscol)
 
    #drop table if it exists
    tables = get_tables_meta(conn)
@@ -155,42 +165,42 @@ end
 
    #test roundtrip of data
    tbldb = sql_execute(conn, "select * from test_int_float")
-   @test size(tbldb) == (16,6)
+   @test size(tbldb) == (16,11)
    @test isequal(df, tbldb[1:4, :])
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-@testset "create_table, load_table[_binary_columnar]: dates/times" begin
-   datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
-   timecol = [Time(4), Time(5), missing, Time(7)]
-   tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
-
-   df = DataFrame(x1 = datecol, x2 = timecol, x3 = tscol)
-
-   #drop table if it exists
-   tables = get_tables_meta(conn)
-   "test_dates_times" in tables[:table_name] ? sql_execute(conn, "drop table test_dates_times") : nothing
-
-   @test create_table(conn, "test_dates_times", df) == nothing
-
-   #load data rowwise from dataframe
-   @test load_table(conn, "test_dates_times", df) == nothing
-
-   #load data rowwise from Vector{TStringRow}
-   @test load_table(conn, "test_dates_times", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
-
-   #load data colwise from dataframe
-   @test load_table_binary_columnar(conn, "test_dates_times", df) == nothing
-
-   #load data colwise from Vector{TColumn}
-   @test load_table_binary_columnar(conn, "test_dates_times", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
-
-   #test roundtrip of data
-   tbldb = sql_execute(conn, "select * from test_dates_times")
-   @test size(tbldb) == (16,3)
-   @test isequal(df, tbldb[1:4, :])
-   @test isequal(vcat(df, df, df, df), tbldb)
-end
+# @testset "create_table, load_table[_binary_columnar]: dates/times" begin
+#    datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
+#    timecol = [Time(4), Time(5), missing, Time(7)]
+#    tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
+#
+#    df = DataFrame(x1 = datecol, x2 = timecol, x3 = tscol)
+#
+#    #drop table if it exists
+#    tables = get_tables_meta(conn)
+#    "test_dates_times" in tables[:table_name] ? sql_execute(conn, "drop table test_dates_times") : nothing
+#
+#    @test create_table(conn, "test_dates_times", df) == nothing
+#
+#    #load data rowwise from dataframe
+#    @test load_table(conn, "test_dates_times", df) == nothing
+#
+#    #load data rowwise from Vector{TStringRow}
+#    @test load_table(conn, "test_dates_times", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
+#
+#    #load data colwise from dataframe
+#    @test load_table_binary_columnar(conn, "test_dates_times", df) == nothing
+#
+#    #load data colwise from Vector{TColumn}
+#    @test load_table_binary_columnar(conn, "test_dates_times", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
+#
+#    #test roundtrip of data
+#    tbldb = sql_execute(conn, "select * from test_dates_times")
+#    @test size(tbldb) == (16,3)
+#    @test isequal(df, tbldb[1:4, :])
+#    @test isequal(vcat(df, df, df, df), tbldb)
+# end
 
 # @testset "load_table: geospatial" begin
 #    pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
@@ -233,8 +243,8 @@ end
 # end
 
 # decimalcol = [3.0, 4.1, missing, 3.8]
-# textcol = ["hello", "world", "omnisci", "gpu"]
-# boolcol = [missing, false, true, true]
+#
+#
 #
 # #validate return types same as server
 # tbldb = sql_execute(conn, "select * from test")

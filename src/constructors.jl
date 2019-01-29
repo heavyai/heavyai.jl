@@ -216,8 +216,8 @@ function TStringRow(cols::Vector{TStringValue})
     return tsr
 end
 
-TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
-TStringRow(x::DataFrameRow{DataFrame}) = TStringRow(vec(permutedims(Vector(x))))
+TStringRow(cols::T) where T <: Union{AbstractVector, DataFrameRow{DataFrame}} = TStringRow(TStringValue.(cols))
+#TStringRow(x::DataFrameRow{DataFrame}) = OmniSci.TStringRow(OmniSci.TStringValue.(x))
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
 
