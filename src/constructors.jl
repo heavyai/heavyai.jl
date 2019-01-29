@@ -69,7 +69,7 @@ end
 seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)
 seconds_since_midnight(x::Missing) = missing
 
-#ensure valid col names
+#TODO: ensure valid col names
 #1. check if first character a number, prepend some valid string
 #2. check if in reserved word list, append _ if reserved
 function sanitizecolnames(x::Symbol)
@@ -285,11 +285,8 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
     return tc
 end
 
-# Dispatches to Int
+# Dispatches to Int after conversion function applied
 TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(myInt64.(mydatetime2unix.(x)))
-
-# Dispatches to DateTime, which dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(epochdays.(x))
-
-# Dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
+
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(epochdays.(x))

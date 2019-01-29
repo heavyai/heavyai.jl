@@ -164,83 +164,43 @@ end
    @test load_table_binary_columnar(conn, "test_int_float", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
 
    #test roundtrip of data
+   #NOTE: These tests implicitly rely on having the missing values for numeric
+   #Column types almost always returned from OmniSci with a Missing type component
+   #So isequal will likely fail if missings removed, as column types won't match
    tbldb = sql_execute(conn, "select * from test_int_float")
    @test size(tbldb) == (16,11)
    @test isequal(df, tbldb[1:4, :])
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-# @testset "create_table, load_table[_binary_columnar]: dates/times" begin
-#    datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
-#    timecol = [Time(4), Time(5), missing, Time(7)]
-#    tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
-#
-#    df = DataFrame(x1 = datecol, x2 = timecol, x3 = tscol)
-#
-#    #drop table if it exists
-#    tables = get_tables_meta(conn)
-#    "test_dates_times" in tables[:table_name] ? sql_execute(conn, "drop table test_dates_times") : nothing
-#
-#    @test create_table(conn, "test_dates_times", df) == nothing
-#
-#    #load data rowwise from dataframe
-#    @test load_table(conn, "test_dates_times", df) == nothing
-#
-#    #load data rowwise from Vector{TStringRow}
-#    @test load_table(conn, "test_dates_times", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
-#
-#    #load data colwise from dataframe
-#    @test load_table_binary_columnar(conn, "test_dates_times", df) == nothing
-#
-#    #load data colwise from Vector{TColumn}
-#    @test load_table_binary_columnar(conn, "test_dates_times", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
-#
-#    #test roundtrip of data
-#    tbldb = sql_execute(conn, "select * from test_dates_times")
-#    @test size(tbldb) == (16,3)
-#    @test isequal(df, tbldb[1:4, :])
-#    @test isequal(vcat(df, df, df, df), tbldb)
-# end
+@testset "load_table: native geospatial" begin
 
-# @testset "load_table: geospatial" begin
-#    pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
-#    linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
-#    pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
-#    linecol_native = GeoInterface.LineString.(readgeom.(linecol))
-#    polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),
-#     (20 30, 35 35, 30 20, 20 30))", "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10),
-#     (20 30, 35 35, 30 20, 20 30))"]
-#    mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))",
-#    "MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))",
-#    "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))",
-#    "MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))"]
-#
-#    df = DataFrame(x1 = pointcol,
-#                   x2 = linecol,
-#                   x3 = pointcol_native,
-#                   x4 = linecol_native,
-#                   x5 = polycol,
-#                   x6 = mpolycol
-#                   )
-#
-#    #drop table if it exists
-#    tables = get_tables_meta(conn)
-#    "test_geo" in tables[:table_name] ? sql_execute(conn, "drop table test_geo") : nothing
-#
-#    @test create_table(conn, "test_geo", df) == nothing
-#
-#    #load data rowwise from dataframe
-#    @test load_table(conn, "test_geo", df) == nothing
-#
-#    #load data rowwise from Vector{TStringRow}
-#    @test load_table(conn, "test_geo", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
-#
-#    #test roundtrip of data
-#    tbldb = sql_execute(conn, "select * from test_geo")
-#    @test size(tbldb) == (8,6)
-#    @test isequal(df, tbldb[1:4, :])
-#    @test isequal(vcat(df, df), tbldb)
-# end
+   pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
+   linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
+   pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
+   linecol_native = GeoInterface.LineString.(readgeom.(linecol))
+
+   df = DataFrame(x3 = pointcol_native,
+                  x4 = linecol_native
+                  )
+
+   #drop table if it exists
+   tables = get_tables_meta(conn)
+   "test_geo_native" in tables[:table_name] ? sql_execute(conn, "drop table test_geo_native") : nothing
+
+   @test create_table(conn, "test_geo_native", df) == nothing
+
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_geo_native", df) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
+
+   #TODO: test roundtrip of data
+   tbldb = sql_execute(conn, "select * from test_geo_native")
+   @test size(tbldb) == (8,2)
+
+end
 
 # decimalcol = [3.0, 4.1, missing, 3.8]
 #
