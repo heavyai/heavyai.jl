@@ -150,16 +150,16 @@ mutable struct TCopyParams <: Thrift.TMsg
 end # mutable struct TCopyParams
 meta(t::Type{TCopyParams}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0), :geo_coords_encoding => Int32(6), :geo_coords_comp_param => Int32(32), :geo_coords_type => Int32(18), :geo_coords_srid => Int32(4326), :sanitize_column_names => true))
 
-mutable struct TCreateParams <: Thrift.TMsg
-  is_replicated::Bool
-  TCreateParams() = (o=new(); fillunset(o); o)
-end # mutable struct TCreateParams
+# mutable struct TCreateParams <: Thrift.TMsg
+#   is_replicated::Bool
+#   TCreateParams() = (o=new(); fillunset(o); o)
+# end # mutable struct TCreateParams
 
-mutable struct TDetectResult <: Thrift.TMsg
-  row_set::TRowSet
-  copy_params::TCopyParams
-  TDetectResult() = (o=new(); fillunset(o); o)
-end # mutable struct TDetectResult
+# mutable struct TDetectResult <: Thrift.TMsg
+#   row_set::TRowSet
+#   copy_params::TCopyParams
+#   TDetectResult() = (o=new(); fillunset(o); o)
+# end # mutable struct TDetectResult
 
 mutable struct TDashboard <: Thrift.TMsg
   dashboard_name::String
@@ -263,37 +263,37 @@ mutable struct TTableDetails <: Thrift.TMsg
   TTableDetails() = (o=new(); fillunset(o); o)
 end # mutable struct TTableDetails
 
-mutable struct TColumnRange <: Thrift.TMsg
-  _type::Int32
-  col_id::Int32
-  table_id::Int32
-  has_nulls::Bool
-  int_min::Int64
-  int_max::Int64
-  bucket::Int64
-  fp_min::Float64
-  fp_max::Float64
-  TColumnRange() = (o=new(); fillunset(o); o)
-end # mutable struct TColumnRange
+# mutable struct TColumnRange <: Thrift.TMsg
+#   _type::Int32
+#   col_id::Int32
+#   table_id::Int32
+#   has_nulls::Bool
+#   int_min::Int64
+#   int_max::Int64
+#   bucket::Int64
+#   fp_min::Float64
+#   fp_max::Float64
+#   TColumnRange() = (o=new(); fillunset(o); o)
+# end # mutable struct TColumnRange
 
-mutable struct TDatabasePermissions <: Thrift.TMsg
-  create_::Bool
-  delete_::Bool
-  view_sql_editor_::Bool
-  access_::Bool
-  TDatabasePermissions() = (o=new(); fillunset(o); o)
-end # mutable struct TDatabasePermissions
+# mutable struct TDatabasePermissions <: Thrift.TMsg
+#   create_::Bool
+#   delete_::Bool
+#   view_sql_editor_::Bool
+#   access_::Bool
+#   TDatabasePermissions() = (o=new(); fillunset(o); o)
+# end # mutable struct TDatabasePermissions
 
-mutable struct TTablePermissions <: Thrift.TMsg
-  create_::Bool
-  drop_::Bool
-  select_::Bool
-  insert_::Bool
-  update_::Bool
-  delete_::Bool
-  truncate_::Bool
-  TTablePermissions() = (o=new(); fillunset(o); o)
-end # mutable struct TTablePermissions
+# mutable struct TTablePermissions <: Thrift.TMsg
+#   create_::Bool
+#   drop_::Bool
+#   select_::Bool
+#   insert_::Bool
+#   update_::Bool
+#   delete_::Bool
+#   truncate_::Bool
+#   TTablePermissions() = (o=new(); fillunset(o); o)
+# end # mutable struct TTablePermissions
 
 mutable struct TDashboardPermissions <: Thrift.TMsg
   create_::Bool
@@ -303,15 +303,15 @@ mutable struct TDashboardPermissions <: Thrift.TMsg
   TDashboardPermissions() = (o=new(); fillunset(o); o)
 end # mutable struct TDashboardPermissions
 
-mutable struct TViewPermissions <: Thrift.TMsg
-  create_::Bool
-  drop_::Bool
-  select_::Bool
-  insert_::Bool
-  update_::Bool
-  delete_::Bool
-  TViewPermissions() = (o=new(); fillunset(o); o)
-end # mutable struct TViewPermissions
+# mutable struct TViewPermissions <: Thrift.TMsg
+#   create_::Bool
+#   drop_::Bool
+#   select_::Bool
+#   insert_::Bool
+#   update_::Bool
+#   delete_::Bool
+#   TViewPermissions() = (o=new(); fillunset(o); o)
+# end # mutable struct TViewPermissions
 
 mutable struct TDBObject <: Thrift.TMsg
   objectName::String
@@ -328,10 +328,10 @@ mutable struct TDashboardGrantees <: Thrift.TMsg
   TDashboardGrantees() = (o=new(); fillunset(o); o)
 end # mutable struct TDashboardGrantees
 
-mutable struct TLicenseInfo <: Thrift.TMsg
-  claims::Vector{String}
-  TLicenseInfo() = (o=new(); fillunset(o); o)
-end # mutable struct TLicenseInfo
+# mutable struct TLicenseInfo <: Thrift.TMsg
+#   claims::Vector{String}
+#   TLicenseInfo() = (o=new(); fillunset(o); o)
+# end # mutable struct TLicenseInfo
 
 abstract type MapDClientBase end
 
@@ -397,18 +397,18 @@ meta(t::Type{get_hardware_info_result}) = meta(t, Symbol[:success, :e], Int[0, 1
 
 # types encapsulating arguments and return values of method get_tables
 
-mutable struct get_tables_args <: Thrift.TMsg
-  session::TSessionId
-  get_tables_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_tables_args
-
-mutable struct get_tables_result
-  success::Vector{String}
-  e::TMapDException
-  get_tables_result() = (o=new(); fillunset(o); o)
-  get_tables_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_tables_result
-meta(t::Type{get_tables_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+# mutable struct get_tables_args <: Thrift.TMsg
+#   session::TSessionId
+#   get_tables_args() = (o=new(); fillunset(o); o)
+# end # mutable struct get_tables_args
+#
+# mutable struct get_tables_result
+#   success::Vector{String}
+#   e::TMapDException
+#   get_tables_result() = (o=new(); fillunset(o); o)
+#   get_tables_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+# end # mutable struct get_tables_result
+# meta(t::Type{get_tables_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method get_tables_meta
 
@@ -592,16 +592,16 @@ meta(t::Type{deallocate_df_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,An
 
 # types encapsulating arguments and return values of method interrupt
 
-mutable struct interrupt_args <: Thrift.TMsg
-  session::TSessionId
-  interrupt_args() = (o=new(); fillunset(o); o)
-end # mutable struct interrupt_args
-
-mutable struct interrupt_result
-  e::TMapDException
-  interrupt_result() = (o=new(); fillunset(o); o)
-end # mutable struct interrupt_result
-meta(t::Type{interrupt_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+# mutable struct interrupt_args <: Thrift.TMsg
+#   session::TSessionId
+#   interrupt_args() = (o=new(); fillunset(o); o)
+# end # mutable struct interrupt_args
+#
+# mutable struct interrupt_result
+#   e::TMapDException
+#   interrupt_result() = (o=new(); fillunset(o); o)
+# end # mutable struct interrupt_result
+# meta(t::Type{interrupt_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method set_execution_mode
 
