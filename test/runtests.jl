@@ -173,8 +173,8 @@ end
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-@testset "load_table: geospatial row-w" begin
-ise
+@testset "load_table: geospatial row-wise" begin
+
    pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
    linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
    polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",

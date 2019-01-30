@@ -156,7 +156,7 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
   return val
 end
 
-function TStringValue(str_val::GeoInterface.Point, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractPoint, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.Point(str_val))
   Thrift.set_field!(val, :str_val, p)
@@ -164,7 +164,7 @@ function TStringValue(str_val::GeoInterface.Point, is_null::Bool = false)
   return val
 end
 
-function TStringValue(str_val::GeoInterface.LineString, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractLineString, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.LineString(str_val))
   Thrift.set_field!(val, :str_val, p)
@@ -172,7 +172,7 @@ function TStringValue(str_val::GeoInterface.LineString, is_null::Bool = false)
   return val
 end
 
-function TStringValue(str_val::GeoInterface.Polygon, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractPolygon, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.Polygon(str_val))
   Thrift.set_field!(val, :str_val, p)
@@ -180,7 +180,7 @@ function TStringValue(str_val::GeoInterface.Polygon, is_null::Bool = false)
   return val
 end
 
-function TStringValue(str_val::GeoInterface.MultiPolygon, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractMultiPolygon, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.MultiPolygon(str_val))
   Thrift.set_field!(val, :str_val, p)
