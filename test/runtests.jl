@@ -224,56 +224,6 @@ end
 
 # decimalcol = [3.0, 4.1, missing, 3.8]
 #
-# #Test polygon and multipolygon separately due to outstanding Thrift issue
-# #https://github.com/tanmaykm/Thrift.jl/issues/51
-#
-
-# polysql = "create table polys (col1 polygon, col2 multipolygon)"
-# sql_execute(conn, polysql)
-# polydf = DataFrame([polycol, mpolycol])
-#
-# @test load_table(conn, "polys", polydf) == nothing
-# @test load_table(conn, "polys", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(polydf)]) == nothing
-#
-# #test loading native GeoInterface objects
-# polydf_native = DataFrame([GeoInterface.Polygon.(readgeom.(polycol)),
-#                            GeoInterface.MultiPolygon.(readgeom.(mpolycol))
-#                            ])
-#
-# @test load_table(conn, "polys", polydf_native) == nothing
-# @test load_table(conn, "polys", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(polydf_native)]) == nothing
-#
-# polydb = sql_execute(conn, "select * from polys")
-# @test eltypes(polydb) == Type[Union{Missing, GeoInterface.Polygon}, Union{Missing, GeoInterface.MultiPolygon}]
-#
-# sql2 = """
-# create table test2 (
-# col1 tinyint,
-# col2 smallint,
-# col3 integer,
-# col4 bigint,
-# col5 float,
-# col6 double,
-# col8 text,
-# col9 text encoding dict(32),
-# col10 boolean,
-# col11 date,
-# col12 time,
-# col13 timestamp
-# )
-# """
-#
-# sql_execute(conn, sql2)
-#
-# df2 = DataFrame([tinyintcol, smallintcol, intcol, bigintcol, floatcol, doublecol,
-#                 textcol, textcol, boolcol, datecol, timecol, tscol])
-#
-# #load table columnwise
-# @test load_table_binary_columnar(conn, "test2", df2) == nothing
-#
-# #load data from Vector{TColumn}
-# @test load_table_binary_columnar(conn, "test2", [TColumn(df2[x]) for x in 1:ncol(df2)]) == nothing
-#
 # #### Test loading arrays rowwise
 # sqlarray = """
 # CREATE TABLE arrayexamples (
