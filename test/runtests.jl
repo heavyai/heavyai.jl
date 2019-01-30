@@ -173,15 +173,27 @@ end
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-@testset "load_table: native geospatial" begin
-
+@testset "load_table: geospatial row-w" begin
+ise
    pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
    linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
+   polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
+   "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))","POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))"]
+   mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
+((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
+((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
+((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
+((15 5, 40 10, 10 20, 5 10, 15 5)))"]
+
    pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
    linecol_native = GeoInterface.LineString.(readgeom.(linecol))
+   polycol_native = GeoInterface.Polygon.(readgeom.(polycol))
+   mpolycol_native = GeoInterface.MultiPolygon.(readgeom.(mpolycol))
 
    df = DataFrame(x3 = pointcol_native,
-                  x4 = linecol_native
+                  x4 = linecol_native,
+                  x5 = polycol_native,
+                  x6 = mpolycol_native
                   )
 
    #drop table if it exists
@@ -196,35 +208,21 @@ end
    #load data rowwise from Vector{TStringRow}
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
-   #TODO: test roundtrip of data
    tbldb = sql_execute(conn, "select * from test_geo_native")
-   @test size(tbldb) == (8,2)
+   @test size(tbldb) == (8,4)
+
+   # test roundtrip of data, isequal on dataframe doesn't seem to work
+   # TODO: when geo types available with load_table_binary_columnar, load above and test
+   for i in 1:4
+      for j in 1:4
+         @test isequal(df[i,j].coordinates, tbldb[i,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 4,j].coordinates)
+      end
+   end
 
 end
 
 # decimalcol = [3.0, 4.1, missing, 3.8]
-#
-#
-#
-# #validate return types same as server
-# tbldb = sql_execute(conn, "select * from test")
-# @test eltypes(tbldb) == Type[Union{Missing, Int8},
-#                              Union{Missing, Int16},
-#                              Union{Missing, Int32},
-#                              Union{Missing, Int64},
-#                              Union{Missing, Float32},
-#                              Union{Missing, Float64},
-#                              Union{Missing, String},
-#                              Union{Missing, String},
-#                              Union{Missing, Bool},
-#                              Union{Missing, Date},
-#                              Union{Missing, Time},
-#                              Union{Missing, DateTime},
-#                              Union{Missing, GeoInterface.Point},
-#                              Union{Missing, GeoInterface.LineString},
-#                              Union{Missing, GeoInterface.Point},
-#                              Union{Missing, GeoInterface.LineString}
-#                              ]
 #
 # #Test polygon and multipolygon separately due to outstanding Thrift issue
 # #https://github.com/tanmaykm/Thrift.jl/issues/51
