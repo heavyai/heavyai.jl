@@ -118,7 +118,29 @@ function getsqlcoltype(x)
         Union{Missing, GeoInterface.Polygon} => "POLYGON",
         GeoInterface.Polygon => "POLYGON",
         Union{Missing, GeoInterface.MultiPolygon} => "MULTIPOLYGON",
-        GeoInterface.MultiPolygon => "MULTIPOLYGON"
+        GeoInterface.MultiPolygon => "MULTIPOLYGON",
+        #arrays
+        Array{Union{Missing, Int8},1} => "TINYINT[]",
+        Array{Int8,1} => "TINYINT[]",
+        Array{Union{Missing, Int16},1} => "SMALLINT[]",
+        Array{Int16,1} => "SMALLINT[]",
+        Array{Union{Missing, Int32},1} => "INTEGER[]",
+        Array{Int32,1} => "INTEGER[]",
+        Array{Union{Missing, Int64},1} => "BIGINT[]",
+        Array{Int64,1} => "BIGINT[]",
+        Array{String,1} => "TEXT[]",
+        Array{Union{Missing, Float32},1} => "FLOAT[]",
+        Array{Float32,1} => "FLOAT[]",
+        Array{Union{Missing, Float64},1} => "DOUBLE[]",
+        Array{Float64,1} => "DOUBLE[]",
+        Array{Union{Missing, Bool},1} => "BOOLEAN[]",
+        Array{Bool,1} => "BOOLEAN[]",
+        Array{Union{Missing, Date},1} => "DATE[]",
+        Array{Date,1} => "DATE[]",
+        Array{Union{Missing, Time},1} => "TIME[]",
+        Array{Time,1} => "TIME[]",
+        Array{Union{Missing, DateTime},1} => "TIMESTAMP[]",
+        Array{DateTime,1} => "TIMESTAMP[]"
     )
 
     get(lookup, x, "Unknown")

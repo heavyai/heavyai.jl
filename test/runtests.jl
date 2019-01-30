@@ -173,7 +173,7 @@ end
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-@testset "load_table: geospatial row-wise" begin
+@testset "create and load: geospatial row-wise" begin
 
    pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
    linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
@@ -224,39 +224,60 @@ end
 
 # decimalcol = [3.0, 4.1, missing, 3.8]
 #
-# #### Test loading arrays rowwise
-# sqlarray = """
-# CREATE TABLE arrayexamples (
-# tiny_int_array TINYINT[],
-# int_array INTEGER[],
-# big_int_array BIGINT[],
-# text_array TEXT[],
-# float_array FLOAT[],
-# double_array DOUBLE[],
-# decimal_array DECIMAL(18,6)[],
-# boolean_array BOOLEAN[],
-# date_array DATE[],
-# time_array TIME[],
-# timestamp_array TIMESTAMP[])
-# """
-#
-# sql_execute(conn, sqlarray)
-#
-# tinyarrarr = [tinyintcol, tinyintcol, tinyintcol, tinyintcol]
-# intarrarr = [intcol, intcol, intcol, intcol]
-# bigintarrarr = [bigintcol, bigintcol, bigintcol, bigintcol]
-# textarrarr = [textcol, textcol, textcol, textcol]
-# floatarrarr = [floatcol, floatcol, floatcol, floatcol]
-# dblarrarr = [doublecol, doublecol, doublecol, doublecol]
-# decarrarr = [decimalcol, decimalcol, decimalcol, decimalcol]
-# boolarrarr = [boolcol, boolcol, boolcol, boolcol]
-# datearrarr = [datecol, datecol, datecol, datecol]
-# timearrarr = [timecol, timecol, timecol, timecol]
-# tsarrarr = [tscol, tscol, tscol, tscol]
-#
-# dfarray = DataFrame([tinyarrarr, intarrarr, bigintarrarr, textarrarr, floatarrarr,
-#                     dblarrarr, decarrarr, boolarrarr, datearrarr, timearrarr, tsarrarr])
-# @test load_table(conn, "arrayexamples", dfarray) == nothing
+
+@testset "create and load: arrays" begin
+   #Missing in array not supported in OmniSci 4.4
+   #TODO: when missing in array supported, add test
+   tinyintcol = Int8[4,3,2,1]
+   smallintcol = Int16[4,3,2,1]
+   intcol = Int32[4,3,2,1]
+   bigintcol = Int64[4,3,2,1]
+   floatcol = Float32[0.0, 4.1, 2.69, 3.8]
+   doublecol = [3//2, 1/2, 9//72, 90/112]
+   boolcol = [true, false, true, true]
+   textcol = ["hello", "world", "omnisci", "gpu"]
+   datecol = [Date(2013,7,1), Date(2013,7,1), Date(2013,7,1), Date(2013,7,1)]
+   timecol = [Time(4), Time(5), Time(6), Time(7)]
+   tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
+
+   tinyarrarr = [tinyintcol, tinyintcol, tinyintcol, tinyintcol]
+   smallarrarr = [smallintcol, smallintcol, smallintcol, smallintcol]
+   intarrarr = [intcol, intcol, intcol, intcol]
+   bigintarrarr = [bigintcol, bigintcol, bigintcol, bigintcol]
+   textarrarr = [textcol, textcol, textcol, textcol]
+   floatarrarr = [floatcol, floatcol, floatcol, floatcol]
+   dblarrarr = [doublecol, doublecol, doublecol, doublecol]
+   boolarrarr = [boolcol, boolcol, boolcol, boolcol]
+   datearrarr = [datecol, datecol, datecol, datecol]
+   timearrarr = [timecol, timecol, timecol, timecol]
+   tsarrarr = [tscol, tscol, tscol, tscol]
+
+   df = DataFrame(c1 = tinyarrarr,
+                  c2 = smallarrarr,
+                  c3 = intarrarr,
+                  c4 = bigintarrarr,
+                  c5 = textarrarr,
+                  c6 = floatarrarr,
+                  c7 = dblarrarr,
+                  c8 = boolarrarr,
+                  c9 = datearrarr,
+                  c10 = timearrarr,
+                  c11 = tsarrarr)
+
+   #drop table if it exists
+   tables = get_tables_meta(conn)
+   "test_array" in tables[:table_name] ? sql_execute(conn, "drop table test_array") : nothing
+
+   @test create_table(conn, "test_array", df) == nothing
+
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_array", df) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_array", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
+
+   #TODO: Write tests once https://github.com/omnisci/OmniSci.jl/issues/53 solved
+end
 
 @testset "get_hardware_info" begin
    #TODO: create a show method and/or return as dataframe
