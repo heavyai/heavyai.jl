@@ -24,6 +24,9 @@ myDateTime(x) = DateTime(x)
 mydatetime2unix(x::Missing) = missing
 mydatetime2unix(x) = datetime2unix(x)
 
+epochdays(x::Missing) = missing
+epochdays(x) = (x - Dates.Date("1970-01-01")).value
+
 myInt64(x::Missing) = missing
 myInt64(x) = Int64(x)
 
@@ -66,6 +69,84 @@ end
 seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)
 seconds_since_midnight(x::Missing) = missing
 
+#TODO: ensure valid col names
+#1. check if first character a number, prepend some valid string
+#2. check if in reserved word list, append _ if reserved
+function sanitizecolnames(x::Symbol)
+    str = string(x)
+end
+
+#convert julia types to OmniSci types
+function getsqlcoltype(x)
+
+    lookup = Dict(
+        #ints
+        Union{Missing, Int8} => "TINYINT",
+        Int8 => "TINYINT",
+        Union{Missing, Int16} => "SMALLINT",
+        Int16 => "SMALLINT",
+        Union{Missing, Int32} => "INTEGER",
+        Int32 => "INTEGER",
+        Union{Missing, Int64} => "BIGINT",
+        Int64 => "BIGINT",
+        #floats
+        Union{Missing, Float32} => "FLOAT",
+        Float32 => "FLOAT",
+        Union{Missing, Float64} => "DOUBLE",
+        Float64 => "DOUBLE",
+        #rational: convert to float, rational not avail in OmniSci
+        Union{Missing, Rational} => "FLOAT",
+        Rational => "FLOAT",
+        #strings
+        Union{String, Missing} => "TEXT ENCODING DICT",
+        String => "TEXT ENCODING DICT",
+        #bool
+        Union{Missing, Bool} => "BOOLEAN",
+        Bool => "BOOLEAN",
+        #dates and time
+        Union{Missing, Date} => "DATE",
+        Date => "DATE",
+        Union{Missing, Time} => "TIME",
+        Time => "TIME",
+        Union{Missing, DateTime} => "TIMESTAMP",
+        DateTime => "TIMESTAMP",
+        #geospatial
+        Union{Missing, GeoInterface.Point} => "POINT",
+        GeoInterface.Point => "POINT",
+        Union{Missing, GeoInterface.LineString} => "LINESTRING",
+        GeoInterface.LineString => "LINESTRING",
+        Union{Missing, GeoInterface.Polygon} => "POLYGON",
+        GeoInterface.Polygon => "POLYGON",
+        Union{Missing, GeoInterface.MultiPolygon} => "MULTIPOLYGON",
+        GeoInterface.MultiPolygon => "MULTIPOLYGON",
+        #arrays
+        Array{Union{Missing, Int8},1} => "TINYINT[]",
+        Array{Int8,1} => "TINYINT[]",
+        Array{Union{Missing, Int16},1} => "SMALLINT[]",
+        Array{Int16,1} => "SMALLINT[]",
+        Array{Union{Missing, Int32},1} => "INTEGER[]",
+        Array{Int32,1} => "INTEGER[]",
+        Array{Union{Missing, Int64},1} => "BIGINT[]",
+        Array{Int64,1} => "BIGINT[]",
+        Array{String,1} => "TEXT[]",
+        Array{Union{Missing, Float32},1} => "FLOAT[]",
+        Array{Float32,1} => "FLOAT[]",
+        Array{Union{Missing, Float64},1} => "DOUBLE[]",
+        Array{Float64,1} => "DOUBLE[]",
+        Array{Union{Missing, Bool},1} => "BOOLEAN[]",
+        Array{Bool,1} => "BOOLEAN[]",
+        Array{Union{Missing, Date},1} => "DATE[]",
+        Array{Date,1} => "DATE[]",
+        Array{Union{Missing, Time},1} => "TIME[]",
+        Array{Time,1} => "TIME[]",
+        Array{Union{Missing, DateTime},1} => "TIMESTAMP[]",
+        Array{DateTime,1} => "TIMESTAMP[]"
+    )
+
+    get(lookup, x, "Unknown")
+
+end
+
 ########################### Typedefs for load_table method ###########################
 
 #For functions below, value for is_null should be known based on the dispatched type
@@ -97,7 +178,7 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
   return val
 end
 
-function TStringValue(str_val::GeoInterface.Point, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractPoint, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.Point(str_val))
   Thrift.set_field!(val, :str_val, p)
@@ -105,7 +186,7 @@ function TStringValue(str_val::GeoInterface.Point, is_null::Bool = false)
   return val
 end
 
-function TStringValue(str_val::GeoInterface.LineString, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractLineString, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.LineString(str_val))
   Thrift.set_field!(val, :str_val, p)
@@ -113,7 +194,7 @@ function TStringValue(str_val::GeoInterface.LineString, is_null::Bool = false)
   return val
 end
 
-function TStringValue(str_val::GeoInterface.Polygon, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractPolygon, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.Polygon(str_val))
   Thrift.set_field!(val, :str_val, p)
@@ -121,7 +202,7 @@ function TStringValue(str_val::GeoInterface.Polygon, is_null::Bool = false)
   return val
 end
 
-function TStringValue(str_val::GeoInterface.MultiPolygon, is_null::Bool = false)
+function TStringValue(str_val::GeoInterface.AbstractMultiPolygon, is_null::Bool = false)
   val = OmniSci.TStringValue()
   p = writegeom(LibGEOS.MultiPolygon(str_val))
   Thrift.set_field!(val, :str_val, p)
@@ -143,9 +224,8 @@ function TStringValue(str_val::T, is_null::Bool = true) where T <: Union{Missing
   return val
 end
 
-#TODO: Could this method just be the generic fallback for any type serializable with string()?
-#Or, should it stay to enforce that only certain julia types supported?
-function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Real, AbstractString, TimeType}
+#generic fallback for any type serializable with string()
+function TStringValue(str_val, is_null::Bool = false)
   val = OmniSci.TStringValue()
   Thrift.set_field!(val, :str_val, string(str_val))
   Thrift.set_field!(val, :is_null, is_null)
@@ -158,8 +238,7 @@ function TStringRow(cols::Vector{TStringValue})
     return tsr
 end
 
-TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
-TStringRow(x::DataFrameRow{DataFrame}) = TStringRow(vec(convert(Array, x)))
+TStringRow(cols::T) where T <: Union{AbstractVector, DataFrameRow{DataFrame}} = TStringRow(TStringValue.(cols))
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
 
@@ -227,11 +306,8 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
     return tc
 end
 
-# Dispatches to Int
+# Dispatches to Int after conversion function applied
 TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(myInt64.(mydatetime2unix.(x)))
-
-# Dispatches to DateTime, which dispatches to Int
-TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(myDateTime.(x))
-
-# Dispatches to Int
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
+
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(epochdays.(x))

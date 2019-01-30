@@ -413,6 +413,39 @@ end
 # create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum, create_params::TCreateParams = TCreateParams(false)) =
 #     create_table(conn.c, conn.session, table_name, row_desc, table_type.value, create_params)
 
+"""
+    create_table(conn::OmniSciConnection, table_name::String, df::DataFrame; dryrun::Bool = false)
+
+Create a table in the database specified during authentication. This method takes a Julia DataFrame, reads the column
+types and creates the equivalent `create table` statement, optionally printing the `create table` statement instead
+of executing the statement using `sql_execute` method.
+
+Note: This method is for convenience purposes only! It does not guarantee an optimized table statement. Additionally,
+decimal support is not fully implemented.
+
+# Examples
+```julia-repl
+julia> create_table(conn, "test", df)
+```
+
+"""
+function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame; dryrun::Bool = false)
+
+    io = IOBuffer()
+    write(io, "create table $table_name ( \n")
+
+    for x in zip(names(df), eltypes(df))
+        write(io, "  " * sanitizecolnames(x[1]) * " ") # function sanitizecolnames would need to
+        write(io, "  " * getsqlcoltype(x[2]) * ",\n") # lookup to convert julia types to OmniSci types
+    end
+    query = String(take!(io))
+
+    #remove training comma (also removes trailing newline)
+    query = query[1:end-2] * "\n);"
+
+    dryrun ? print(query) : sql_execute(conn, query)
+
+end
 
 ######################################## object privileges
 
