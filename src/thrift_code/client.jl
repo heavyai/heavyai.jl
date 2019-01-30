@@ -334,24 +334,24 @@ function deallocate_df(c::MapDClient, session::TSessionId, df::TDataFrame, devic
 end # function deallocate_df
 
 # Client callable method for interrupt
-function interrupt(c::MapDClient, session::TSessionId)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "interrupt", Thrift.MessageType.CALL, c.seqid)
-  inp = interrupt_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, interrupt_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function interrupt
+# function interrupt(c::MapDClient, session::TSessionId)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "interrupt", Thrift.MessageType.CALL, c.seqid)
+#   inp = interrupt_args()
+#   Thrift.set_field!(inp, :session, session)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, interrupt_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   nothing
+# end # function interrupt
 
 # Client callable method for set_execution_mode
 function set_execution_mode(c::MapDClient, session::TSessionId, mode::Int32)
