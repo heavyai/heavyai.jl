@@ -406,22 +406,15 @@ function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
 
 end
 
-# """
-#     create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum, create_params::TCreateParams = TCreateParams(false))
-#
-# """
-# create_table(conn::OmniSciConnection, table_name::String, row_desc::TRowDescriptor, table_type::TTableType.Enum, create_params::TCreateParams = TCreateParams(false)) =
-#     create_table(conn.c, conn.session, table_name, row_desc, table_type.value, create_params)
-
 """
-    create_table(conn::OmniSciConnection, table_name::String, df::DataFrame; dryrun::Bool = false)
+    create_table(conn::OmniSciConnection, table_name::String, df::DataFrame; dryrun::Bool = false, precision::Tuple{Int,Int} = (0,0))
 
 Create a table in the database specified during authentication. This method takes a Julia DataFrame, reads the column
 types and creates the equivalent `create table` statement, optionally printing the `create table` statement instead
 of executing the statement using `sql_execute` method.
 
 Note: This method is for convenience purposes only! It does not guarantee an optimized table statement. Additionally,
-decimal support is not fully implemented.
+if Decimal columns present in 'df', user must set precision/scale via the 'precision' argument.
 
 # Examples
 ```julia-repl
@@ -429,14 +422,26 @@ julia> create_table(conn, "test", df)
 ```
 
 """
-function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame; dryrun::Bool = false)
+function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame;
+                      dryrun::Bool = false, precision::Tuple{Int,Int} = (0,0))
 
     io = IOBuffer()
     write(io, "create table $table_name ( \n")
 
+    #Only assert if default value changed; check for decimal column in df later
+    if precision != (0,0)
+        @assert precision[1] > 0 "First number in 'precision' tuple must be greater than 0"
+
+        #Precision of 19 OmniSci limitation
+        @assert (precision[1] + precision[2]) <= 19 "Sum of tuple values for 'precision' argument must be <= 19"
+    end
+
+    #TODO: check if Decimal column in dataframe and precision = (0,0), throw warning
+    #Or throw error telling to set precision
+
     for x in zip(names(df), eltypes(df))
         write(io, "  " * sanitizecolnames(x[1]) * " ") # function sanitizecolnames would need to
-        write(io, "  " * getsqlcoltype(x[2]) * ",\n") # lookup to convert julia types to OmniSci types
+        write(io, "  " * getsqlcoltype(x[2], precision) * ",\n") # lookup to convert julia types to OmniSci types
     end
     query = String(take!(io))
 
@@ -458,7 +463,6 @@ get_roles(conn::OmniSciConnection; as_df::Bool = true) =
 
 """
     get_all_roles_for_user(conn::OmniSciConnection, userName::String; as_df::Bool = true)
-
 
 """
 get_all_roles_for_user(conn::OmniSciConnection, userName::String; as_df::Bool = true) =
