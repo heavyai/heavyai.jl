@@ -200,6 +200,11 @@ end
    polycol_native = GeoInterface.Polygon.(readgeom.(polycol))
    mpolycol_native = GeoInterface.MultiPolygon.(readgeom.(mpolycol))
 
+   pointcol_geos = readgeom.(pointcol)
+   linecol_geos = readgeom.(linecol)
+   polycol_geos = readgeom.(polycol)
+   mpolycol_geos = readgeom.(mpolycol)
+
    df = DataFrame(x3 = pointcol_native,
                   x4 = linecol_native,
                   x5 = polycol_native,
@@ -210,6 +215,12 @@ end
                   x4 = linecol,
                   x5 = polycol,
                   x6 = mpolycol
+                  )
+
+   df3 = DataFrame(x3 = pointcol_geos,
+                  x4 = linecol_geos,
+                  x5 = polycol_geos,
+                  x6 = mpolycol_geos
                   )
 
    #drop table if it exists
@@ -230,11 +241,17 @@ end
    #load data rowwise from Vector{TStringRow}
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df2)]) == nothing
 
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_geo_native", df3) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df3)]) == nothing
+
    tbldb = sql_execute(conn, "select * from test_geo_native")
-   @test size(tbldb) == (16,4)
+   @test size(tbldb) == (24,4)
 
    # test roundtrip of data, isequal on dataframe doesn't seem to work
-   # WKT test a bit hacky, since comparison is converted GeoInterface from WKT against what OmniSci returns
+   # WKT and GEOS test a bit hacky, since comparison is converted GeoInterface from WKT against what OmniSci returns
    # TODO: when geo types available with load_table_binary_columnar, load above and test
    for i in 1:4
       for j in 1:4
@@ -242,6 +259,8 @@ end
          @test isequal(df[i,j].coordinates, tbldb[i + 4,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 8,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 12,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 16,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 20,j].coordinates)
       end
    end
 
