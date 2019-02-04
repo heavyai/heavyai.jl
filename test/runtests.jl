@@ -222,9 +222,6 @@ end
 
 end
 
-# decimalcol = [3.0, 4.1, missing, 3.8]
-#
-
 @testset "create and load: arrays" begin
    #Missing in array not supported in OmniSci 4.4
    #TODO: when missing in array supported, add test
