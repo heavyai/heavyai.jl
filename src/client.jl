@@ -413,12 +413,8 @@ Create a table in the database specified during authentication. This method take
 types and creates the equivalent `create table` statement, optionally printing the `create table` statement instead
 of executing the statement using `sql_execute` method.
 
-Note: This method is for convenience purposes only!
-
-Known limitations:
-- create_table does not guarantee an optimized table. Use '\o' within mapdql/omnisql after data loaded to optimize
-- If Decimal columns present in 'df', user must set precision/scale via the 'precision' argument
-- No attempt is made to determine what is in String columns (i.e. WKT); type returned will be 'TEXT'
+Note: This method is for convenience purposes only! It does not guarantee an optimized table statement. Additionally,
+if Decimal columns present in 'df', user must set precision/scale via the 'precision' argument.
 
 # Examples
 ```julia-repl
