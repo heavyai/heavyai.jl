@@ -276,6 +276,49 @@ end
    #TODO: Write tests once https://github.com/omnisci/OmniSci.jl/issues/53 solved
 end
 
+@testset "sql_execute with decimal column" begin
+
+   #This tests that sql_execute returns columns defined in a table
+   #load_table and actual decimal types to come later
+
+   #drop table if it exists
+   tables = get_tables_meta(conn)
+   "test_decimals" in tables[:table_name] ? sql_execute(conn, "drop table test_decimals") : nothing
+
+   #hand-create table here since test is that anything decimal-like will be loaded correctly
+   #if table already exists
+   sql = """create table test_decimals(
+            x1 DECIMAL(7,3),
+            x2 DECIMAL(7,3),
+            x3 DECIMAL(7,3),
+            x4 DECIMAL(7,3)
+            )
+         """
+
+   @test sql_execute(conn, sql) == nothing
+
+   str = String["1234.567", "345.999", "16.876", "9.987"]
+   flo = Float32[1234.567, 345.999, 16.876, 9.987]
+   doub = Float64[1234.567, 345.999, 16.876, 9.987]
+   rat = Rational[1234567//1000, 345999//1000, 16876//1000, 9987//1000]
+
+   df = DataFrame(x1 = str, x2 = flo, x3 = doub, x4 = rat)
+
+   @test load_table(conn, "test_decimals", df) == nothing
+
+   tbldb = sql_execute(conn, "select * from test_decimals")
+
+   #Validate roundtrip within reason
+   #Because inputs aren't Dec64 (the default return type), test approx equal
+   @test isequal(Float32.(tbldb[:x1]), [parse(Float32, x) for x in str])
+   @test isequal(Float64.(tbldb[:x1]), [parse(Float64, x) for x in str])
+   @test isequal(Float32.(tbldb[:x2]), flo)
+   @test isequal(Float64.(tbldb[:x3]), doub)
+   @test isequal(Float32.(tbldb[:x4]), Float32.(rat))
+   @test isequal(Float64.(tbldb[:x4]), Float64.(rat))
+
+end
+
 @testset "get_hardware_info" begin
    #TODO: create a show method and/or return as dataframe
    hware = get_hardware_info(conn)
