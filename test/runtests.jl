@@ -175,15 +175,25 @@ end
 
 @testset "create and load: geospatial row-wise" begin
 
-   pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
-   linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
-   polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
-   "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))","POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))"]
-   mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))"]
+   pointcol = ["POINT (30 10)",
+               "POINT (-30.18764587 12.2)",
+               "POINT (30 -10.437878634)",
+               "POINT (-78 -25)"]
+
+   linecol = ["LINESTRING (30 10, 10 30, 40 40)",
+              "LINESTRING (30 10, 10 30, 40 40)",
+              "LINESTRING (30 10, 10 30, 40 40)",
+              "LINESTRING (30 10, 10 30, 40 40)"]
+
+   polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
+              "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
+              "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
+              "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))"]
+
+   mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))",
+               "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))",
+               "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))",
+               "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))"]
 
    pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
    linecol_native = GeoInterface.LineString.(readgeom.(linecol))
@@ -194,6 +204,12 @@ end
                   x4 = linecol_native,
                   x5 = polycol_native,
                   x6 = mpolycol_native
+                  )
+
+   df2 = DataFrame(x3 = pointcol,
+                  x4 = linecol,
+                  x5 = polycol,
+                  x6 = mpolycol
                   )
 
    #drop table if it exists
@@ -208,22 +224,28 @@ end
    #load data rowwise from Vector{TStringRow}
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_geo_native", df2) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df2)]) == nothing
+
    tbldb = sql_execute(conn, "select * from test_geo_native")
-   @test size(tbldb) == (8,4)
+   @test size(tbldb) == (16,4)
 
    # test roundtrip of data, isequal on dataframe doesn't seem to work
+   # WKT test a bit hacky, since comparison is converted GeoInterface from WKT against what OmniSci returns
    # TODO: when geo types available with load_table_binary_columnar, load above and test
    for i in 1:4
       for j in 1:4
          @test isequal(df[i,j].coordinates, tbldb[i,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 4,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 8,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 12,j].coordinates)
       end
    end
 
 end
-
-# decimalcol = [3.0, 4.1, missing, 3.8]
-#
 
 @testset "create and load: arrays" begin
    #Missing in array not supported in OmniSci 4.4
