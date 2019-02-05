@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS
+using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS, Decimals
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
@@ -351,6 +351,7 @@ end
    @test load_table(conn, "test_decimals", df) == nothing
 
    tbldb = sql_execute(conn, "select * from test_decimals")
+   @test size(tbldb) == (4,4)
 
    #Validate roundtrip within reason
    #Because inputs aren't Dec64 (the default return type), test approx equal
@@ -360,6 +361,42 @@ end
    @test isequal(Float64.(tbldb[:x3]), doub)
    @test isequal(Float32.(tbldb[:x4]), Float32.(rat))
    @test isequal(Float64.(tbldb[:x4]), Float64.(rat))
+
+end
+
+@testset "create/load_table with decimal column" begin
+
+   #drop table if it exists
+   tables = get_tables_meta(conn)
+   "test_decimals_createload" in tables[:table_name] ? sql_execute(conn, "drop table test_decimals_createload") : nothing
+
+   d32 = DecFP.Dec32.(["123.456", "1333.758", "23.3", "234.22"])
+   d64 = DecFP.Dec64.(["123.456", "1333.758", "23.3", "234.22"])
+   d128 = DecFP.Dec128.(["123.456", "1333.758", "23.3", "234.22"])
+   dd = Decimals.decimal.(["123.456", "1333.758", "23.3", "234.22"])
+
+   df = DataFrame(x1 = d32,
+                  x2 = d64,
+                  x3 = d128,
+                  x4 = dd)
+
+   #Test that assertion thrown if decimal columns without specifying precision
+   @test_throws AssertionError create_table(conn, "test_decimals_createload", df)
+
+   @test create_table(conn, "test_decimals_createload", df, precision=(7,3)) == nothing
+
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_decimals_createload", df) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_decimals_createload", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
+
+   tbldb = sql_execute(conn, "select * from test_decimals_createload")
+
+   @test size(tbldb) == (8,4)
+
+   #Since data are returned as Dec64,
+   @test isequal(tbldb[:x1], vcat(df[:x2], df[:x2]))
 
 end
 
