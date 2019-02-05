@@ -101,7 +101,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "OmniSci.create_table",
     "category": "function",
-    "text": "create_table(conn::OmniSciConnection, table_name::String, df::DataFrame; dryrun::Bool = false)\n\nCreate a table in the database specified during authentication. This method takes a Julia DataFrame, reads the column types and creates the equivalent create table statement, optionally printing the create table statement instead of executing the statement using sql_execute method.\n\nNote: This method is for convenience purposes only! It does not guarantee an optimized table statement. Additionally, decimal support is not fully implemented.\n\nExamples\n\njulia> create_table(conn, \"test\", df)\n\n\n\n\n\n"
+    "text": "create_table(conn::OmniSciConnection, table_name::String, df::DataFrame; dryrun::Bool = false, precision::Tuple{Int,Int} = (0,0))\n\nCreate a table in the database specified during authentication. This method takes a Julia DataFrame, reads the column types and creates the equivalent create table statement, optionally printing the create table statement instead of executing the statement using sql_execute method.\n\nNote: This method is for convenience purposes only! It does not guarantee an optimized table statement. Additionally, if Decimal columns present in \'df\', user must set precision/scale via the \'precision\' argument.\n\nExamples\n\njulia> create_table(conn, \"test\", df)\n\n\n\n\n\n"
 },
 
 {
