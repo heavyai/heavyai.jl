@@ -1,4 +1,4 @@
-using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS
+using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS, Decimals
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
@@ -175,25 +175,52 @@ end
 
 @testset "create and load: geospatial row-wise" begin
 
-   pointcol = ["POINT (30 10)", "POINT (-30.18764587 12.2)", "POINT (30 -10.437878634)", "POINT (-78 -25)"]
-   linecol = ["LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)", "LINESTRING (30 10, 10 30, 40 40)"]
-   polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))", "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
-   "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))","POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))"]
-   mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))","MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),
-((15 5, 40 10, 10 20, 5 10, 15 5)))"]
+   pointcol = ["POINT (30 10)",
+               "POINT (-30.18764587 12.2)",
+               "POINT (30 -10.437878634)",
+               "POINT (-78 -25)"]
+
+   linecol = ["LINESTRING (30 10, 10 30, 40 40)",
+              "LINESTRING (30 10, 10 30, 40 40)",
+              "LINESTRING (30 10, 10 30, 40 40)",
+              "LINESTRING (30 10, 10 30, 40 40)"]
+
+   polycol = ["POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
+              "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
+              "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))",
+              "POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))"]
+
+   mpolycol = ["MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))",
+               "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))",
+               "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))",
+               "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)),((15 5, 40 10, 10 20, 5 10, 15 5)))"]
 
    pointcol_native = GeoInterface.Point.(readgeom.(pointcol))
    linecol_native = GeoInterface.LineString.(readgeom.(linecol))
    polycol_native = GeoInterface.Polygon.(readgeom.(polycol))
    mpolycol_native = GeoInterface.MultiPolygon.(readgeom.(mpolycol))
 
+   pointcol_geos = readgeom.(pointcol)
+   linecol_geos = readgeom.(linecol)
+   polycol_geos = readgeom.(polycol)
+   mpolycol_geos = readgeom.(mpolycol)
+
    df = DataFrame(x3 = pointcol_native,
                   x4 = linecol_native,
                   x5 = polycol_native,
                   x6 = mpolycol_native
+                  )
+
+   df2 = DataFrame(x3 = pointcol,
+                  x4 = linecol,
+                  x5 = polycol,
+                  x6 = mpolycol
+                  )
+
+   df3 = DataFrame(x3 = pointcol_geos,
+                  x4 = linecol_geos,
+                  x5 = polycol_geos,
+                  x6 = mpolycol_geos
                   )
 
    #drop table if it exists
@@ -208,22 +235,36 @@ end
    #load data rowwise from Vector{TStringRow}
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_geo_native", df2) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df2)]) == nothing
+
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_geo_native", df3) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df3)]) == nothing
+
    tbldb = sql_execute(conn, "select * from test_geo_native")
-   @test size(tbldb) == (8,4)
+   @test size(tbldb) == (24,4)
 
    # test roundtrip of data, isequal on dataframe doesn't seem to work
+   # WKT and GEOS test a bit hacky, since comparison is converted GeoInterface from WKT against what OmniSci returns
    # TODO: when geo types available with load_table_binary_columnar, load above and test
    for i in 1:4
       for j in 1:4
          @test isequal(df[i,j].coordinates, tbldb[i,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 4,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 8,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 12,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 16,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 20,j].coordinates)
       end
    end
 
 end
-
-# decimalcol = [3.0, 4.1, missing, 3.8]
-#
 
 @testset "create and load: arrays" begin
    #Missing in array not supported in OmniSci 4.4
@@ -277,6 +318,86 @@ end
    @test load_table(conn, "test_array", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
    #TODO: Write tests once https://github.com/omnisci/OmniSci.jl/issues/53 solved
+end
+
+@testset "sql_execute with decimal column" begin
+
+   #This tests that sql_execute returns columns defined in a table
+   #load_table and actual decimal types to come later
+
+   #drop table if it exists
+   tables = get_tables_meta(conn)
+   "test_decimals" in tables[:table_name] ? sql_execute(conn, "drop table test_decimals") : nothing
+
+   #hand-create table here since test is that anything decimal-like will be loaded correctly
+   #if table already exists
+   sql = """create table test_decimals(
+            x1 DECIMAL(7,3),
+            x2 DECIMAL(7,3),
+            x3 DECIMAL(7,3),
+            x4 DECIMAL(7,3)
+            )
+         """
+
+   @test sql_execute(conn, sql) == nothing
+
+   str = String["1234.567", "345.999", "16.876", "9.987"]
+   flo = Float32[1234.567, 345.999, 16.876, 9.987]
+   doub = Float64[1234.567, 345.999, 16.876, 9.987]
+   rat = Rational[1234567//1000, 345999//1000, 16876//1000, 9987//1000]
+
+   df = DataFrame(x1 = str, x2 = flo, x3 = doub, x4 = rat)
+
+   @test load_table(conn, "test_decimals", df) == nothing
+
+   tbldb = sql_execute(conn, "select * from test_decimals")
+   @test size(tbldb) == (4,4)
+
+   #Validate roundtrip within reason
+   #Because inputs aren't Dec64 (the default return type), test approx equal
+   @test isequal(Float32.(tbldb[:x1]), [parse(Float32, x) for x in str])
+   @test isequal(Float64.(tbldb[:x1]), [parse(Float64, x) for x in str])
+   @test isequal(Float32.(tbldb[:x2]), flo)
+   @test isequal(Float64.(tbldb[:x3]), doub)
+   @test isequal(Float32.(tbldb[:x4]), Float32.(rat))
+   @test isequal(Float64.(tbldb[:x4]), Float64.(rat))
+
+end
+
+@testset "create/load_table with decimal column" begin
+
+   #drop table if it exists
+   tables = get_tables_meta(conn)
+   "test_decimals_createload" in tables[:table_name] ? sql_execute(conn, "drop table test_decimals_createload") : nothing
+
+   d32 = DecFP.Dec32.(["123.456", "1333.758", "23.3", "234.22"])
+   d64 = DecFP.Dec64.(["123.456", "1333.758", "23.3", "234.22"])
+   d128 = DecFP.Dec128.(["123.456", "1333.758", "23.3", "234.22"])
+   dd = Decimals.decimal.(["123.456", "1333.758", "23.3", "234.22"])
+
+   df = DataFrame(x1 = d32,
+                  x2 = d64,
+                  x3 = d128,
+                  x4 = dd)
+
+   #Test that assertion thrown if decimal columns without specifying precision
+   @test_throws AssertionError create_table(conn, "test_decimals_createload", df)
+
+   @test create_table(conn, "test_decimals_createload", df, precision=(7,3)) == nothing
+
+   #load data rowwise from dataframe
+   @test load_table(conn, "test_decimals_createload", df) == nothing
+
+   #load data rowwise from Vector{TStringRow}
+   @test load_table(conn, "test_decimals_createload", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
+
+   tbldb = sql_execute(conn, "select * from test_decimals_createload")
+
+   @test size(tbldb) == (8,4)
+
+   #Since data are returned as Dec64,
+   @test isequal(tbldb[:x1], vcat(df[:x2], df[:x2]))
+
 end
 
 @testset "get_hardware_info" begin

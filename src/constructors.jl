@@ -77,7 +77,9 @@ function sanitizecolnames(x::Symbol)
 end
 
 #convert julia types to OmniSci types
-function getsqlcoltype(x)
+function getsqlcoltype(x, precision::Tuple{Int, Int})
+
+    dec = "DECIMAL$precision"
 
     lookup = Dict(
         #ints
@@ -140,7 +142,18 @@ function getsqlcoltype(x)
         Array{Union{Missing, Time},1} => "TIME[]",
         Array{Time,1} => "TIME[]",
         Array{Union{Missing, DateTime},1} => "TIMESTAMP[]",
-        Array{DateTime,1} => "TIMESTAMP[]"
+        Array{DateTime,1} => "TIMESTAMP[]",
+        #DecFP
+        Union{DecFP.Dec32, Missing} => dec,
+        DecFP.Dec32 => dec,
+        Union{DecFP.Dec64, Missing} => dec,
+        DecFP.Dec64 => dec,
+        Union{DecFP.Dec128, Missing} => dec,
+        DecFP.Dec128 => dec,
+        #Decimals.jl
+        Union{Decimals.Decimal, Missing} => dec,
+        Decimals.Decimal => dec
+
     )
 
     get(lookup, x, "Unknown")
@@ -310,4 +323,6 @@ end
 TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(myInt64.(mydatetime2unix.(x)))
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
 
+#Before OmniSci 4.4, Dates were specified in epoch seconds
+#TODO: consider making a warning about data loading?
 TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(epochdays.(x))
