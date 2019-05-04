@@ -11,7 +11,7 @@ julia:
   - nightly
 before_install:
   - docker pull mapd/core-os-cpu
-  - docker run -d --ipc=host -p 6274:6274 --name=mapd mapd/core-os-cpu:latest
+  - docker run -d --ipc=host -p 6274:6274 --name=mapd mapd/core-os-cpu:v4.4.1
   - docker ps -a
 notifications:
   email: false

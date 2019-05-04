@@ -1,5 +1,5 @@
-const TSessionId = String
-const TQueryId = Int64
+# const TSessionId = String
+# const TQueryId = Int64
 
 mutable struct TDatumVal <: Thrift.TMsg
   int_val::Int64

@@ -23,7 +23,6 @@ export DataFrame
 
 #Import Thrift bindings module
 include("mapd/mapd.jl")
-import .mapd: connect
 
 #Thrift interface code, mostly generated from Thrift.jl
 include("thrift_code/enums.jl") #hand-maintained code for more convenient enums
