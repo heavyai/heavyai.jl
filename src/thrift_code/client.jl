@@ -4,27 +4,27 @@
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 
 # Client callable method for connect
-function connect(c::MapDClient, user::String, passwd::String, dbname::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "connect", Thrift.MessageType.CALL, c.seqid)
-  inp = connect_args()
-  Thrift.set_field!(inp, :user, user)
-  Thrift.set_field!(inp, :passwd, passwd)
-  Thrift.set_field!(inp, :dbname, dbname)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, connect_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function connect
+# function connect(c::MapDClient, user::String, passwd::String, dbname::String)
+#   p = c.p
+#   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+#   Thrift.writeMessageBegin(p, "connect", Thrift.MessageType.CALL, c.seqid)
+#   inp = connect_args()
+#   Thrift.set_field!(inp, :user, user)
+#   Thrift.set_field!(inp, :passwd, passwd)
+#   Thrift.set_field!(inp, :dbname, dbname)
+#   Thrift.write(p, inp)
+#   Thrift.writeMessageEnd(p)
+#   Thrift.flush(p.t)
+#
+#   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+#   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+#   outp = Thrift.read(p, connect_result())
+#   Thrift.readMessageEnd(p)
+#   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+#   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+#   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+#   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+# end # function connect
 
 # Client callable method for disconnect
 function disconnect(c::MapDClient, session::TSessionId)
