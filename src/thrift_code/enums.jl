@@ -57,7 +57,7 @@ function getcolumntype(x::Int32)
     return d[x]
 end
 
-@scopedenum TEncodingType NONE=Int32(0) FIXED=Int32(1) RL=Int32(2) DIFF=Int32(3) DICT=Int32(4) SPARSE=Int32(5) GEOINT=Int32(6)
+@scopedenum TEncodingType NONE=Int32(0) FIXED=Int32(1) RL=Int32(2) DIFF=Int32(3) DICT=Int32(4) SPARSE=Int32(5) GEOINT=Int32(6) DATE_IN_DAYS=Int32(7)
 
 function getencodingtype(x::Int32)
     d = Dict(0 => "None",
