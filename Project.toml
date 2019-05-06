@@ -1,0 +1,26 @@
+name = "OmniSci"
+uuid = "085fdc97-bbf0-5359-b689-34bac5cd65e1"
+version = "0.4.0"
+author = ["Randy Zwitch <randy.zwitch@omnisci.com>"]
+
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+DecFP = "55939f99-70c6-5e9b-8bb0-5071ed7d61fd"
+Decimals = "abce61dc-4473-55a0-ba07-351d65e31d42"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+GeoInterface = "cf35fbd7-0cd7-5166-be24-54bfbe79505f"
+LibGEOS = "a90b1aa1-3769-5649-ba7e-abc5a9d163eb"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+Thrift = "8d9c9c80-f77e-5080-9541-c6f69d204e22"
+
+[compat]
+DataFrames = "≥ 0.17.0"
+DecFP = "≥ 0.4.8"
+Decimals = "≥ 0.3.1"
+GeoInterface = "≥ 0.4.0"
+LibGEOS = "≥ 0.4.1"
+Thrift = "≥ 0.6.0"
+julia = "≥ 1.0.1"
