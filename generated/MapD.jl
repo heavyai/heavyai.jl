@@ -360,6 +360,21 @@ mutable struct get_table_epoch_by_name_result
 end # mutable struct get_table_epoch_by_name_result
 meta(t::Type{get_table_epoch_by_name_result}) = meta(t, Symbol[:success], Int[0], Dict{Symbol,Any}())
 
+# types encapsulating arguments and return values of method get_session_info
+
+mutable struct get_session_info_args <: Thrift.TMsg
+  session::TSessionId
+  get_session_info_args() = (o=new(); fillunset(o); o)
+end # mutable struct get_session_info_args
+
+mutable struct get_session_info_result
+  success::TSessionInfo
+  e::TMapDException
+  get_session_info_result() = (o=new(); fillunset(o); o)
+  get_session_info_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct get_session_info_result
+meta(t::Type{get_session_info_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+
 # types encapsulating arguments and return values of method sql_execute
 
 mutable struct sql_execute_args <: Thrift.TMsg
@@ -943,6 +958,22 @@ mutable struct get_all_files_in_archive_result
 end # mutable struct get_all_files_in_archive_result
 meta(t::Type{get_all_files_in_archive_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
+# types encapsulating arguments and return values of method check_table_consistency
+
+mutable struct check_table_consistency_args <: Thrift.TMsg
+  session::TSessionId
+  table_id::Int32
+  check_table_consistency_args() = (o=new(); fillunset(o); o)
+end # mutable struct check_table_consistency_args
+
+mutable struct check_table_consistency_result
+  success::TTableMeta
+  e::TMapDException
+  check_table_consistency_result() = (o=new(); fillunset(o); o)
+  check_table_consistency_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct check_table_consistency_result
+meta(t::Type{check_table_consistency_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+
 # types encapsulating arguments and return values of method start_query
 
 mutable struct start_query_args <: Thrift.TMsg
@@ -980,6 +1011,7 @@ meta(t::Type{execute_first_step_result}) = meta(t, Symbol[:success, :e], Int[0, 
 mutable struct broadcast_serialized_rows_args <: Thrift.TMsg
   serialized_rows::String
   row_desc::TRowDescriptor
+  uncompressed_size::Int64
   query_id::TQueryId
   broadcast_serialized_rows_args() = (o=new(); fillunset(o); o)
 end # mutable struct broadcast_serialized_rows_args
@@ -1149,6 +1181,25 @@ mutable struct get_all_roles_for_user_result
 end # mutable struct get_all_roles_for_user_result
 meta(t::Type{get_all_roles_for_user_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
+# types encapsulating arguments and return values of method has_object_privilege
+
+mutable struct has_object_privilege_args <: Thrift.TMsg
+  session::TSessionId
+  granteeName::String
+  ObjectName::String
+  objectType::Int32
+  permissions::TDBObjectPermissions
+  has_object_privilege_args() = (o=new(); fillunset(o); o)
+end # mutable struct has_object_privilege_args
+
+mutable struct has_object_privilege_result
+  success::Bool
+  e::TMapDException
+  has_object_privilege_result() = (o=new(); fillunset(o); o)
+  has_object_privilege_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct has_object_privilege_result
+meta(t::Type{has_object_privilege_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+
 # types encapsulating arguments and return values of method set_license_key
 
 mutable struct set_license_key_args <: Thrift.TMsg
@@ -1215,6 +1266,7 @@ mutable struct MapDProcessor <: TProcessor
     handle(p.tp, ThriftHandler("set_table_epoch_by_name", _set_table_epoch_by_name, set_table_epoch_by_name_args, set_table_epoch_by_name_result))
     handle(p.tp, ThriftHandler("get_table_epoch", _get_table_epoch, get_table_epoch_args, get_table_epoch_result))
     handle(p.tp, ThriftHandler("get_table_epoch_by_name", _get_table_epoch_by_name, get_table_epoch_by_name_args, get_table_epoch_by_name_result))
+    handle(p.tp, ThriftHandler("get_session_info", _get_session_info, get_session_info_args, get_session_info_result))
     handle(p.tp, ThriftHandler("sql_execute", _sql_execute, sql_execute_args, sql_execute_result))
     handle(p.tp, ThriftHandler("sql_execute_df", _sql_execute_df, sql_execute_df_args, sql_execute_df_result))
     handle(p.tp, ThriftHandler("sql_execute_gdf", _sql_execute_gdf, sql_execute_gdf_args, sql_execute_gdf_result))
@@ -1250,6 +1302,7 @@ mutable struct MapDProcessor <: TProcessor
     handle(p.tp, ThriftHandler("import_table_status", _import_table_status, import_table_status_args, import_table_status_result))
     handle(p.tp, ThriftHandler("get_first_geo_file_in_archive", _get_first_geo_file_in_archive, get_first_geo_file_in_archive_args, get_first_geo_file_in_archive_result))
     handle(p.tp, ThriftHandler("get_all_files_in_archive", _get_all_files_in_archive, get_all_files_in_archive_args, get_all_files_in_archive_result))
+    handle(p.tp, ThriftHandler("check_table_consistency", _check_table_consistency, check_table_consistency_args, check_table_consistency_result))
     handle(p.tp, ThriftHandler("start_query", _start_query, start_query_args, start_query_result))
     handle(p.tp, ThriftHandler("execute_first_step", _execute_first_step, execute_first_step_args, execute_first_step_result))
     handle(p.tp, ThriftHandler("broadcast_serialized_rows", _broadcast_serialized_rows, broadcast_serialized_rows_args, broadcast_serialized_rows_result))
@@ -1263,6 +1316,7 @@ mutable struct MapDProcessor <: TProcessor
     handle(p.tp, ThriftHandler("get_db_objects_for_grantee", _get_db_objects_for_grantee, get_db_objects_for_grantee_args, get_db_objects_for_grantee_result))
     handle(p.tp, ThriftHandler("get_db_object_privs", _get_db_object_privs, get_db_object_privs_args, get_db_object_privs_result))
     handle(p.tp, ThriftHandler("get_all_roles_for_user", _get_all_roles_for_user, get_all_roles_for_user_args, get_all_roles_for_user_result))
+    handle(p.tp, ThriftHandler("has_object_privilege", _has_object_privilege, has_object_privilege_args, has_object_privilege_result))
     handle(p.tp, ThriftHandler("set_license_key", _set_license_key, set_license_key_args, set_license_key_result))
     handle(p.tp, ThriftHandler("get_license_claims", _get_license_claims, get_license_claims_args, get_license_claims_result))
     p
@@ -1490,6 +1544,16 @@ function _set_table_epoch_by_name(inp::set_table_epoch_by_name_args)
 end #function _set_table_epoch_by_name
 _get_table_epoch(inp::get_table_epoch_args) = get_table_epoch_result(get_table_epoch(inp.session, inp.db_id, inp.table_id))
 _get_table_epoch_by_name(inp::get_table_epoch_by_name_args) = get_table_epoch_by_name_result(get_table_epoch_by_name(inp.session, inp.table_name))
+function _get_session_info(inp::get_session_info_args)
+  try
+    result = get_session_info(inp.session)
+    return get_session_info_result(result)
+  catch ex
+    exret = get_session_info_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_session_info
 function _sql_execute(inp::sql_execute_args)
   try
     result = sql_execute(inp.session, inp.query, inp.column_format, inp.nonce, inp.first_n, inp.at_most_n)
@@ -1840,6 +1904,16 @@ function _get_all_files_in_archive(inp::get_all_files_in_archive_args)
     rethrow()
   end # try
 end #function _get_all_files_in_archive
+function _check_table_consistency(inp::check_table_consistency_args)
+  try
+    result = check_table_consistency(inp.session, inp.table_id)
+    return check_table_consistency_result(result)
+  catch ex
+    exret = check_table_consistency_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _check_table_consistency
 function _start_query(inp::start_query_args)
   try
     result = start_query(inp.session, inp.query_ra, inp.just_explain)
@@ -1862,7 +1936,7 @@ function _execute_first_step(inp::execute_first_step_args)
 end #function _execute_first_step
 function _broadcast_serialized_rows(inp::broadcast_serialized_rows_args)
   try
-    broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.query_id)
+    broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.uncompressed_size, inp.query_id)
     return broadcast_serialized_rows_result()
   catch ex
     exret = broadcast_serialized_rows_result()
@@ -1970,6 +2044,16 @@ function _get_all_roles_for_user(inp::get_all_roles_for_user_args)
     rethrow()
   end # try
 end #function _get_all_roles_for_user
+function _has_object_privilege(inp::has_object_privilege_args)
+  try
+    result = has_object_privilege(inp.session, inp.granteeName, inp.ObjectName, inp.objectType, inp.permissions)
+    return has_object_privilege_result(result)
+  catch ex
+    exret = has_object_privilege_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _has_object_privilege
 function _set_license_key(inp::set_license_key_args)
   try
     result = set_license_key(inp.session, inp.key, inp.nonce)
@@ -2065,6 +2149,9 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 #     # returns Int32
 # function get_table_epoch_by_name(session::TSessionId, table_name::String)
 #     # returns Int32
+# function get_session_info(session::TSessionId)
+#     # returns TSessionInfo
+#     # throws e::TMapDException
 # function sql_execute(session::TSessionId, query::String, column_format::Bool, nonce::String, first_n::Int32, at_most_n::Int32)
 #     # returns TQueryResult
 #     # throws e::TMapDException
@@ -2170,13 +2257,16 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function get_all_files_in_archive(session::TSessionId, archive_path::String, copy_params::TCopyParams)
 #     # returns Vector{String}
 #     # throws e::TMapDException
+# function check_table_consistency(session::TSessionId, table_id::Int32)
+#     # returns TTableMeta
+#     # throws e::TMapDException
 # function start_query(session::TSessionId, query_ra::String, just_explain::Bool)
 #     # returns TPendingQuery
 #     # throws e::TMapDException
 # function execute_first_step(pending_query::TPendingQuery)
 #     # returns TStepResult
 #     # throws e::TMapDException
-# function broadcast_serialized_rows(serialized_rows::String, row_desc::TRowDescriptor, query_id::TQueryId)
+# function broadcast_serialized_rows(serialized_rows::String, row_desc::TRowDescriptor, uncompressed_size::Int64, query_id::TQueryId)
 #     # returns nothing
 #     # throws e::TMapDException
 # function start_render_query(session::TSessionId, widget_id::Int64, node_idx::Int16, vega_json::String)
@@ -2209,6 +2299,9 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function get_all_roles_for_user(session::TSessionId, userName::String)
 #     # returns Vector{String}
 #     # throws e::TMapDException
+# function has_object_privilege(session::TSessionId, granteeName::String, ObjectName::String, objectType::Int32, permissions::TDBObjectPermissions)
+#     # returns Bool
+#     # throws e::TMapDException
 # function set_license_key(session::TSessionId, key::String, nonce::String)
 #     # returns TLicenseInfo
 #     # throws e::TMapDException
@@ -2236,7 +2329,7 @@ function connect(c::MapDClientBase, user::String, passwd::String, dbname::String
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, connect_result())
@@ -2257,7 +2350,7 @@ function disconnect(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, disconnect_result())
@@ -2277,7 +2370,7 @@ function get_server_status(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_server_status_result())
@@ -2298,7 +2391,7 @@ function get_status(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_status_result())
@@ -2319,7 +2412,7 @@ function get_hardware_info(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_hardware_info_result())
@@ -2340,7 +2433,7 @@ function get_tables(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_tables_result())
@@ -2361,7 +2454,7 @@ function get_physical_tables(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_physical_tables_result())
@@ -2382,7 +2475,7 @@ function get_views(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_views_result())
@@ -2403,7 +2496,7 @@ function get_tables_meta(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_tables_meta_result())
@@ -2425,7 +2518,7 @@ function get_table_details(c::MapDClientBase, session::TSessionId, table_name::S
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_details_result())
@@ -2447,7 +2540,7 @@ function get_internal_table_details(c::MapDClientBase, session::TSessionId, tabl
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_internal_table_details_result())
@@ -2468,7 +2561,7 @@ function get_users(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_users_result())
@@ -2489,7 +2582,7 @@ function get_databases(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_databases_result())
@@ -2509,7 +2602,7 @@ function get_version(c::MapDClientBase)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_version_result())
@@ -2530,7 +2623,7 @@ function start_heap_profile(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, start_heap_profile_result())
@@ -2550,7 +2643,7 @@ function stop_heap_profile(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, stop_heap_profile_result())
@@ -2570,7 +2663,7 @@ function get_heap_profile(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_heap_profile_result())
@@ -2592,7 +2685,7 @@ function get_memory(c::MapDClientBase, session::TSessionId, memory_level::String
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_memory_result())
@@ -2613,7 +2706,7 @@ function clear_cpu_memory(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, clear_cpu_memory_result())
@@ -2633,7 +2726,7 @@ function clear_gpu_memory(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, clear_gpu_memory_result())
@@ -2656,7 +2749,7 @@ function set_table_epoch(c::MapDClientBase, session::TSessionId, db_id::Int32, t
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_table_epoch_result())
@@ -2678,7 +2771,7 @@ function set_table_epoch_by_name(c::MapDClientBase, session::TSessionId, table_n
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_table_epoch_by_name_result())
@@ -2700,7 +2793,7 @@ function get_table_epoch(c::MapDClientBase, session::TSessionId, db_id::Int32, t
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_epoch_result())
@@ -2721,7 +2814,7 @@ function get_table_epoch_by_name(c::MapDClientBase, session::TSessionId, table_n
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_epoch_by_name_result())
@@ -2730,6 +2823,27 @@ function get_table_epoch_by_name(c::MapDClientBase, session::TSessionId, table_n
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_table_epoch_by_name
+
+# Client callable method for get_session_info
+function get_session_info(c::MapDClientBase, session::TSessionId)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "get_session_info", Thrift.MessageType.CALL, c.seqid)
+  inp = get_session_info_args()
+  Thrift.set_field!(inp, :session, session)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, get_session_info_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+end # function get_session_info
 
 # Client callable method for sql_execute
 function sql_execute(c::MapDClientBase, session::TSessionId, query::String, column_format::Bool, nonce::String, first_n::Int32, at_most_n::Int32)
@@ -2746,7 +2860,7 @@ function sql_execute(c::MapDClientBase, session::TSessionId, query::String, colu
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_execute_result())
@@ -2771,7 +2885,7 @@ function sql_execute_df(c::MapDClientBase, session::TSessionId, query::String, d
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_execute_df_result())
@@ -2795,7 +2909,7 @@ function sql_execute_gdf(c::MapDClientBase, session::TSessionId, query::String, 
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_execute_gdf_result())
@@ -2819,7 +2933,7 @@ function deallocate_df(c::MapDClientBase, session::TSessionId, df::TDataFrame, d
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, deallocate_df_result())
@@ -2839,7 +2953,7 @@ function interrupt(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, interrupt_result())
@@ -2860,7 +2974,7 @@ function sql_validate(c::MapDClientBase, session::TSessionId, query::String)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, sql_validate_result())
@@ -2883,7 +2997,7 @@ function get_completion_hints(c::MapDClientBase, session::TSessionId, sql::Strin
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_completion_hints_result())
@@ -2905,7 +3019,7 @@ function set_execution_mode(c::MapDClientBase, session::TSessionId, mode::Int32)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_execution_mode_result())
@@ -2929,7 +3043,7 @@ function render_vega(c::MapDClientBase, session::TSessionId, widget_id::Int64, v
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, render_vega_result())
@@ -2956,7 +3070,7 @@ function get_result_row_for_pixel(c::MapDClientBase, session::TSessionId, widget
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_result_row_for_pixel_result())
@@ -2978,7 +3092,7 @@ function get_frontend_view(c::MapDClientBase, session::TSessionId, view_name::St
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_frontend_view_result())
@@ -2999,7 +3113,7 @@ function get_frontend_views(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_frontend_views_result())
@@ -3024,7 +3138,7 @@ function create_frontend_view(c::MapDClientBase, session::TSessionId, view_name:
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_frontend_view_result())
@@ -3045,7 +3159,7 @@ function delete_frontend_view(c::MapDClientBase, session::TSessionId, view_name:
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, delete_frontend_view_result())
@@ -3066,7 +3180,7 @@ function get_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_dashboard_result())
@@ -3087,7 +3201,7 @@ function get_dashboards(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_dashboards_result())
@@ -3112,7 +3226,7 @@ function create_dashboard(c::MapDClientBase, session::TSessionId, dashboard_name
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_dashboard_result())
@@ -3139,7 +3253,7 @@ function replace_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id:
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, replace_dashboard_result())
@@ -3160,7 +3274,7 @@ function delete_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, delete_dashboard_result())
@@ -3184,7 +3298,7 @@ function share_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::I
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, share_dashboard_result())
@@ -3208,7 +3322,7 @@ function unshare_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id:
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, unshare_dashboard_result())
@@ -3229,7 +3343,7 @@ function get_dashboard_grantees(c::MapDClientBase, session::TSessionId, dashboar
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_dashboard_grantees_result())
@@ -3251,7 +3365,7 @@ function get_link_view(c::MapDClientBase, session::TSessionId, link::String)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_link_view_result())
@@ -3274,7 +3388,7 @@ function create_link(c::MapDClientBase, session::TSessionId, view_state::String,
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_link_result())
@@ -3297,7 +3411,7 @@ function load_table_binary(c::MapDClientBase, session::TSessionId, table_name::S
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_binary_result())
@@ -3319,7 +3433,7 @@ function load_table_binary_columnar(c::MapDClientBase, session::TSessionId, tabl
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_binary_columnar_result())
@@ -3341,7 +3455,7 @@ function load_table_binary_arrow(c::MapDClientBase, session::TSessionId, table_n
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_binary_arrow_result())
@@ -3363,7 +3477,7 @@ function load_table(c::MapDClientBase, session::TSessionId, table_name::String, 
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, load_table_result())
@@ -3385,7 +3499,7 @@ function detect_column_types(c::MapDClientBase, session::TSessionId, file_name::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, detect_column_types_result())
@@ -3410,7 +3524,7 @@ function create_table(c::MapDClientBase, session::TSessionId, table_name::String
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, create_table_result())
@@ -3433,7 +3547,7 @@ function import_table(c::MapDClientBase, session::TSessionId, table_name::String
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, import_table_result())
@@ -3457,7 +3571,7 @@ function import_geo_table(c::MapDClientBase, session::TSessionId, table_name::St
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, import_geo_table_result())
@@ -3478,7 +3592,7 @@ function import_table_status(c::MapDClientBase, session::TSessionId, import_id::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, import_table_status_result())
@@ -3501,7 +3615,7 @@ function get_first_geo_file_in_archive(c::MapDClientBase, session::TSessionId, a
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_first_geo_file_in_archive_result())
@@ -3524,7 +3638,7 @@ function get_all_files_in_archive(c::MapDClientBase, session::TSessionId, archiv
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_all_files_in_archive_result())
@@ -3534,6 +3648,28 @@ function get_all_files_in_archive(c::MapDClientBase, session::TSessionId, archiv
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_all_files_in_archive
+
+# Client callable method for check_table_consistency
+function check_table_consistency(c::MapDClientBase, session::TSessionId, table_id::Int32)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "check_table_consistency", Thrift.MessageType.CALL, c.seqid)
+  inp = check_table_consistency_args()
+  Thrift.set_field!(inp, :session, session)
+  Thrift.set_field!(inp, :table_id, table_id)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, check_table_consistency_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+end # function check_table_consistency
 
 # Client callable method for start_query
 function start_query(c::MapDClientBase, session::TSessionId, query_ra::String, just_explain::Bool)
@@ -3547,7 +3683,7 @@ function start_query(c::MapDClientBase, session::TSessionId, query_ra::String, j
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, start_query_result())
@@ -3568,7 +3704,7 @@ function execute_first_step(c::MapDClientBase, pending_query::TPendingQuery)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, execute_first_step_result())
@@ -3580,18 +3716,19 @@ function execute_first_step(c::MapDClientBase, pending_query::TPendingQuery)
 end # function execute_first_step
 
 # Client callable method for broadcast_serialized_rows
-function broadcast_serialized_rows(c::MapDClientBase, serialized_rows::String, row_desc::TRowDescriptor, query_id::TQueryId)
+function broadcast_serialized_rows(c::MapDClientBase, serialized_rows::String, row_desc::TRowDescriptor, uncompressed_size::Int64, query_id::TQueryId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "broadcast_serialized_rows", Thrift.MessageType.CALL, c.seqid)
   inp = broadcast_serialized_rows_args()
   Thrift.set_field!(inp, :serialized_rows, serialized_rows)
   Thrift.set_field!(inp, :row_desc, row_desc)
+  Thrift.set_field!(inp, :uncompressed_size, uncompressed_size)
   Thrift.set_field!(inp, :query_id, query_id)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, broadcast_serialized_rows_result())
@@ -3614,7 +3751,7 @@ function start_render_query(c::MapDClientBase, session::TSessionId, widget_id::I
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, start_render_query_result())
@@ -3636,7 +3773,7 @@ function execute_next_render_step(c::MapDClientBase, pending_render::TPendingRen
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, execute_next_render_step_result())
@@ -3658,7 +3795,7 @@ function insert_data(c::MapDClientBase, session::TSessionId, insert_data::TInser
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, insert_data_result())
@@ -3680,7 +3817,7 @@ function checkpoint(c::MapDClientBase, session::TSessionId, db_id::Int32, table_
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, checkpoint_result())
@@ -3701,7 +3838,7 @@ function get_table_descriptor(c::MapDClientBase, session::TSessionId, table_name
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_table_descriptor_result())
@@ -3723,7 +3860,7 @@ function get_row_descriptor(c::MapDClientBase, session::TSessionId, table_name::
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_row_descriptor_result())
@@ -3744,7 +3881,7 @@ function get_roles(c::MapDClientBase, session::TSessionId)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_roles_result())
@@ -3766,7 +3903,7 @@ function get_db_objects_for_grantee(c::MapDClientBase, session::TSessionId, role
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_db_objects_for_grantee_result())
@@ -3789,7 +3926,7 @@ function get_db_object_privs(c::MapDClientBase, session::TSessionId, objectName:
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_db_object_privs_result())
@@ -3811,7 +3948,7 @@ function get_all_roles_for_user(c::MapDClientBase, session::TSessionId, userName
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_all_roles_for_user_result())
@@ -3821,6 +3958,31 @@ function get_all_roles_for_user(c::MapDClientBase, session::TSessionId, userName
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_all_roles_for_user
+
+# Client callable method for has_object_privilege
+function has_object_privilege(c::MapDClientBase, session::TSessionId, granteeName::String, ObjectName::String, objectType::Int32, permissions::TDBObjectPermissions)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "has_object_privilege", Thrift.MessageType.CALL, c.seqid)
+  inp = has_object_privilege_args()
+  Thrift.set_field!(inp, :session, session)
+  Thrift.set_field!(inp, :granteeName, granteeName)
+  Thrift.set_field!(inp, :ObjectName, ObjectName)
+  Thrift.set_field!(inp, :objectType, objectType)
+  Thrift.set_field!(inp, :permissions, permissions)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, has_object_privilege_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+end # function has_object_privilege
 
 # Client callable method for set_license_key
 function set_license_key(c::MapDClientBase, session::TSessionId, key::String, nonce::String)
@@ -3834,7 +3996,7 @@ function set_license_key(c::MapDClientBase, session::TSessionId, key::String, no
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, set_license_key_result())
@@ -3856,7 +4018,7 @@ function get_license_claims(c::MapDClientBase, session::TSessionId, nonce::Strin
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
-
+  
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
   outp = Thrift.read(p, get_license_claims_result())
@@ -3866,3 +4028,4 @@ function get_license_claims(c::MapDClientBase, session::TSessionId, nonce::Strin
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_license_claims
+
