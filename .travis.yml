@@ -11,7 +11,7 @@ julia:
   - nightly
 before_install:
   - docker pull omnisci/core-os-cpu
-  - docker run -d --ipc=host -p 6274:6274 --name=omnisci omnisci/core-os-cpu:v4.5.0
+  - docker run -d --ipc=host -p 6274:6274 --name=omnisci omnisci/core-os-cpu:latest
   - docker ps -a
 notifications:
   email: false
