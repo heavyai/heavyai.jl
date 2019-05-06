@@ -4,7 +4,7 @@ using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS, De
 host="localhost"
 user="mapd"
 passwd="HyperInteractive"
-port=9091
+port=6274
 dbname="mapd"
 
 #global connection to database, used for most tests

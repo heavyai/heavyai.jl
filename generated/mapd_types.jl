@@ -35,15 +35,15 @@ struct _enum_TEncodingType
   DICT::Int32
   SPARSE::Int32
   GEOINT::Int32
+  DATE_IN_DAYS::Int32
 end
-const TEncodingType = _enum_TEncodingType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6))
+const TEncodingType = _enum_TEncodingType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6), Int32(7))
 
 struct _enum_TExecuteMode
-  HYBRID::Int32
   GPU::Int32
   CPU::Int32
 end
-const TExecuteMode = _enum_TExecuteMode(Int32(0), Int32(1), Int32(2))
+const TExecuteMode = _enum_TExecuteMode(Int32(1), Int32(2))
 
 struct _enum_TDeviceType
   CPU::Int32
@@ -169,7 +169,8 @@ mutable struct TStringRow <: Thrift.TMsg
 end # mutable struct TStringRow
 
 mutable struct TStepResult <: Thrift.TMsg
-  serialized_rows::String
+  serialized_rows::Vector{UInt8}
+  uncompressed_size::Int64
   execution_finished::Bool
   merge_type::Int32
   sharded::Bool
@@ -490,6 +491,8 @@ end # mutable struct TRenderStepResult
 mutable struct TDatabasePermissions <: Thrift.TMsg
   create_::Bool
   delete_::Bool
+  view_sql_editor_::Bool
+  access_::Bool
   TDatabasePermissions() = (o=new(); fillunset(o); o)
 end # mutable struct TDatabasePermissions
 
@@ -522,6 +525,15 @@ mutable struct TViewPermissions <: Thrift.TMsg
   TViewPermissions() = (o=new(); fillunset(o); o)
 end # mutable struct TViewPermissions
 
+mutable struct TDBObjectPermissions <: Thrift.TMsg
+  database_permissions_::TDatabasePermissions
+  table_permissions_::TTablePermissions
+  dashboard_permissions_::TDashboardPermissions
+  view_permissions_::TViewPermissions
+  TDBObjectPermissions() = (o=new(); fillunset(o); o)
+end # mutable struct TDBObjectPermissions
+meta(t::Type{TDBObjectPermissions}) = meta(t, Symbol[:database_permissions_,:table_permissions_,:dashboard_permissions_,:view_permissions_], Int[], Dict{Symbol,Any}())
+
 mutable struct TDBObject <: Thrift.TMsg
   objectName::String
   objectType::Int32
@@ -541,5 +553,12 @@ mutable struct TLicenseInfo <: Thrift.TMsg
   claims::Vector{String}
   TLicenseInfo() = (o=new(); fillunset(o); o)
 end # mutable struct TLicenseInfo
+
+mutable struct TSessionInfo <: Thrift.TMsg
+  user::String
+  database::String
+  start_time::Int64
+  TSessionInfo() = (o=new(); fillunset(o); o)
+end # mutable struct TSessionInfo
 
 abstract type MapDClientBase end

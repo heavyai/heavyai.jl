@@ -10,8 +10,8 @@ julia:
   - 1.1
   - nightly
 before_install:
-  - docker pull mapd/core-os-cpu
-  - docker run -d --ipc=host -v /dev:/dev -p 9091:9091 --name=mapd mapd/core-os-cpu:latest
+  - docker pull omnisci/core-os-cpu
+  - docker run -d --ipc=host -p 6274:6274 --name=omnisci omnisci/core-os-cpu:v4.5.0
   - docker ps -a
 notifications:
   email: false
