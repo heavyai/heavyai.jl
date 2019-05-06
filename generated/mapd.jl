@@ -18,8 +18,11 @@ export TDatumType # enum
 export TEncodingType # enum
 export TExecuteMode # enum
 export TDeviceType # enum
-export TTableType # enum
+export TFileType # enum
 export TPartitionDetail # enum
+export TGeoFileLayerContents # enum
+export TImportHeaderRow # enum
+export TRole # enum
 export TMergeType # enum
 export TExpressionRangeType # enum
 export TDBObjectType # enum
@@ -83,7 +86,8 @@ export TDBObject # struct
 export TDashboardGrantees # struct
 export TLicenseInfo # struct
 export TSessionInfo # struct
-export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect, get_server_status, get_status, get_hardware_info, get_tables, get_physical_tables, get_views, get_tables_meta, get_table_details, get_internal_table_details, get_users, get_databases, get_version, start_heap_profile, stop_heap_profile, get_heap_profile, get_memory, clear_cpu_memory, clear_gpu_memory, set_table_epoch, set_table_epoch_by_name, get_table_epoch, get_table_epoch_by_name, get_session_info, sql_execute, sql_execute_df, sql_execute_gdf, deallocate_df, interrupt, sql_validate, get_completion_hints, set_execution_mode, render_vega, get_result_row_for_pixel, get_frontend_view, get_frontend_views, create_frontend_view, delete_frontend_view, get_dashboard, get_dashboards, create_dashboard, replace_dashboard, delete_dashboard, share_dashboard, unshare_dashboard, get_dashboard_grantees, get_link_view, create_link, load_table_binary, load_table_binary_columnar, load_table_binary_arrow, load_table, detect_column_types, create_table, import_table, import_geo_table, import_table_status, get_first_geo_file_in_archive, get_all_files_in_archive, check_table_consistency, start_query, execute_first_step, broadcast_serialized_rows, start_render_query, execute_next_render_step, insert_data, checkpoint, get_table_descriptor, get_row_descriptor, get_roles, get_db_objects_for_grantee, get_db_object_privs, get_all_roles_for_user, has_object_privilege, set_license_key, get_license_claims # service MapD
+export TGeoFileLayerInfo # struct
+export MapDProcessor, MapDClient, MapDClientBase, connect, disconnect, switch_database, get_server_status, get_status, get_hardware_info, get_tables, get_physical_tables, get_views, get_tables_meta, get_table_details, get_internal_table_details, get_users, get_databases, get_version, start_heap_profile, stop_heap_profile, get_heap_profile, get_memory, clear_cpu_memory, clear_gpu_memory, set_table_epoch, set_table_epoch_by_name, get_table_epoch, get_table_epoch_by_name, get_session_info, sql_execute, sql_execute_df, sql_execute_gdf, deallocate_df, interrupt, sql_validate, get_completion_hints, set_execution_mode, render_vega, get_result_row_for_pixel, get_frontend_view, get_frontend_views, create_frontend_view, delete_frontend_view, get_dashboard, get_dashboards, create_dashboard, replace_dashboard, delete_dashboard, share_dashboard, unshare_dashboard, get_dashboard_grantees, get_link_view, create_link, load_table_binary, load_table_binary_columnar, load_table_binary_arrow, load_table, detect_column_types, create_table, import_table, import_geo_table, import_table_status, get_first_geo_file_in_archive, get_all_files_in_archive, get_layers_in_geo_file, check_table_consistency, start_query, execute_first_step, broadcast_serialized_rows, start_render_query, execute_next_render_step, insert_data, checkpoint, get_table_descriptor, get_row_descriptor, get_roles, get_db_objects_for_grantee, get_db_object_privs, get_all_roles_for_user, has_object_privilege, set_license_key, get_license_claims # service MapD
 
 include("mapd_constants.jl")
 include("mapd_types.jl")
