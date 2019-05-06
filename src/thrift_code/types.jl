@@ -51,6 +51,7 @@ mutable struct TColumnType <: Thrift.TMsg
   src_name::String
   is_system::Bool
   is_physical::Bool
+  col_id::Int64
   TColumnType() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnType
 
@@ -128,7 +129,7 @@ end # mutable struct TMapDException
 mutable struct TCopyParams <: Thrift.TMsg
   delimiter::String
   null_str::String
-  has_header::Bool
+  has_header::Int32
   quoted::Bool
   _quote::String
   escape::String
@@ -137,7 +138,7 @@ mutable struct TCopyParams <: Thrift.TMsg
   array_begin::String
   array_end::String
   threads::Int32
-  table_type::Int32
+  file_type::Int32
   s3_access_key::String
   s3_secret_key::String
   s3_region::String
@@ -146,9 +147,11 @@ mutable struct TCopyParams <: Thrift.TMsg
   geo_coords_type::Int32
   geo_coords_srid::Int32
   sanitize_column_names::Bool
+  geo_layer_name::String
+  s3_endpoint::String
   TCopyParams() = (o=new(); fillunset(o); o)
 end # mutable struct TCopyParams
-meta(t::Type{TCopyParams}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0), :geo_coords_encoding => Int32(6), :geo_coords_comp_param => Int32(32), :geo_coords_type => Int32(18), :geo_coords_srid => Int32(4326), :sanitize_column_names => true))
+meta(t::Type{TCopyParams}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:has_header => Int32(0), :file_type => Int32(0), :geo_coords_encoding => Int32(6), :geo_coords_comp_param => Int32(32), :geo_coords_type => Int32(18), :geo_coords_srid => Int32(4326), :sanitize_column_names => true))
 
 mutable struct TDashboard <: Thrift.TMsg
   dashboard_name::String
@@ -170,6 +173,7 @@ mutable struct TServerStatus <: Thrift.TMsg
   edition::String
   host_name::String
   poly_rendering_enabled::Bool
+  role::Int32
   TServerStatus() = (o=new(); fillunset(o); o)
 end # mutable struct TServerStatus
 
@@ -236,6 +240,8 @@ mutable struct TTableMeta <: Thrift.TMsg
   is_replicated::Bool
   shard_count::Int64
   max_rows::Int64
+  table_id::Int64
+  max_table_id::Int64
   TTableMeta() = (o=new(); fillunset(o); o)
 end # mutable struct TTableMeta
 
