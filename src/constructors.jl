@@ -325,4 +325,4 @@ TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midni
 
 #Before OmniSci 4.4, Dates were specified in epoch seconds
 #TODO: consider making a warning about data loading?
-TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(epochdays.(x))
+TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(myDateTime.(x))
