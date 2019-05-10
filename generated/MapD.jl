@@ -35,6 +35,20 @@ mutable struct disconnect_result
 end # mutable struct disconnect_result
 meta(t::Type{disconnect_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
+# types encapsulating arguments and return values of method switch_database
+
+mutable struct switch_database_args <: Thrift.TMsg
+  session::TSessionId
+  dbname::String
+  switch_database_args() = (o=new(); fillunset(o); o)
+end # mutable struct switch_database_args
+
+mutable struct switch_database_result
+  e::TMapDException
+  switch_database_result() = (o=new(); fillunset(o); o)
+end # mutable struct switch_database_result
+meta(t::Type{switch_database_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+
 # types encapsulating arguments and return values of method get_server_status
 
 mutable struct get_server_status_args <: Thrift.TMsg
@@ -705,8 +719,10 @@ mutable struct share_dashboard_args <: Thrift.TMsg
   groups::Vector{String}
   objects::Vector{String}
   permissions::TDashboardPermissions
+  grant_role::Bool
   share_dashboard_args() = (o=new(); fillunset(o); o)
 end # mutable struct share_dashboard_args
+meta(t::Type{share_dashboard_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:grant_role => false))
 
 mutable struct share_dashboard_result
   e::TMapDException
@@ -863,11 +879,11 @@ mutable struct create_table_args <: Thrift.TMsg
   session::TSessionId
   table_name::String
   row_desc::TRowDescriptor
-  table_type::Int32
+  file_type::Int32
   create_params::TCreateParams
   create_table_args() = (o=new(); fillunset(o); o)
 end # mutable struct create_table_args
-meta(t::Type{create_table_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:table_type => Int32(0)))
+meta(t::Type{create_table_args}) = meta(t, Symbol[], Int[], Dict{Symbol,Any}(:file_type => Int32(0)))
 
 mutable struct create_table_result
   e::TMapDException
@@ -899,6 +915,7 @@ mutable struct import_geo_table_args <: Thrift.TMsg
   file_name::String
   copy_params::TCopyParams
   row_desc::TRowDescriptor
+  create_params::TCreateParams
   import_geo_table_args() = (o=new(); fillunset(o); o)
 end # mutable struct import_geo_table_args
 
@@ -957,6 +974,23 @@ mutable struct get_all_files_in_archive_result
   get_all_files_in_archive_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
 end # mutable struct get_all_files_in_archive_result
 meta(t::Type{get_all_files_in_archive_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+
+# types encapsulating arguments and return values of method get_layers_in_geo_file
+
+mutable struct get_layers_in_geo_file_args <: Thrift.TMsg
+  session::TSessionId
+  file_name::String
+  copy_params::TCopyParams
+  get_layers_in_geo_file_args() = (o=new(); fillunset(o); o)
+end # mutable struct get_layers_in_geo_file_args
+
+mutable struct get_layers_in_geo_file_result
+  success::Vector{TGeoFileLayerInfo}
+  e::TMapDException
+  get_layers_in_geo_file_result() = (o=new(); fillunset(o); o)
+  get_layers_in_geo_file_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct get_layers_in_geo_file_result
+meta(t::Type{get_layers_in_geo_file_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method check_table_consistency
 
@@ -1244,6 +1278,7 @@ mutable struct MapDProcessor <: TProcessor
     p = new(ThriftProcessor())
     handle(p.tp, ThriftHandler("connect", _connect, connect_args, connect_result))
     handle(p.tp, ThriftHandler("disconnect", _disconnect, disconnect_args, disconnect_result))
+    handle(p.tp, ThriftHandler("switch_database", _switch_database, switch_database_args, switch_database_result))
     handle(p.tp, ThriftHandler("get_server_status", _get_server_status, get_server_status_args, get_server_status_result))
     handle(p.tp, ThriftHandler("get_status", _get_status, get_status_args, get_status_result))
     handle(p.tp, ThriftHandler("get_hardware_info", _get_hardware_info, get_hardware_info_args, get_hardware_info_result))
@@ -1302,6 +1337,7 @@ mutable struct MapDProcessor <: TProcessor
     handle(p.tp, ThriftHandler("import_table_status", _import_table_status, import_table_status_args, import_table_status_result))
     handle(p.tp, ThriftHandler("get_first_geo_file_in_archive", _get_first_geo_file_in_archive, get_first_geo_file_in_archive_args, get_first_geo_file_in_archive_result))
     handle(p.tp, ThriftHandler("get_all_files_in_archive", _get_all_files_in_archive, get_all_files_in_archive_args, get_all_files_in_archive_result))
+    handle(p.tp, ThriftHandler("get_layers_in_geo_file", _get_layers_in_geo_file, get_layers_in_geo_file_args, get_layers_in_geo_file_result))
     handle(p.tp, ThriftHandler("check_table_consistency", _check_table_consistency, check_table_consistency_args, check_table_consistency_result))
     handle(p.tp, ThriftHandler("start_query", _start_query, start_query_args, start_query_result))
     handle(p.tp, ThriftHandler("execute_first_step", _execute_first_step, execute_first_step_args, execute_first_step_result))
@@ -1342,6 +1378,16 @@ function _disconnect(inp::disconnect_args)
     rethrow()
   end # try
 end #function _disconnect
+function _switch_database(inp::switch_database_args)
+  try
+    switch_database(inp.session, inp.dbname)
+    return switch_database_result()
+  catch ex
+    exret = switch_database_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _switch_database
 function _get_server_status(inp::get_server_status_args)
   try
     result = get_server_status(inp.session)
@@ -1746,7 +1792,7 @@ function _delete_dashboard(inp::delete_dashboard_args)
 end #function _delete_dashboard
 function _share_dashboard(inp::share_dashboard_args)
   try
-    share_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions)
+    share_dashboard(inp.session, inp.dashboard_id, inp.groups, inp.objects, inp.permissions, inp.grant_role)
     return share_dashboard_result()
   catch ex
     exret = share_dashboard_result()
@@ -1846,7 +1892,7 @@ function _detect_column_types(inp::detect_column_types_args)
 end #function _detect_column_types
 function _create_table(inp::create_table_args)
   try
-    create_table(inp.session, inp.table_name, inp.row_desc, inp.table_type, inp.create_params)
+    create_table(inp.session, inp.table_name, inp.row_desc, inp.file_type, inp.create_params)
     return create_table_result()
   catch ex
     exret = create_table_result()
@@ -1866,7 +1912,7 @@ function _import_table(inp::import_table_args)
 end #function _import_table
 function _import_geo_table(inp::import_geo_table_args)
   try
-    import_geo_table(inp.session, inp.table_name, inp.file_name, inp.copy_params, inp.row_desc)
+    import_geo_table(inp.session, inp.table_name, inp.file_name, inp.copy_params, inp.row_desc, inp.create_params)
     return import_geo_table_result()
   catch ex
     exret = import_geo_table_result()
@@ -1904,6 +1950,16 @@ function _get_all_files_in_archive(inp::get_all_files_in_archive_args)
     rethrow()
   end # try
 end #function _get_all_files_in_archive
+function _get_layers_in_geo_file(inp::get_layers_in_geo_file_args)
+  try
+    result = get_layers_in_geo_file(inp.session, inp.file_name, inp.copy_params)
+    return get_layers_in_geo_file_result(result)
+  catch ex
+    exret = get_layers_in_geo_file_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_layers_in_geo_file
 function _check_table_consistency(inp::check_table_consistency_args)
   try
     result = check_table_consistency(inp.session, inp.table_id)
@@ -2085,6 +2141,9 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function disconnect(session::TSessionId)
 #     # returns nothing
 #     # throws e::TMapDException
+# function switch_database(session::TSessionId, dbname::String)
+#     # returns nothing
+#     # throws e::TMapDException
 # function get_server_status(session::TSessionId)
 #     # returns TServerStatus
 #     # throws e::TMapDException
@@ -2209,7 +2268,7 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function delete_dashboard(session::TSessionId, dashboard_id::Int32)
 #     # returns nothing
 #     # throws e::TMapDException
-# function share_dashboard(session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
+# function share_dashboard(session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions, grant_role::Bool)
 #     # returns nothing
 #     # throws e::TMapDException
 # function unshare_dashboard(session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
@@ -2239,13 +2298,13 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function detect_column_types(session::TSessionId, file_name::String, copy_params::TCopyParams)
 #     # returns TDetectResult
 #     # throws e::TMapDException
-# function create_table(session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32, create_params::TCreateParams)
+# function create_table(session::TSessionId, table_name::String, row_desc::TRowDescriptor, file_type::Int32, create_params::TCreateParams)
 #     # returns nothing
 #     # throws e::TMapDException
 # function import_table(session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams)
 #     # returns nothing
 #     # throws e::TMapDException
-# function import_geo_table(session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
+# function import_geo_table(session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor, create_params::TCreateParams)
 #     # returns nothing
 #     # throws e::TMapDException
 # function import_table_status(session::TSessionId, import_id::String)
@@ -2256,6 +2315,9 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 #     # throws e::TMapDException
 # function get_all_files_in_archive(session::TSessionId, archive_path::String, copy_params::TCopyParams)
 #     # returns Vector{String}
+#     # throws e::TMapDException
+# function get_layers_in_geo_file(session::TSessionId, file_name::String, copy_params::TCopyParams)
+#     # returns Vector{TGeoFileLayerInfo}
 #     # throws e::TMapDException
 # function check_table_consistency(session::TSessionId, table_id::Int32)
 #     # returns TTableMeta
@@ -2359,6 +2421,27 @@ function disconnect(c::MapDClientBase, session::TSessionId)
   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
   nothing
 end # function disconnect
+
+# Client callable method for switch_database
+function switch_database(c::MapDClientBase, session::TSessionId, dbname::String)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "switch_database", Thrift.MessageType.CALL, c.seqid)
+  inp = switch_database_args()
+  Thrift.set_field!(inp, :session, session)
+  Thrift.set_field!(inp, :dbname, dbname)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, switch_database_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  nothing
+end # function switch_database
 
 # Client callable method for get_server_status
 function get_server_status(c::MapDClientBase, session::TSessionId)
@@ -3285,7 +3368,7 @@ function delete_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::
 end # function delete_dashboard
 
 # Client callable method for share_dashboard
-function share_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions)
+function share_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32, groups::Vector{String}, objects::Vector{String}, permissions::TDashboardPermissions, grant_role::Bool)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "share_dashboard", Thrift.MessageType.CALL, c.seqid)
@@ -3295,6 +3378,7 @@ function share_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::I
   Thrift.set_field!(inp, :groups, groups)
   Thrift.set_field!(inp, :objects, objects)
   Thrift.set_field!(inp, :permissions, permissions)
+  Thrift.set_field!(inp, :grant_role, grant_role)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
@@ -3511,7 +3595,7 @@ function detect_column_types(c::MapDClientBase, session::TSessionId, file_name::
 end # function detect_column_types
 
 # Client callable method for create_table
-function create_table(c::MapDClientBase, session::TSessionId, table_name::String, row_desc::TRowDescriptor, table_type::Int32, create_params::TCreateParams)
+function create_table(c::MapDClientBase, session::TSessionId, table_name::String, row_desc::TRowDescriptor, file_type::Int32, create_params::TCreateParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "create_table", Thrift.MessageType.CALL, c.seqid)
@@ -3519,7 +3603,7 @@ function create_table(c::MapDClientBase, session::TSessionId, table_name::String
   Thrift.set_field!(inp, :session, session)
   Thrift.set_field!(inp, :table_name, table_name)
   Thrift.set_field!(inp, :row_desc, row_desc)
-  Thrift.set_field!(inp, :table_type, table_type)
+  Thrift.set_field!(inp, :file_type, file_type)
   Thrift.set_field!(inp, :create_params, create_params)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
@@ -3558,7 +3642,7 @@ function import_table(c::MapDClientBase, session::TSessionId, table_name::String
 end # function import_table
 
 # Client callable method for import_geo_table
-function import_geo_table(c::MapDClientBase, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor)
+function import_geo_table(c::MapDClientBase, session::TSessionId, table_name::String, file_name::String, copy_params::TCopyParams, row_desc::TRowDescriptor, create_params::TCreateParams)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "import_geo_table", Thrift.MessageType.CALL, c.seqid)
@@ -3568,6 +3652,7 @@ function import_geo_table(c::MapDClientBase, session::TSessionId, table_name::St
   Thrift.set_field!(inp, :file_name, file_name)
   Thrift.set_field!(inp, :copy_params, copy_params)
   Thrift.set_field!(inp, :row_desc, row_desc)
+  Thrift.set_field!(inp, :create_params, create_params)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
@@ -3648,6 +3733,29 @@ function get_all_files_in_archive(c::MapDClientBase, session::TSessionId, archiv
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_all_files_in_archive
+
+# Client callable method for get_layers_in_geo_file
+function get_layers_in_geo_file(c::MapDClientBase, session::TSessionId, file_name::String, copy_params::TCopyParams)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "get_layers_in_geo_file", Thrift.MessageType.CALL, c.seqid)
+  inp = get_layers_in_geo_file_args()
+  Thrift.set_field!(inp, :session, session)
+  Thrift.set_field!(inp, :file_name, file_name)
+  Thrift.set_field!(inp, :copy_params, copy_params)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, get_layers_in_geo_file_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+end # function get_layers_in_geo_file
 
 # Client callable method for check_table_consistency
 function check_table_consistency(c::MapDClientBase, session::TSessionId, table_id::Int32)
