@@ -3,53 +3,11 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 
-struct _enum_TDatumType
-  SMALLINT::Int32
-  INT::Int32
-  BIGINT::Int32
-  FLOAT::Int32
-  DECIMAL::Int32
-  DOUBLE::Int32
-  STR::Int32
-  TIME::Int32
-  TIMESTAMP::Int32
-  DATE::Int32
-  BOOL::Int32
-  INTERVAL_DAY_TIME::Int32
-  INTERVAL_YEAR_MONTH::Int32
-  POINT::Int32
-  LINESTRING::Int32
-  POLYGON::Int32
-  MULTIPOLYGON::Int32
-  TINYINT::Int32
-  GEOMETRY::Int32
-  GEOGRAPHY::Int32
-end
-const TDatumType = _enum_TDatumType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6), Int32(7), Int32(8), Int32(9), Int32(10), Int32(11), Int32(12), Int32(13), Int32(14), Int32(15), Int32(16), Int32(17), Int32(18), Int32(19))
-
-struct _enum_TEncodingType
-  NONE::Int32
-  FIXED::Int32
-  RL::Int32
-  DIFF::Int32
-  DICT::Int32
-  SPARSE::Int32
-  GEOINT::Int32
-  DATE_IN_DAYS::Int32
-end
-const TEncodingType = _enum_TEncodingType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6), Int32(7))
-
-struct _enum_TExecuteMode
-  GPU::Int32
-  CPU::Int32
-end
-const TExecuteMode = _enum_TExecuteMode(Int32(1), Int32(2))
-
-struct _enum_TDeviceType
-  CPU::Int32
-  GPU::Int32
-end
-const TDeviceType = _enum_TDeviceType(Int32(0), Int32(1))
+# struct _enum_TExecuteMode
+#   GPU::Int32
+#   CPU::Int32
+# end
+# const TExecuteMode = _enum_TExecuteMode(Int32(1), Int32(2))
 
 struct _enum_TFileType
   DELIMITED::Int32
@@ -112,26 +70,44 @@ struct _enum_TDBObjectType
 end
 const TDBObjectType = _enum_TDBObjectType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4))
 
-const TRowDescriptor = Vector{TColumnType}
+#const TRowDescriptor = Vector{TColumnType}
 
-const TTableDescriptor = Dict{String,TColumnType}
+#const TTableDescriptor = Dict{String,TColumnType}
 
 const TSessionId = String
 
 const TQueryId = Int64
 
-const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
+#const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
 
-const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+# const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 
+
+# mutable struct TDatumVal <: Thrift.TMsg
+#   int_val::Int64
+#   real_val::Float64
+#   str_val::String
+#   arr_val::Vector{TDatum}
+#   TDatumVal() = (o=new(); fillunset(o); o)
+# end # mutable struct TDatumVal
 
 mutable struct TDatumVal <: Thrift.TMsg
   int_val::Int64
   real_val::Float64
   str_val::String
-  arr_val::Vector{TDatum}
+  arr_val::Vector{Any}
   TDatumVal() = (o=new(); fillunset(o); o)
 end # mutable struct TDatumVal
+
+#https://github.com/tanmaykm/Thrift.jl/issues/37#issuecomment-428024388
+function Thrift.meta(t::Type{TDatumVal})
+    ThriftMeta(t, [
+        ThriftMetaAttribs(1, :int_val, 10, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(2, :real_val, 4, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(3, :str_val, 11, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(4, :arr_val, 15, true, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TDatum")))])
+    ])
+end
 
 mutable struct TDatum <: Thrift.TMsg
   val::TDatumVal
@@ -145,19 +121,6 @@ mutable struct TStringValue <: Thrift.TMsg
   TStringValue() = (o=new(); fillunset(o); o)
 end # mutable struct TStringValue
 
-mutable struct TTypeInfo <: Thrift.TMsg
-  _type::Int32
-  encoding::Int32
-  nullable::Bool
-  is_array::Bool
-  precision::Int32
-  scale::Int32
-  comp_param::Int32
-  size::Int32
-  TTypeInfo() = (o=new(); fillunset(o); o)
-end # mutable struct TTypeInfo
-meta(t::Type{TTypeInfo}) = meta(t, Symbol[:size], Int[1,4,2,3,5,6,7,8], Dict{Symbol,Any}(:size => Int32(-1)))
-
 mutable struct TColumnType <: Thrift.TMsg
   col_name::String
   col_type::TTypeInfo
@@ -169,16 +132,34 @@ mutable struct TColumnType <: Thrift.TMsg
   TColumnType() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnType
 
+const TRowDescriptor = Vector{TColumnType} #move these after TColumnType definition
+
+const TTableDescriptor = Dict{String,TColumnType}
+
 mutable struct TRow <: Thrift.TMsg
   cols::Vector{TDatum}
   TRow() = (o=new(); fillunset(o); o)
 end # mutable struct TRow
 
+# mutable struct TColumnData <: Thrift.TMsg
+#   int_col::Vector{Int64}
+#   real_col::Vector{Float64}
+#   str_col::Vector{String}
+#   arr_col::Vector{TColumn}
+#   TColumnData() = (o=new(); fillunset(o); o)
+# end # mutable struct TColumnData
+#
+# mutable struct TColumn <: Thrift.TMsg
+#   data::TColumnData
+#   nulls::Vector{Bool}
+#   TColumn() = (o=new(); fillunset(o); o)
+# end # mutable struct TColumn
+
 mutable struct TColumnData <: Thrift.TMsg
   int_col::Vector{Int64}
   real_col::Vector{Float64}
   str_col::Vector{String}
-  arr_col::Vector{TColumn}
+  arr_col::Vector{Any}
   TColumnData() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnData
 
@@ -188,14 +169,22 @@ mutable struct TColumn <: Thrift.TMsg
   TColumn() = (o=new(); fillunset(o); o)
 end # mutable struct TColumn
 
+function Thrift.meta(t::Type{TColumnData})
+    ThriftMeta(t, [
+        ThriftMetaAttribs(1, :int_col, 15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(2, :real_col,15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(3, :str_col, 15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(4, :arr_col, 15, false, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TColumn")))])
+    ])
+end
+
 mutable struct TStringRow <: Thrift.TMsg
   cols::Vector{TStringValue}
   TStringRow() = (o=new(); fillunset(o); o)
 end # mutable struct TStringRow
 
 mutable struct TStepResult <: Thrift.TMsg
-  serialized_rows::Vector{UInt8}
-  uncompressed_size::Int64
+  serialized_rows::TSerializedRows
   execution_finished::Bool
   merge_type::Int32
   sharded::Bool
@@ -486,7 +475,8 @@ mutable struct TRenderParseResult <: Thrift.TMsg
 end # mutable struct TRenderParseResult
 
 mutable struct TRawRenderPassDataResult <: Thrift.TMsg
-  num_channels::Int32
+  num_pixel_channels::Int32
+  num_pixel_samples::Int32
   pixels::Vector{UInt8}
   row_ids_A::Vector{UInt8}
   row_ids_B::Vector{UInt8}
@@ -494,6 +484,8 @@ mutable struct TRawRenderPassDataResult <: Thrift.TMsg
   accum_data::Vector{UInt8}
   TRawRenderPassDataResult() = (o=new(); fillunset(o); o)
 end # mutable struct TRawRenderPassDataResult
+
+const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult} #move after TRawRenderPassDataResult definition
 
 mutable struct TRawPixelData <: Thrift.TMsg
   width::Int32
@@ -508,6 +500,8 @@ mutable struct TRenderDatum <: Thrift.TMsg
   value::Vector{UInt8}
   TRenderDatum() = (o=new(); fillunset(o); o)
 end # mutable struct TRenderDatum
+
+const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}} #moved to after definition
 
 mutable struct TRenderStepResult <: Thrift.TMsg
   merge_data::TRenderAggDataMap

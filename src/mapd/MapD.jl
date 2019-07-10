@@ -1043,9 +1043,8 @@ meta(t::Type{execute_first_step_result}) = meta(t, Symbol[:success, :e], Int[0, 
 # types encapsulating arguments and return values of method broadcast_serialized_rows
 
 mutable struct broadcast_serialized_rows_args <: Thrift.TMsg
-  serialized_rows::String
+  serialized_rows::TSerializedRows
   row_desc::TRowDescriptor
-  uncompressed_size::Int64
   query_id::TQueryId
   broadcast_serialized_rows_args() = (o=new(); fillunset(o); o)
 end # mutable struct broadcast_serialized_rows_args
@@ -1992,7 +1991,7 @@ function _execute_first_step(inp::execute_first_step_args)
 end #function _execute_first_step
 function _broadcast_serialized_rows(inp::broadcast_serialized_rows_args)
   try
-    broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.uncompressed_size, inp.query_id)
+    broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.query_id)
     return broadcast_serialized_rows_result()
   catch ex
     exret = broadcast_serialized_rows_result()
@@ -2328,7 +2327,7 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function execute_first_step(pending_query::TPendingQuery)
 #     # returns TStepResult
 #     # throws e::TMapDException
-# function broadcast_serialized_rows(serialized_rows::String, row_desc::TRowDescriptor, uncompressed_size::Int64, query_id::TQueryId)
+# function broadcast_serialized_rows(serialized_rows::TSerializedRows, row_desc::TRowDescriptor, query_id::TQueryId)
 #     # returns nothing
 #     # throws e::TMapDException
 # function start_render_query(session::TSessionId, widget_id::Int64, node_idx::Int16, vega_json::String)
@@ -3824,14 +3823,13 @@ function execute_first_step(c::MapDClientBase, pending_query::TPendingQuery)
 end # function execute_first_step
 
 # Client callable method for broadcast_serialized_rows
-function broadcast_serialized_rows(c::MapDClientBase, serialized_rows::String, row_desc::TRowDescriptor, uncompressed_size::Int64, query_id::TQueryId)
+function broadcast_serialized_rows(c::MapDClientBase, serialized_rows::TSerializedRows, row_desc::TRowDescriptor, query_id::TQueryId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "broadcast_serialized_rows", Thrift.MessageType.CALL, c.seqid)
   inp = broadcast_serialized_rows_args()
   Thrift.set_field!(inp, :serialized_rows, serialized_rows)
   Thrift.set_field!(inp, :row_desc, row_desc)
-  Thrift.set_field!(inp, :uncompressed_size, uncompressed_size)
   Thrift.set_field!(inp, :query_id, query_id)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)

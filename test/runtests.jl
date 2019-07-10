@@ -2,10 +2,10 @@ using OmniSci, Test, Dates, Random, DataFrames, DecFP, GeoInterface, LibGEOS, De
 
 #defaults for OmniSci CPU Docker image
 host="localhost"
-user="mapd"
+user="admin"
 passwd="HyperInteractive"
 port=6274
-dbname="mapd"
+dbname="omnisci"
 
 #global connection to database, used for most tests
 conn = connect(host, port , user, passwd, dbname)
