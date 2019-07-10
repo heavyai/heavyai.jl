@@ -29,7 +29,6 @@ struct _enum_TAggKind
 end
 const TAggKind = _enum_TAggKind(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4), Int32(5), Int32(6))
 
-const TCountDistinctDescriptors = Vector{TCountDistinctDescriptor}
 
 
 mutable struct TSlotSize <: Thrift.TMsg
@@ -53,6 +52,8 @@ mutable struct TCountDistinctDescriptor <: Thrift.TMsg
   sub_bitmap_count::Int64
   TCountDistinctDescriptor() = (o=new(); fillunset(o); o)
 end # mutable struct TCountDistinctDescriptor
+
+const TCountDistinctDescriptors = Vector{TCountDistinctDescriptor}  #moved this to end to be after TCountDistinctDescriptor
 
 mutable struct TResultSetBufferDescriptor <: Thrift.TMsg
   layout::Int32
