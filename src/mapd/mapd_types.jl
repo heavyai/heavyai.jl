@@ -3,11 +3,11 @@
 #
 # DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 
-struct _enum_TExecuteMode
-  GPU::Int32
-  CPU::Int32
-end
-const TExecuteMode = _enum_TExecuteMode(Int32(1), Int32(2))
+# struct _enum_TExecuteMode
+#   GPU::Int32
+#   CPU::Int32
+# end
+# const TExecuteMode = _enum_TExecuteMode(Int32(1), Int32(2))
 
 struct _enum_TFileType
   DELIMITED::Int32
