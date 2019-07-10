@@ -70,26 +70,44 @@ struct _enum_TDBObjectType
 end
 const TDBObjectType = _enum_TDBObjectType(Int32(0), Int32(1), Int32(2), Int32(3), Int32(4))
 
-const TRowDescriptor = Vector{TColumnType}
+#const TRowDescriptor = Vector{TColumnType}
 
-const TTableDescriptor = Dict{String,TColumnType}
+#const TTableDescriptor = Dict{String,TColumnType}
 
 const TSessionId = String
 
 const TQueryId = Int64
 
-const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
+#const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
 
-const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
+# const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 
+
+# mutable struct TDatumVal <: Thrift.TMsg
+#   int_val::Int64
+#   real_val::Float64
+#   str_val::String
+#   arr_val::Vector{TDatum}
+#   TDatumVal() = (o=new(); fillunset(o); o)
+# end # mutable struct TDatumVal
 
 mutable struct TDatumVal <: Thrift.TMsg
   int_val::Int64
   real_val::Float64
   str_val::String
-  arr_val::Vector{TDatum}
+  arr_val::Vector{Any}
   TDatumVal() = (o=new(); fillunset(o); o)
 end # mutable struct TDatumVal
+
+#https://github.com/tanmaykm/Thrift.jl/issues/37#issuecomment-428024388
+function Thrift.meta(t::Type{TDatumVal})
+    ThriftMeta(t, [
+        ThriftMetaAttribs(1, :int_val, 10, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(2, :real_val, 4, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(3, :str_val, 11, true, Any[], ThriftMeta[])
+        ThriftMetaAttribs(4, :arr_val, 15, true, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TDatum")))])
+    ])
+end
 
 mutable struct TDatum <: Thrift.TMsg
   val::TDatumVal
@@ -114,16 +132,34 @@ mutable struct TColumnType <: Thrift.TMsg
   TColumnType() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnType
 
+const TRowDescriptor = Vector{TColumnType} #move these after TColumnType definition
+
+const TTableDescriptor = Dict{String,TColumnType}
+
 mutable struct TRow <: Thrift.TMsg
   cols::Vector{TDatum}
   TRow() = (o=new(); fillunset(o); o)
 end # mutable struct TRow
 
+# mutable struct TColumnData <: Thrift.TMsg
+#   int_col::Vector{Int64}
+#   real_col::Vector{Float64}
+#   str_col::Vector{String}
+#   arr_col::Vector{TColumn}
+#   TColumnData() = (o=new(); fillunset(o); o)
+# end # mutable struct TColumnData
+#
+# mutable struct TColumn <: Thrift.TMsg
+#   data::TColumnData
+#   nulls::Vector{Bool}
+#   TColumn() = (o=new(); fillunset(o); o)
+# end # mutable struct TColumn
+
 mutable struct TColumnData <: Thrift.TMsg
   int_col::Vector{Int64}
   real_col::Vector{Float64}
   str_col::Vector{String}
-  arr_col::Vector{TColumn}
+  arr_col::Vector{Any}
   TColumnData() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnData
 
@@ -132,6 +168,15 @@ mutable struct TColumn <: Thrift.TMsg
   nulls::Vector{Bool}
   TColumn() = (o=new(); fillunset(o); o)
 end # mutable struct TColumn
+
+function Thrift.meta(t::Type{TColumnData})
+    ThriftMeta(t, [
+        ThriftMetaAttribs(1, :int_col, 15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(2, :real_col,15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(3, :str_col, 15, false, Any[], ThriftMeta[])
+        ThriftMetaAttribs(4, :arr_col, 15, false, Any[], ThriftMeta[meta(Core.eval(Main, Meta.parse("TColumn")))])
+    ])
+end
 
 mutable struct TStringRow <: Thrift.TMsg
   cols::Vector{TStringValue}
@@ -440,6 +485,8 @@ mutable struct TRawRenderPassDataResult <: Thrift.TMsg
   TRawRenderPassDataResult() = (o=new(); fillunset(o); o)
 end # mutable struct TRawRenderPassDataResult
 
+const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult} #move after TRawRenderPassDataResult definition
+
 mutable struct TRawPixelData <: Thrift.TMsg
   width::Int32
   height::Int32
@@ -453,6 +500,8 @@ mutable struct TRenderDatum <: Thrift.TMsg
   value::Vector{UInt8}
   TRenderDatum() = (o=new(); fillunset(o); o)
 end # mutable struct TRenderDatum
+
+const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}} #moved to after definition
 
 mutable struct TRenderStepResult <: Thrift.TMsg
   merge_data::TRenderAggDataMap
