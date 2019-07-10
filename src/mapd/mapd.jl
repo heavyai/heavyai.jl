@@ -10,14 +10,11 @@ using Thrift
 import Thrift.process, Thrift.meta, Thrift.distribute
 
 # import included programs
-using ..completion_hints
+using ..common, ..completion_hints, ..serialized_result_set
 
 
 export meta
-export TDatumType # enum
-export TEncodingType # enum
 export TExecuteMode # enum
-export TDeviceType # enum
 export TFileType # enum
 export TPartitionDetail # enum
 export TGeoFileLayerContents # enum
@@ -35,7 +32,6 @@ export TRenderAggDataMap # typealias for Dict{String,Dict{String,Dict{String,Dic
 export TDatumVal # struct
 export TDatum # struct
 export TStringValue # struct
-export TTypeInfo # struct
 export TColumnType # struct
 export TRow # struct
 export TColumnData # struct
