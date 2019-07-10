@@ -22,14 +22,17 @@ export get_roles, get_all_roles_for_user
 export DataFrame
 
 #Thrift interface code, mostly generated from Thrift.jl
-include("thrift_code/enums.jl") #hand-maintained code for more convenient enums
-include("thrift_code/types.jl") #slightly modified from Thrift.jl for circular type fix
-include("thrift_code/client.jl") #same as output by Thrift.jl, except where methods deleted
+include("common/common_types.jl")
+include("completion_hints/completion_hints_types.jl")
+#include("serialized_result_set/serialized_result_set_types.jl")
+#include("thrift_code/enums.jl") #hand-maintained code for more convenient enums
+#include("thrift_code/types.jl") #slightly modified from Thrift.jl for circular type fix
+#include("thrift_code/client.jl") #same as output by Thrift.jl, except where methods deleted
 
 #Package code
-include("constructors.jl")
-include("ipc.jl")
-include("client.jl")
-include("dataframe_show.jl")
+#include("constructors.jl")
+#include("ipc.jl")
+#include("client.jl")
+#include("dataframe_show.jl")
 
 end # module OmniSci
