@@ -4,8 +4,7 @@ makedocs(
     # options
     modules = [OmniSci],
     clean = false,
-    assets = ["assets/favicon.ico"],
-    format = :html,
+    format = Documenter.HTML(assets = ["assets/favicon.ico"]),
     sitename = "OmniSci.jl",
     pages = [
         "Getting Started" => "index.md",

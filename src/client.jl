@@ -7,8 +7,8 @@ Connect to an OmniSci database.
 
 # Examples
 ```julia-repl
-julia> conn = connect("localhost", 9091, "mapd", "HyperInteractive", "mapd")
-Connected to localhost:9091
+julia> conn = connect("localhost", 6274, "mapd", "HyperInteractive", "mapd")
+Connected to localhost:6274
 ```
 """
 function connect(host::String, port::Int, user::String, passwd::String, dbname::String)
@@ -39,7 +39,7 @@ Close connection to OmniSci database.
 # Examples
 ```julia-repl
 julia> disconnect(conn)
-Connection to localhost:9091 closed
+Connection to localhost:6274 closed
 ```
 """
 function disconnect(conn::OmniSciConnection)
