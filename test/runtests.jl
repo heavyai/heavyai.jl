@@ -106,7 +106,7 @@ end
 @testset "get_all_roles_for_user" begin
    #drop for convenience so later test will pass, just in case tests run multiple times
    "testuser" in get_roles(conn, as_df=false) ? sql_execute(conn, "drop role testuser") : nothing
-   "mapd2" in get_users(conn, as_df=false) ? sql_execute(conn, "drop user mapd2") : nothing
+   "mapd2" in get_users(conn, as_df=false)  ? sql_execute(conn, "drop user mapd2") : nothing
 
    #get roles assigned to user
    sql_execute(conn, "create role testuser")
@@ -147,7 +147,7 @@ end
 
    #drop table if it exists
    tables = get_tables_meta(conn)
-   "test_int_float" in tables[:table_name] ? sql_execute(conn, "drop table test_int_float") : nothing
+   "test_int_float" in tables[!, :table_name] ? sql_execute(conn, "drop table test_int_float") : nothing
 
    @test create_table(conn, "test_int_float", df) == nothing
 
@@ -225,7 +225,7 @@ end
 
    #drop table if it exists
    tables = get_tables_meta(conn)
-   "test_geo_native" in tables[:table_name] ? sql_execute(conn, "drop table test_geo_native") : nothing
+   "test_geo_native" in tables[!, :table_name] ? sql_execute(conn, "drop table test_geo_native") : nothing
 
    @test create_table(conn, "test_geo_native", df) == nothing
 
@@ -307,7 +307,7 @@ end
 
    #drop table if it exists
    tables = get_tables_meta(conn)
-   "test_array" in tables[:table_name] ? sql_execute(conn, "drop table test_array") : nothing
+   "test_array" in tables[!, :table_name] ? sql_execute(conn, "drop table test_array") : nothing
 
    @test create_table(conn, "test_array", df) == nothing
 
@@ -327,7 +327,7 @@ end
 
    #drop table if it exists
    tables = get_tables_meta(conn)
-   "test_decimals" in tables[:table_name] ? sql_execute(conn, "drop table test_decimals") : nothing
+   "test_decimals" in tables[!, :table_name] ? sql_execute(conn, "drop table test_decimals") : nothing
 
    #hand-create table here since test is that anything decimal-like will be loaded correctly
    #if table already exists
@@ -355,12 +355,12 @@ end
 
    #Validate roundtrip within reason
    #Because inputs aren't Dec64 (the default return type), test approx equal
-   @test isequal(Float32.(tbldb[:x1]), [parse(Float32, x) for x in str])
-   @test isequal(Float64.(tbldb[:x1]), [parse(Float64, x) for x in str])
-   @test isequal(Float32.(tbldb[:x2]), flo)
-   @test isequal(Float64.(tbldb[:x3]), doub)
-   @test isequal(Float32.(tbldb[:x4]), Float32.(rat))
-   @test isequal(Float64.(tbldb[:x4]), Float64.(rat))
+   @test isequal(Float32.(tbldb[!, :x1]), [parse(Float32, x) for x in str])
+   @test isequal(Float64.(tbldb[!, :x1]), [parse(Float64, x) for x in str])
+   @test isequal(Float32.(tbldb[!, :x2]), flo)
+   @test isequal(Float64.(tbldb[!, :x3]), doub)
+   @test isequal(Float32.(tbldb[!, :x4]), Float32.(rat))
+   @test isequal(Float64.(tbldb[!, :x4]), Float64.(rat))
 
 end
 
@@ -368,7 +368,7 @@ end
 
    #drop table if it exists
    tables = get_tables_meta(conn)
-   "test_decimals_createload" in tables[:table_name] ? sql_execute(conn, "drop table test_decimals_createload") : nothing
+   "test_decimals_createload" in tables[!, :table_name] ? sql_execute(conn, "drop table test_decimals_createload") : nothing
 
    d32 = DecFP.Dec32.(["123.456", "1333.758", "23.3", "234.22"])
    d64 = DecFP.Dec64.(["123.456", "1333.758", "23.3", "234.22"])
@@ -396,7 +396,7 @@ end
    @test size(tbldb) == (8,4)
 
    #Since data are returned as Dec64,
-   @test isequal(tbldb[:x1], vcat(df[:x2], df[:x2]))
+   @test isequal(tbldb[!, :x1], vcat(df[!, :x2], df[!, :x2]))
 
 end
 

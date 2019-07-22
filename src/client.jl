@@ -134,8 +134,8 @@ function get_table_details(conn::OmniSciConnection, table_name::String; as_df::B
     #makes it easier to determine column types in load_table and sql_execute
     if as_df
         df = DataFrame(r)
-        df[:col_type] = getcolumntype.(df[:col_type])
-        df[:encoding] = getencodingtype.(df[:encoding])
+        df[!, :col_type] = getcolumntype.(df.col_type)
+        df[!, :encoding] = getencodingtype.(df.encoding)
         return df
     else
         return r
