@@ -1,1 +1,6 @@
 comment: false
+ignore: # ignore Thrift generated code
+  - "src/common"
+  - "src/completion_hints"
+  - "src/mapd"
+  - "src/serialized_result_set"   

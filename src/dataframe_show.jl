@@ -63,14 +63,14 @@ DataFrame(x::TColumnType) = DataFrame(Dict(:col_name => x.col_name,
 function DataFrame(x::TTableDetails)
 
     tmp = DataFrame(x.row_desc)
-    tmp[:fragment_size] = x.fragment_size
-    tmp[:page_size] = x.page_size
-    tmp[:max_rows] = x.max_rows
-    tmp[:view_sql] = x.view_sql
-    tmp[:shard_count] = x.shard_count
-    tmp[:key_metainfo] = x.key_metainfo
-    tmp[:is_temporary] = x.is_temporary
-    tmp[:partition_detail] = x.partition_detail
+    tmp[!, :fragment_size] .= x.fragment_size
+    tmp[!, :page_size] .= x.page_size
+    tmp[!, :max_rows] .= x.max_rows
+    tmp[!, :view_sql] .= x.view_sql
+    tmp[!, :shard_count] .= x.shard_count
+    tmp[!, :key_metainfo] .= x.key_metainfo
+    tmp[!, :is_temporary] .= x.is_temporary
+    tmp[!, :partition_detail] .= x.partition_detail
 
     return tmp
 end

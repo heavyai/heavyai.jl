@@ -251,7 +251,8 @@ function TStringRow(cols::Vector{TStringValue})
     return tsr
 end
 
-TStringRow(cols::T) where T <: Union{AbstractVector, DataFrameRow{DataFrame}} = TStringRow(TStringValue.(cols))
+TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
+TStringRow(cols::DataFrameRow{DataFrame}) = TStringRow([TStringValue(x) for x in cols])
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
 
