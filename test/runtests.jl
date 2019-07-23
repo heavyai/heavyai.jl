@@ -161,7 +161,7 @@ end
    @test load_table_binary_columnar(conn, "test_int_float", df) == nothing
 
    #load data colwise from Vector{TColumn}
-   @test load_table_binary_columnar(conn, "test_int_float", [TColumn(df[x]) for x in 1:ncol(df)]) == nothing
+   @test load_table_binary_columnar(conn, "test_int_float", TColumn.(eachcol(df))) == nothing
 
    #test roundtrip of data
    #NOTE: These tests implicitly rely on having the missing values for numeric

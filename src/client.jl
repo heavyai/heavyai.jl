@@ -371,7 +371,7 @@ load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Ve
 
 """
 load_table_binary_columnar(conn::OmniSciConnection, table_name::String, df::DataFrame) =
-    load_table_binary_columnar(conn, table_name, [TColumn(df[x]) for x in 1:ncol(df)])
+    load_table_binary_columnar(conn, table_name, TColumn.(eachcol(df)))
 
 """
     load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
