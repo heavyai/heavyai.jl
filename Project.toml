@@ -18,9 +18,9 @@ Thrift = "8d9c9c80-f77e-5080-9541-c6f69d204e22"
 
 [compat]
 DataFrames = "0.19.0"
-DecFP = "0.4.8"
-Decimals = "0.4.0"
-GeoInterface = "0.4.0"
-LibGEOS = "0.4.0"
+DecFP = "≥ 0.4.8"
+Decimals = "≥ 0.3.1"
+GeoInterface = "≥ 0.4.0"
+LibGEOS = "≥ 0.4.1"
 Thrift = "≥ 0.6.0"
 julia = "≥ 1.1.0"
