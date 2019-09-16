@@ -17,6 +17,12 @@ convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(Li
 convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
 convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
 
+#WKT from LibGEOS types
+wkt(x::GeoInterface.AbstractPoint) =  writegeom(LibGEOS.Point(x))
+wkt(x::GeoInterface.AbstractLineString) = writegeom(LibGEOS.LineString(x))
+wkt(x::GeoInterface.AbstractPolygon) = writegeom(LibGEOS.Polygon(x))
+wkt(x::GeoInterface.AbstractMultiPolygon) = writegeom(LibGEOS.MultiPolygon(x))
+
 #Define these methods to avoid type piracy
 myDateTime(x::Missing) = missing
 myDateTime(x) = DateTime(x)
@@ -191,33 +197,9 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
   return val
 end
 
-function TStringValue(str_val::GeoInterface.AbstractPoint, is_null::Bool = false)
+function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{GeoInterface.AbstractLineString, GeoInterface.AbstractPoint, GeoInterface.AbstractPolygon, GeoInterface.AbstractMultiPolygon}
   val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.Point(str_val))
-  Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
-
-function TStringValue(str_val::GeoInterface.AbstractLineString, is_null::Bool = false)
-  val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.LineString(str_val))
-  Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
-
-function TStringValue(str_val::GeoInterface.AbstractPolygon, is_null::Bool = false)
-  val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.Polygon(str_val))
-  Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
-
-function TStringValue(str_val::GeoInterface.AbstractMultiPolygon, is_null::Bool = false)
-  val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.MultiPolygon(str_val))
+  p = wkt(str_val)
   Thrift.set_field!(val, :str_val, p)
   Thrift.set_field!(val, :is_null, is_null)
   return val
