@@ -381,15 +381,17 @@ end # mutable struct TNodeMemoryInfo
 mutable struct TTableMeta <: Thrift.TMsg
   table_name::String
   num_cols::Int64
-  col_datum_types::Vector{Int32}
   is_view::Bool
   is_replicated::Bool
   shard_count::Int64
   max_rows::Int64
   table_id::Int64
   max_table_id::Int64
+  col_types::Vector{TTypeInfo}
+  col_names::Vector{String}
   TTableMeta() = (o=new(); fillunset(o); o)
 end # mutable struct TTableMeta
+meta(t::Type{TTableMeta}) = meta(t, Symbol[], Int[1,2,4,5,6,7,8,9,10,11], Dict{Symbol,Any}())
 
 mutable struct TTableDetails <: Thrift.TMsg
   row_desc::TRowDescriptor
@@ -583,6 +585,7 @@ mutable struct TSessionInfo <: Thrift.TMsg
   user::String
   database::String
   start_time::Int64
+  is_super::Bool
   TSessionInfo() = (o=new(); fillunset(o); o)
 end # mutable struct TSessionInfo
 

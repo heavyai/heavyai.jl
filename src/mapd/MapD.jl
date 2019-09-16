@@ -1268,6 +1268,34 @@ mutable struct get_license_claims_result
 end # mutable struct get_license_claims_result
 meta(t::Type{get_license_claims_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
+# types encapsulating arguments and return values of method get_device_parameters
+
+mutable struct get_device_parameters_args <: Thrift.TMsg
+end # mutable struct get_device_parameters_args
+
+mutable struct get_device_parameters_result
+  success::Dict{String,String}
+  e::TMapDException
+  get_device_parameters_result() = (o=new(); fillunset(o); o)
+  get_device_parameters_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct get_device_parameters_result
+meta(t::Type{get_device_parameters_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+
+# types encapsulating arguments and return values of method register_runtime_udf
+
+mutable struct register_runtime_udf_args <: Thrift.TMsg
+  session::TSessionId
+  signatures::String
+  device_ir_map::Dict{String,String}
+  register_runtime_udf_args() = (o=new(); fillunset(o); o)
+end # mutable struct register_runtime_udf_args
+
+mutable struct register_runtime_udf_result
+  e::TMapDException
+  register_runtime_udf_result() = (o=new(); fillunset(o); o)
+end # mutable struct register_runtime_udf_result
+meta(t::Type{register_runtime_udf_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+
 
 
 # Processor for MapD service (to be used in server implementation)
@@ -1354,6 +1382,8 @@ mutable struct MapDProcessor <: TProcessor
     handle(p.tp, ThriftHandler("has_object_privilege", _has_object_privilege, has_object_privilege_args, has_object_privilege_result))
     handle(p.tp, ThriftHandler("set_license_key", _set_license_key, set_license_key_args, set_license_key_result))
     handle(p.tp, ThriftHandler("get_license_claims", _get_license_claims, get_license_claims_args, get_license_claims_result))
+    handle(p.tp, ThriftHandler("get_device_parameters", _get_device_parameters, get_device_parameters_args, get_device_parameters_result))
+    handle(p.tp, ThriftHandler("register_runtime_udf", _register_runtime_udf, register_runtime_udf_args, register_runtime_udf_result))
     p
   end
 end # mutable struct MapDProcessor
@@ -2129,6 +2159,26 @@ function _get_license_claims(inp::get_license_claims_args)
     rethrow()
   end # try
 end #function _get_license_claims
+function _get_device_parameters(inp::get_device_parameters_args)
+  try
+    result = get_device_parameters()
+    return get_device_parameters_result(result)
+  catch ex
+    exret = get_device_parameters_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _get_device_parameters
+function _register_runtime_udf(inp::register_runtime_udf_args)
+  try
+    register_runtime_udf(inp.session, inp.signatures, inp.device_ir_map)
+    return register_runtime_udf_result()
+  catch ex
+    exret = register_runtime_udf_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _register_runtime_udf
 process(p::MapDProcessor, inp::TProtocol, outp::TProtocol) = process(p.tp, inp, outp)
 distribute(p::MapDProcessor) = distribute(p.tp)
 
@@ -2368,6 +2418,12 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 #     # throws e::TMapDException
 # function get_license_claims(session::TSessionId, nonce::String)
 #     # returns TLicenseInfo
+#     # throws e::TMapDException
+# function get_device_parameters()
+#     # returns Dict{String,String}
+#     # throws e::TMapDException
+# function register_runtime_udf(session::TSessionId, signatures::String, device_ir_map::Dict{String,String})
+#     # returns nothing
 #     # throws e::TMapDException
 
 
@@ -4134,4 +4190,46 @@ function get_license_claims(c::MapDClientBase, session::TSessionId, nonce::Strin
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_license_claims
+
+# Client callable method for get_device_parameters
+function get_device_parameters(c::MapDClientBase)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "get_device_parameters", Thrift.MessageType.CALL, c.seqid)
+  inp = get_device_parameters_args()
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, get_device_parameters_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+end # function get_device_parameters
+
+# Client callable method for register_runtime_udf
+function register_runtime_udf(c::MapDClientBase, session::TSessionId, signatures::String, device_ir_map::Dict{String,String})
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "register_runtime_udf", Thrift.MessageType.CALL, c.seqid)
+  inp = register_runtime_udf_args()
+  Thrift.set_field!(inp, :session, session)
+  Thrift.set_field!(inp, :signatures, signatures)
+  Thrift.set_field!(inp, :device_ir_map, device_ir_map)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, register_runtime_udf_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  nothing
+end # function register_runtime_udf
 
