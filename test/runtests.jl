@@ -173,7 +173,7 @@ end
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-@testset "create and load: geospatial row-wise" begin
+@testset "create and load: geospatial" begin
 
    pointcol = ["POINT (30 10)",
                "POINT (-30.18764587 12.2)",
@@ -229,26 +229,32 @@ end
 
    @test create_table(conn, "test_geo_native", df) == nothing
 
-   #load data rowwise from dataframe
+   #load data rowwise from dataframe: GeoInterface
    @test load_table(conn, "test_geo_native", df) == nothing
 
-   #load data rowwise from Vector{TStringRow}
+   #load data rowwise from Vector{TStringRow}: GeoInterface
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
-   #load data rowwise from dataframe
+   #load data rowwise from dataframe: WKT
    @test load_table(conn, "test_geo_native", df2) == nothing
 
-   #load data rowwise from Vector{TStringRow}
+   #load data rowwise from Vector{TStringRow}: WKT
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df2)]) == nothing
 
-   #load data rowwise from dataframe
+   #load data rowwise from dataframe: LibGEOS
    @test load_table(conn, "test_geo_native", df3) == nothing
 
-   #load data rowwise from Vector{TStringRow}
+   #load data rowwise from Vector{TStringRow}: LibGEOS
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df3)]) == nothing
 
+   #load data colwise from dataframe: WKT
+   @test load_table_binary_columnar(conn, "test_geo_native", df2) == nothing
+
+   #load data colwise from Vector{TColumn}: WKT
+   @test load_table_binary_columnar(conn, "test_geo_native", TColumn.(eachcol(df2))) == nothing
+
    tbldb = sql_execute(conn, "select * from test_geo_native")
-   @test size(tbldb) == (24,4)
+   @test size(tbldb) == (32,4)
 
    # test roundtrip of data, isequal on dataframe doesn't seem to work
    # WKT and GEOS test a bit hacky, since comparison is converted GeoInterface from WKT against what OmniSci returns
