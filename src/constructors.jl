@@ -17,6 +17,13 @@ convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(Li
 convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
 convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
 
+#WKT from LibGEOS types
+wkt(x::GeoInterface.AbstractPoint) =  writegeom(LibGEOS.Point(x))
+wkt(x::GeoInterface.AbstractLineString) = writegeom(LibGEOS.LineString(x))
+wkt(x::GeoInterface.AbstractPolygon) = writegeom(LibGEOS.Polygon(x))
+wkt(x::GeoInterface.AbstractMultiPolygon) = writegeom(LibGEOS.MultiPolygon(x))
+wkt(x::T) where T <: Union{String, Missing} = ""
+
 #Define these methods to avoid type piracy
 myDateTime(x::Missing) = missing
 myDateTime(x) = DateTime(x)
@@ -191,33 +198,9 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
   return val
 end
 
-function TStringValue(str_val::GeoInterface.AbstractPoint, is_null::Bool = false)
+function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{GeoInterface.AbstractLineString, GeoInterface.AbstractPoint, GeoInterface.AbstractPolygon, GeoInterface.AbstractMultiPolygon}
   val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.Point(str_val))
-  Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
-
-function TStringValue(str_val::GeoInterface.AbstractLineString, is_null::Bool = false)
-  val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.LineString(str_val))
-  Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
-
-function TStringValue(str_val::GeoInterface.AbstractPolygon, is_null::Bool = false)
-  val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.Polygon(str_val))
-  Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
-
-function TStringValue(str_val::GeoInterface.AbstractMultiPolygon, is_null::Bool = false)
-  val = OmniSci.TStringValue()
-  p = writegeom(LibGEOS.MultiPolygon(str_val))
+  p = wkt(str_val)
   Thrift.set_field!(val, :str_val, p)
   Thrift.set_field!(val, :is_null, is_null)
   return val
@@ -294,7 +277,7 @@ function TColumn(x::AbstractVector{<:Union{Missing, AbstractString}})
     tc = TColumn()
     Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
 
-    #Replace missing values with typed sentinel and convert to Vector{Int64} per API requirement
+    #Replace missing values with typed sentinel and convert to Vector{String} per API requirement
     tcd = TColumnData()
     Thrift.set_field!(tcd, :str_col, convert(Vector{String}, coalesce.(x, "")))
 
@@ -313,6 +296,22 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
     #Replace missing values with typed sentinel and convert to Vector{Int64} per API requirement
     tcd = TColumnData()
     Thrift.set_field!(tcd, :int_col, convert(Vector{Int64}, coalesce.(x, -1)))
+
+    #Complete TColumn
+    Thrift.set_field!(tc, :data, tcd)
+
+    return tc
+end
+
+function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{GeoInterface.AbstractPoint, GeoInterface.AbstractPolygon, GeoInterface.AbstractLineString, GeoInterface.AbstractMultiPolygon}
+
+    #Create TColumn, fill nulls column by checking for missingness
+    tc = TColumn()
+    Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
+
+    #Convert geo types to string
+    tcd = TColumnData()
+    Thrift.set_field!(tcd, :str_col, wkt.(x))
 
     #Complete TColumn
     Thrift.set_field!(tc, :data, tcd)

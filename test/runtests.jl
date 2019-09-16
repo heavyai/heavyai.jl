@@ -173,7 +173,7 @@ end
    @test isequal(vcat(df, df, df, df), tbldb)
 end
 
-@testset "create and load: geospatial row-wise" begin
+@testset "create and load: geospatial" begin
 
    pointcol = ["POINT (30 10)",
                "POINT (-30.18764587 12.2)",
@@ -229,30 +229,49 @@ end
 
    @test create_table(conn, "test_geo_native", df) == nothing
 
-   #load data rowwise from dataframe
+   #load data rowwise from dataframe: GeoInterface
    @test load_table(conn, "test_geo_native", df) == nothing
 
-   #load data rowwise from Vector{TStringRow}
+   #load data rowwise from Vector{TStringRow}: GeoInterface
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
-   #load data rowwise from dataframe
+   #load data rowwise from dataframe: WKT
    @test load_table(conn, "test_geo_native", df2) == nothing
 
-   #load data rowwise from Vector{TStringRow}
+   #load data rowwise from Vector{TStringRow}: WKT
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df2)]) == nothing
 
-   #load data rowwise from dataframe
+   #load data rowwise from dataframe: LibGEOS
    @test load_table(conn, "test_geo_native", df3) == nothing
 
-   #load data rowwise from Vector{TStringRow}
+   #load data rowwise from Vector{TStringRow}: LibGEOS
    @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df3)]) == nothing
 
+   #load data colwise from dataframe: GeoInterface
+   @test load_table_binary_columnar(conn, "test_geo_native", df) == nothing
+
+   #load data colwise from Vector{TColumn}: GeoInterface
+   @test load_table_binary_columnar(conn, "test_geo_native", TColumn.(eachcol(df))) == nothing
+
+   #load data colwise from dataframe: WKT
+   @test load_table_binary_columnar(conn, "test_geo_native", df2) == nothing
+
+   #load data colwise from Vector{TColumn}: WKT
+   @test load_table_binary_columnar(conn, "test_geo_native", TColumn.(eachcol(df2))) == nothing
+
+   #load data colwise from dataframe: LibGEOS
+   @test load_table_binary_columnar(conn, "test_geo_native", df3) == nothing
+
+   #load data colwise from Vector{TColumn}: LibGEOS
+   @test load_table_binary_columnar(conn, "test_geo_native", TColumn.(eachcol(df3))) == nothing
+
    tbldb = sql_execute(conn, "select * from test_geo_native")
-   @test size(tbldb) == (24,4)
+   @test size(tbldb) == (48,4)
 
    # test roundtrip of data, isequal on dataframe doesn't seem to work
    # WKT and GEOS test a bit hacky, since comparison is converted GeoInterface from WKT against what OmniSci returns
-   # TODO: when geo types available with load_table_binary_columnar, load above and test
+   # this test checks that tbldb matches the original df part on a coordinate level by cellwise indexing
+   # each load table uploads 4 rows, so the comparison is the original df against the rows uploaded and indexed in tbldb
    for i in 1:4
       for j in 1:4
          @test isequal(df[i,j].coordinates, tbldb[i,j].coordinates)
@@ -261,6 +280,10 @@ end
          @test isequal(df[i,j].coordinates, tbldb[i + 12,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 16,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 20,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 24,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 28,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 32,j].coordinates)
+         @test isequal(df[i,j].coordinates, tbldb[i + 36,j].coordinates)
       end
    end
 
