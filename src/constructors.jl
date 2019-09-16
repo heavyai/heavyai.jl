@@ -22,6 +22,7 @@ wkt(x::GeoInterface.AbstractPoint) =  writegeom(LibGEOS.Point(x))
 wkt(x::GeoInterface.AbstractLineString) = writegeom(LibGEOS.LineString(x))
 wkt(x::GeoInterface.AbstractPolygon) = writegeom(LibGEOS.Polygon(x))
 wkt(x::GeoInterface.AbstractMultiPolygon) = writegeom(LibGEOS.MultiPolygon(x))
+wkt(x::T) where T <: Union{String, Missing} = ""
 
 #Define these methods to avoid type piracy
 myDateTime(x::Missing) = missing
@@ -276,7 +277,7 @@ function TColumn(x::AbstractVector{<:Union{Missing, AbstractString}})
     tc = TColumn()
     Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
 
-    #Replace missing values with typed sentinel and convert to Vector{Int64} per API requirement
+    #Replace missing values with typed sentinel and convert to Vector{String} per API requirement
     tcd = TColumnData()
     Thrift.set_field!(tcd, :str_col, convert(Vector{String}, coalesce.(x, "")))
 
@@ -295,6 +296,22 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
     #Replace missing values with typed sentinel and convert to Vector{Int64} per API requirement
     tcd = TColumnData()
     Thrift.set_field!(tcd, :int_col, convert(Vector{Int64}, coalesce.(x, -1)))
+
+    #Complete TColumn
+    Thrift.set_field!(tc, :data, tcd)
+
+    return tc
+end
+
+function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{GeoInterface.AbstractPoint, GeoInterface.AbstractPolygon, GeoInterface.AbstractLineString, GeoInterface.AbstractMultiPolygon}
+
+    #Create TColumn, fill nulls column by checking for missingness
+    tc = TColumn()
+    Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
+
+    #Convert geo types to string
+    tcd = TColumnData()
+    Thrift.set_field!(tcd, :str_col, wkt.(x))
 
     #Complete TColumn
     Thrift.set_field!(tc, :data, tcd)

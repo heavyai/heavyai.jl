@@ -7,4 +7,4 @@ build
 src/toimplement.jl
 docs/build/
 docs/site/
-Mainfest.toml
+Manifest.toml
