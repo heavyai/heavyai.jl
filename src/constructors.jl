@@ -159,8 +159,10 @@ function getsqlcoltype(x, precision::Tuple{Int, Int})
         DecFP.Dec128 => dec,
         #Decimals.jl
         Union{Decimals.Decimal, Missing} => dec,
-        Decimals.Decimal => dec
-
+        Decimals.Decimal => dec,
+        #missing: default to TEXT ENCODING DICT as design decision
+        #https://github.com/omnisci/OmniSci.jl/issues/76
+        Missing => "TEXT ENCODING DICT"
     )
 
     get(lookup, x, "Unknown")
