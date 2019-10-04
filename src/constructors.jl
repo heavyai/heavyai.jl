@@ -321,6 +321,23 @@ function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{GeoInt
     return tc
 end
 
+#for a missing column, default to empty string column per https://github.com/omnisci/OmniSci.jl/pull/77
+function TColumn(x::AbstractVector{Missing})
+
+    #Create TColumn, fill nulls column by checking for missingness
+    tc = TColumn()
+    Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
+
+    #Replace missing values with typed sentinel and convert to Vector{String} per API requirement
+    tcd = TColumnData()
+    Thrift.set_field!(tcd, :str_col, convert(Vector{String}, coalesce.(x, "")))
+
+    #Complete TColumn
+    Thrift.set_field!(tc, :data, tcd)
+
+    return tc
+end
+
 # Dispatches to Int after conversion function applied
 TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(myInt64.(mydatetime2unix.(x)))
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
