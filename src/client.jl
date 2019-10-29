@@ -248,7 +248,7 @@ end
     sql_execute_df(conn::OmniSciConnection, query::String, device_type::Int, device_id::Int, first_n::Int = -1)
 
 Execute a SQL query using Apache Arrow IPC (CPU). This method requires running the code in the same environment where
-OmniSci is running.
+OmniSci is running. This method is currently unsupported, until such time when Julia can read Arrow buffers.
 
 """
 sql_execute_df(conn::OmniSciConnection, query::String, device_type::Int, device_id::Int, first_n::Int = -1) =
@@ -258,7 +258,7 @@ sql_execute_df(conn::OmniSciConnection, query::String, device_type::Int, device_
     sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int; first_n::Int = -1)
 
 Execute a SQL query using Apache Arrow IPC (GPU). This method requires running the code in the same environment where
-OmniSci is running.
+OmniSci is running. This method is currently unsupported, until such time when Julia can read Arrow buffers.
 
 """
 sql_execute_gdf(conn::OmniSciConnection, query::String, device_id::Int; first_n::Int = -1) =
