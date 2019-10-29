@@ -9,7 +9,8 @@ makedocs(
     pages = [
         "Getting Started" => "index.md",
         "Functions" => "functions.md",
-        "API Reference" => "apireference.md"
+        "API Reference" => "apireference.md",
+        "Contributing / Developer Docs" => "devdocs.md" 
 
     ]
 )
