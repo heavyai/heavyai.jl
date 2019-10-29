@@ -1,8 +1,11 @@
-Introduction statement.
+OmniSci.jl is a pure-Julia client for the [OmniSci GPU-accelerated database engine](https://github.com/omnisci/omniscidb) and analysis platform. The goal of this package is to utilize the type-system of Julia to make working with OmniSci seamless.
 
 #### Installation
 
-OmniSci.jl is still in heavy development mode; to get the most up-to-date version, use `Pkg.clone()` or similar to build from master. Otherwise, this package will follow semver standards and quick iteration cycles (and tags to METADATA) while the package is being developed.
+```
+using Pkg
+Pkg.add("OmniSci")
+```
 
 #### Setting up an OmniSci Database
 
@@ -14,7 +17,6 @@ docker run \
 -d \
 --name omnisci \
 -p 6274:6274 \
--p 6278:6278 \
 --ipc=host \
 -v /home/<username>/omnisci-storage:/omnisci-storage \
 omnisci/core-os-cpu
@@ -26,7 +28,6 @@ docker run \
 -d \
 --name omnisci \
 -p 6274:6274 \
--p 6278:6278 \
 --ipc=host \
 -v /home/<username>/omnisci-storage:/omnisci-storage \
 omnisci/core-os-cuda
@@ -36,7 +37,7 @@ For basic OmniSci.jl development, the CPU-only build is sufficient and will allo
 
 #### Authentication
 
-The first step in using OmniSci.jl is to authenticate against an OmniSci database. Currently, OmniSci.jl only implements the binary transfer protocol from Apache Thrift (i.e. port must equal 6274 or whichever port accepts binary connections); http[s] support to be developed at a later date.
+The first step in using OmniSci.jl is to authenticate against an OmniSci database. Currently, OmniSci.jl only implements the binary transfer protocol from Apache Thrift (i.e. port must equal `6274` or whichever port accepts binary connections); http[s] support to be developed at a later date.
 
 Using the default login credentials for a new OmniSci install:
 
