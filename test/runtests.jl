@@ -131,7 +131,7 @@ end
    textcol = ["hello", "world", "omnisci", "gpu"]
    datecol = [Date(2013,7,1), missing, Date(2013,7,1), Date(2013,7,1)]
    timecol = [Time(4), Time(5), missing, Time(7)]
-   tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
+   tscol = [now(), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), missing]
 
    df = DataFrame(x1 = tinyintcol,
                   x2 = smallintcol,
@@ -302,7 +302,7 @@ end
    textcol = ["hello", "world", "omnisci", "gpu"]
    datecol = [Date(2013,7,1), Date(2013,7,1), Date(2013,7,1), Date(2013,7,1)]
    timecol = [Time(4), Time(5), Time(6), Time(7)]
-   tscol = [DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
+   tscol = [now(), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59), DateTime(2013,7,1,12,30,59)]
 
    tinyarrarr = [tinyintcol, tinyintcol, tinyintcol, tinyintcol]
    smallarrarr = [smallintcol, smallintcol, smallintcol, smallintcol]
