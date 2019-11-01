@@ -29,7 +29,7 @@ myDateTime(x::Missing) = missing
 myDateTime(x) = DateTime(x)
 
 mydatetime2unix(x::Missing) = missing
-mydatetime2unix(x) = datetime2unix(x)
+mydatetime2unix(x) = datetime2unix(floor(x, Dates.Second))
 
 epochdays(x::Missing) = missing
 epochdays(x) = (x - Dates.Date("1970-01-01")).value
