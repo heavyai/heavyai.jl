@@ -25,6 +25,7 @@ export DataFrame
 include("common/common_types.jl")
 include("completion_hints/completion_hints_types.jl")
 include("serialized_result_set/serialized_result_set_types.jl")
+include("extension_functions/extension_functions_types.jl")
 include("mapd/mapd_types.jl")
 include("mapd/MapD.jl")
 

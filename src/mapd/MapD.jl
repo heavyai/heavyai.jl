@@ -22,6 +22,22 @@ mutable struct connect_result
 end # mutable struct connect_result
 meta(t::Type{connect_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
+# types encapsulating arguments and return values of method krb5_connect
+
+mutable struct krb5_connect_args <: Thrift.TMsg
+  inputToken::String
+  dbname::String
+  krb5_connect_args() = (o=new(); fillunset(o); o)
+end # mutable struct krb5_connect_args
+
+mutable struct krb5_connect_result
+  success::TKrb5Session
+  e::TMapDException
+  krb5_connect_result() = (o=new(); fillunset(o); o)
+  krb5_connect_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct krb5_connect_result
+meta(t::Type{krb5_connect_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+
 # types encapsulating arguments and return values of method disconnect
 
 mutable struct disconnect_args <: Thrift.TMsg
@@ -566,68 +582,6 @@ mutable struct get_result_row_for_pixel_result
 end # mutable struct get_result_row_for_pixel_result
 meta(t::Type{get_result_row_for_pixel_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
-# types encapsulating arguments and return values of method get_frontend_view
-
-mutable struct get_frontend_view_args <: Thrift.TMsg
-  session::TSessionId
-  view_name::String
-  get_frontend_view_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_frontend_view_args
-
-mutable struct get_frontend_view_result
-  success::TFrontendView
-  e::TMapDException
-  get_frontend_view_result() = (o=new(); fillunset(o); o)
-  get_frontend_view_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_frontend_view_result
-meta(t::Type{get_frontend_view_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
-# types encapsulating arguments and return values of method get_frontend_views
-
-mutable struct get_frontend_views_args <: Thrift.TMsg
-  session::TSessionId
-  get_frontend_views_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_frontend_views_args
-
-mutable struct get_frontend_views_result
-  success::Vector{TFrontendView}
-  e::TMapDException
-  get_frontend_views_result() = (o=new(); fillunset(o); o)
-  get_frontend_views_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_frontend_views_result
-meta(t::Type{get_frontend_views_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
-# types encapsulating arguments and return values of method create_frontend_view
-
-mutable struct create_frontend_view_args <: Thrift.TMsg
-  session::TSessionId
-  view_name::String
-  view_state::String
-  image_hash::String
-  view_metadata::String
-  create_frontend_view_args() = (o=new(); fillunset(o); o)
-end # mutable struct create_frontend_view_args
-
-mutable struct create_frontend_view_result
-  e::TMapDException
-  create_frontend_view_result() = (o=new(); fillunset(o); o)
-end # mutable struct create_frontend_view_result
-meta(t::Type{create_frontend_view_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
-
-# types encapsulating arguments and return values of method delete_frontend_view
-
-mutable struct delete_frontend_view_args <: Thrift.TMsg
-  session::TSessionId
-  view_name::String
-  delete_frontend_view_args() = (o=new(); fillunset(o); o)
-end # mutable struct delete_frontend_view_args
-
-mutable struct delete_frontend_view_result
-  e::TMapDException
-  delete_frontend_view_result() = (o=new(); fillunset(o); o)
-end # mutable struct delete_frontend_view_result
-meta(t::Type{delete_frontend_view_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
-
 # types encapsulating arguments and return values of method get_dashboard
 
 mutable struct get_dashboard_args <: Thrift.TMsg
@@ -1025,20 +979,20 @@ mutable struct start_query_result
 end # mutable struct start_query_result
 meta(t::Type{start_query_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
-# types encapsulating arguments and return values of method execute_first_step
+# types encapsulating arguments and return values of method execute_query_step
 
-mutable struct execute_first_step_args <: Thrift.TMsg
+mutable struct execute_query_step_args <: Thrift.TMsg
   pending_query::TPendingQuery
-  execute_first_step_args() = (o=new(); fillunset(o); o)
-end # mutable struct execute_first_step_args
+  execute_query_step_args() = (o=new(); fillunset(o); o)
+end # mutable struct execute_query_step_args
 
-mutable struct execute_first_step_result
+mutable struct execute_query_step_result
   success::TStepResult
   e::TMapDException
-  execute_first_step_result() = (o=new(); fillunset(o); o)
-  execute_first_step_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct execute_first_step_result
-meta(t::Type{execute_first_step_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+  execute_query_step_result() = (o=new(); fillunset(o); o)
+  execute_query_step_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct execute_query_step_result
+meta(t::Type{execute_query_step_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
 # types encapsulating arguments and return values of method broadcast_serialized_rows
 
@@ -1118,38 +1072,6 @@ mutable struct checkpoint_result
 end # mutable struct checkpoint_result
 meta(t::Type{checkpoint_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
-# types encapsulating arguments and return values of method get_table_descriptor
-
-mutable struct get_table_descriptor_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  get_table_descriptor_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_table_descriptor_args
-
-mutable struct get_table_descriptor_result
-  success::TTableDescriptor
-  e::TMapDException
-  get_table_descriptor_result() = (o=new(); fillunset(o); o)
-  get_table_descriptor_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_table_descriptor_result
-meta(t::Type{get_table_descriptor_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
-# types encapsulating arguments and return values of method get_row_descriptor
-
-mutable struct get_row_descriptor_args <: Thrift.TMsg
-  session::TSessionId
-  table_name::String
-  get_row_descriptor_args() = (o=new(); fillunset(o); o)
-end # mutable struct get_row_descriptor_args
-
-mutable struct get_row_descriptor_result
-  success::TRowDescriptor
-  e::TMapDException
-  get_row_descriptor_result() = (o=new(); fillunset(o); o)
-  get_row_descriptor_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
-end # mutable struct get_row_descriptor_result
-meta(t::Type{get_row_descriptor_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
-
 # types encapsulating arguments and return values of method get_roles
 
 mutable struct get_roles_args <: Thrift.TMsg
@@ -1214,6 +1136,23 @@ mutable struct get_all_roles_for_user_result
 end # mutable struct get_all_roles_for_user_result
 meta(t::Type{get_all_roles_for_user_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
+# types encapsulating arguments and return values of method has_role
+
+mutable struct has_role_args <: Thrift.TMsg
+  session::TSessionId
+  granteeName::String
+  roleName::String
+  has_role_args() = (o=new(); fillunset(o); o)
+end # mutable struct has_role_args
+
+mutable struct has_role_result
+  success::Bool
+  e::TMapDException
+  has_role_result() = (o=new(); fillunset(o); o)
+  has_role_result(success) = (o=new(); fillset(o, :success); o.success=success; o)
+end # mutable struct has_role_result
+meta(t::Type{has_role_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
+
 # types encapsulating arguments and return values of method has_object_privilege
 
 mutable struct has_object_privilege_args <: Thrift.TMsg
@@ -1271,6 +1210,8 @@ meta(t::Type{get_license_claims_result}) = meta(t, Symbol[:success, :e], Int[0, 
 # types encapsulating arguments and return values of method get_device_parameters
 
 mutable struct get_device_parameters_args <: Thrift.TMsg
+  session::TSessionId
+  get_device_parameters_args() = (o=new(); fillunset(o); o)
 end # mutable struct get_device_parameters_args
 
 mutable struct get_device_parameters_result
@@ -1281,20 +1222,21 @@ mutable struct get_device_parameters_result
 end # mutable struct get_device_parameters_result
 meta(t::Type{get_device_parameters_result}) = meta(t, Symbol[:success, :e], Int[0, 1], Dict{Symbol,Any}())
 
-# types encapsulating arguments and return values of method register_runtime_udf
+# types encapsulating arguments and return values of method register_runtime_extension_functions
 
-mutable struct register_runtime_udf_args <: Thrift.TMsg
+mutable struct register_runtime_extension_functions_args <: Thrift.TMsg
   session::TSessionId
-  signatures::String
+  udfs::Vector{TUserDefinedFunction}
+  udtfs::Vector{TUserDefinedTableFunction}
   device_ir_map::Dict{String,String}
-  register_runtime_udf_args() = (o=new(); fillunset(o); o)
-end # mutable struct register_runtime_udf_args
+  register_runtime_extension_functions_args() = (o=new(); fillunset(o); o)
+end # mutable struct register_runtime_extension_functions_args
 
-mutable struct register_runtime_udf_result
+mutable struct register_runtime_extension_functions_result
   e::TMapDException
-  register_runtime_udf_result() = (o=new(); fillunset(o); o)
-end # mutable struct register_runtime_udf_result
-meta(t::Type{register_runtime_udf_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
+  register_runtime_extension_functions_result() = (o=new(); fillunset(o); o)
+end # mutable struct register_runtime_extension_functions_result
+meta(t::Type{register_runtime_extension_functions_result}) = meta(t, Symbol[:e], Int[1], Dict{Symbol,Any}())
 
 
 
@@ -1304,6 +1246,7 @@ mutable struct MapDProcessor <: TProcessor
   function MapDProcessor()
     p = new(ThriftProcessor())
     handle(p.tp, ThriftHandler("connect", _connect, connect_args, connect_result))
+    handle(p.tp, ThriftHandler("krb5_connect", _krb5_connect, krb5_connect_args, krb5_connect_result))
     handle(p.tp, ThriftHandler("disconnect", _disconnect, disconnect_args, disconnect_result))
     handle(p.tp, ThriftHandler("switch_database", _switch_database, switch_database_args, switch_database_result))
     handle(p.tp, ThriftHandler("get_server_status", _get_server_status, get_server_status_args, get_server_status_result))
@@ -1339,10 +1282,6 @@ mutable struct MapDProcessor <: TProcessor
     handle(p.tp, ThriftHandler("set_execution_mode", _set_execution_mode, set_execution_mode_args, set_execution_mode_result))
     handle(p.tp, ThriftHandler("render_vega", _render_vega, render_vega_args, render_vega_result))
     handle(p.tp, ThriftHandler("get_result_row_for_pixel", _get_result_row_for_pixel, get_result_row_for_pixel_args, get_result_row_for_pixel_result))
-    handle(p.tp, ThriftHandler("get_frontend_view", _get_frontend_view, get_frontend_view_args, get_frontend_view_result))
-    handle(p.tp, ThriftHandler("get_frontend_views", _get_frontend_views, get_frontend_views_args, get_frontend_views_result))
-    handle(p.tp, ThriftHandler("create_frontend_view", _create_frontend_view, create_frontend_view_args, create_frontend_view_result))
-    handle(p.tp, ThriftHandler("delete_frontend_view", _delete_frontend_view, delete_frontend_view_args, delete_frontend_view_result))
     handle(p.tp, ThriftHandler("get_dashboard", _get_dashboard, get_dashboard_args, get_dashboard_result))
     handle(p.tp, ThriftHandler("get_dashboards", _get_dashboards, get_dashboards_args, get_dashboards_result))
     handle(p.tp, ThriftHandler("create_dashboard", _create_dashboard, create_dashboard_args, create_dashboard_result))
@@ -1367,23 +1306,22 @@ mutable struct MapDProcessor <: TProcessor
     handle(p.tp, ThriftHandler("get_layers_in_geo_file", _get_layers_in_geo_file, get_layers_in_geo_file_args, get_layers_in_geo_file_result))
     handle(p.tp, ThriftHandler("check_table_consistency", _check_table_consistency, check_table_consistency_args, check_table_consistency_result))
     handle(p.tp, ThriftHandler("start_query", _start_query, start_query_args, start_query_result))
-    handle(p.tp, ThriftHandler("execute_first_step", _execute_first_step, execute_first_step_args, execute_first_step_result))
+    handle(p.tp, ThriftHandler("execute_query_step", _execute_query_step, execute_query_step_args, execute_query_step_result))
     handle(p.tp, ThriftHandler("broadcast_serialized_rows", _broadcast_serialized_rows, broadcast_serialized_rows_args, broadcast_serialized_rows_result))
     handle(p.tp, ThriftHandler("start_render_query", _start_render_query, start_render_query_args, start_render_query_result))
     handle(p.tp, ThriftHandler("execute_next_render_step", _execute_next_render_step, execute_next_render_step_args, execute_next_render_step_result))
     handle(p.tp, ThriftHandler("insert_data", _insert_data, insert_data_args, insert_data_result))
     handle(p.tp, ThriftHandler("checkpoint", _checkpoint, checkpoint_args, checkpoint_result))
-    handle(p.tp, ThriftHandler("get_table_descriptor", _get_table_descriptor, get_table_descriptor_args, get_table_descriptor_result))
-    handle(p.tp, ThriftHandler("get_row_descriptor", _get_row_descriptor, get_row_descriptor_args, get_row_descriptor_result))
     handle(p.tp, ThriftHandler("get_roles", _get_roles, get_roles_args, get_roles_result))
     handle(p.tp, ThriftHandler("get_db_objects_for_grantee", _get_db_objects_for_grantee, get_db_objects_for_grantee_args, get_db_objects_for_grantee_result))
     handle(p.tp, ThriftHandler("get_db_object_privs", _get_db_object_privs, get_db_object_privs_args, get_db_object_privs_result))
     handle(p.tp, ThriftHandler("get_all_roles_for_user", _get_all_roles_for_user, get_all_roles_for_user_args, get_all_roles_for_user_result))
+    handle(p.tp, ThriftHandler("has_role", _has_role, has_role_args, has_role_result))
     handle(p.tp, ThriftHandler("has_object_privilege", _has_object_privilege, has_object_privilege_args, has_object_privilege_result))
     handle(p.tp, ThriftHandler("set_license_key", _set_license_key, set_license_key_args, set_license_key_result))
     handle(p.tp, ThriftHandler("get_license_claims", _get_license_claims, get_license_claims_args, get_license_claims_result))
     handle(p.tp, ThriftHandler("get_device_parameters", _get_device_parameters, get_device_parameters_args, get_device_parameters_result))
-    handle(p.tp, ThriftHandler("register_runtime_udf", _register_runtime_udf, register_runtime_udf_args, register_runtime_udf_result))
+    handle(p.tp, ThriftHandler("register_runtime_extension_functions", _register_runtime_extension_functions, register_runtime_extension_functions_args, register_runtime_extension_functions_result))
     p
   end
 end # mutable struct MapDProcessor
@@ -1397,6 +1335,16 @@ function _connect(inp::connect_args)
     rethrow()
   end # try
 end #function _connect
+function _krb5_connect(inp::krb5_connect_args)
+  try
+    result = krb5_connect(inp.inputToken, inp.dbname)
+    return krb5_connect_result(result)
+  catch ex
+    exret = krb5_connect_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _krb5_connect
 function _disconnect(inp::disconnect_args)
   try
     disconnect(inp.session)
@@ -1729,46 +1677,6 @@ function _get_result_row_for_pixel(inp::get_result_row_for_pixel_args)
     rethrow()
   end # try
 end #function _get_result_row_for_pixel
-function _get_frontend_view(inp::get_frontend_view_args)
-  try
-    result = get_frontend_view(inp.session, inp.view_name)
-    return get_frontend_view_result(result)
-  catch ex
-    exret = get_frontend_view_result()
-    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-    rethrow()
-  end # try
-end #function _get_frontend_view
-function _get_frontend_views(inp::get_frontend_views_args)
-  try
-    result = get_frontend_views(inp.session)
-    return get_frontend_views_result(result)
-  catch ex
-    exret = get_frontend_views_result()
-    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-    rethrow()
-  end # try
-end #function _get_frontend_views
-function _create_frontend_view(inp::create_frontend_view_args)
-  try
-    create_frontend_view(inp.session, inp.view_name, inp.view_state, inp.image_hash, inp.view_metadata)
-    return create_frontend_view_result()
-  catch ex
-    exret = create_frontend_view_result()
-    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-    rethrow()
-  end # try
-end #function _create_frontend_view
-function _delete_frontend_view(inp::delete_frontend_view_args)
-  try
-    delete_frontend_view(inp.session, inp.view_name)
-    return delete_frontend_view_result()
-  catch ex
-    exret = delete_frontend_view_result()
-    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-    rethrow()
-  end # try
-end #function _delete_frontend_view
 function _get_dashboard(inp::get_dashboard_args)
   try
     result = get_dashboard(inp.session, inp.dashboard_id)
@@ -2009,16 +1917,16 @@ function _start_query(inp::start_query_args)
     rethrow()
   end # try
 end #function _start_query
-function _execute_first_step(inp::execute_first_step_args)
+function _execute_query_step(inp::execute_query_step_args)
   try
-    result = execute_first_step(inp.pending_query)
-    return execute_first_step_result(result)
+    result = execute_query_step(inp.pending_query)
+    return execute_query_step_result(result)
   catch ex
-    exret = execute_first_step_result()
+    exret = execute_query_step_result()
     isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
     rethrow()
   end # try
-end #function _execute_first_step
+end #function _execute_query_step
 function _broadcast_serialized_rows(inp::broadcast_serialized_rows_args)
   try
     broadcast_serialized_rows(inp.serialized_rows, inp.row_desc, inp.query_id)
@@ -2069,26 +1977,6 @@ function _checkpoint(inp::checkpoint_args)
     rethrow()
   end # try
 end #function _checkpoint
-function _get_table_descriptor(inp::get_table_descriptor_args)
-  try
-    result = get_table_descriptor(inp.session, inp.table_name)
-    return get_table_descriptor_result(result)
-  catch ex
-    exret = get_table_descriptor_result()
-    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-    rethrow()
-  end # try
-end #function _get_table_descriptor
-function _get_row_descriptor(inp::get_row_descriptor_args)
-  try
-    result = get_row_descriptor(inp.session, inp.table_name)
-    return get_row_descriptor_result(result)
-  catch ex
-    exret = get_row_descriptor_result()
-    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
-    rethrow()
-  end # try
-end #function _get_row_descriptor
 function _get_roles(inp::get_roles_args)
   try
     result = get_roles(inp.session)
@@ -2129,6 +2017,16 @@ function _get_all_roles_for_user(inp::get_all_roles_for_user_args)
     rethrow()
   end # try
 end #function _get_all_roles_for_user
+function _has_role(inp::has_role_args)
+  try
+    result = has_role(inp.session, inp.granteeName, inp.roleName)
+    return has_role_result(result)
+  catch ex
+    exret = has_role_result()
+    isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
+    rethrow()
+  end # try
+end #function _has_role
 function _has_object_privilege(inp::has_object_privilege_args)
   try
     result = has_object_privilege(inp.session, inp.granteeName, inp.ObjectName, inp.objectType, inp.permissions)
@@ -2161,7 +2059,7 @@ function _get_license_claims(inp::get_license_claims_args)
 end #function _get_license_claims
 function _get_device_parameters(inp::get_device_parameters_args)
   try
-    result = get_device_parameters()
+    result = get_device_parameters(inp.session)
     return get_device_parameters_result(result)
   catch ex
     exret = get_device_parameters_result()
@@ -2169,16 +2067,16 @@ function _get_device_parameters(inp::get_device_parameters_args)
     rethrow()
   end # try
 end #function _get_device_parameters
-function _register_runtime_udf(inp::register_runtime_udf_args)
+function _register_runtime_extension_functions(inp::register_runtime_extension_functions_args)
   try
-    register_runtime_udf(inp.session, inp.signatures, inp.device_ir_map)
-    return register_runtime_udf_result()
+    register_runtime_extension_functions(inp.session, inp.udfs, inp.udtfs, inp.device_ir_map)
+    return register_runtime_extension_functions_result()
   catch ex
-    exret = register_runtime_udf_result()
+    exret = register_runtime_extension_functions_result()
     isa(ex, TMapDException) && (set_field!(exret, :e, ex); return exret)
     rethrow()
   end # try
-end #function _register_runtime_udf
+end #function _register_runtime_extension_functions
 process(p::MapDProcessor, inp::TProtocol, outp::TProtocol) = process(p.tp, inp, outp)
 distribute(p::MapDProcessor) = distribute(p.tp)
 
@@ -2186,6 +2084,9 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # Server side methods to be defined by user:
 # function connect(user::String, passwd::String, dbname::String)
 #     # returns TSessionId
+#     # throws e::TMapDException
+# function krb5_connect(inputToken::String, dbname::String)
+#     # returns TKrb5Session
 #     # throws e::TMapDException
 # function disconnect(session::TSessionId)
 #     # returns nothing
@@ -2290,18 +2191,6 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function get_result_row_for_pixel(session::TSessionId, widget_id::Int64, pixel::TPixel, table_col_names::Dict{String,Vector{String}}, column_format::Bool, pixelRadius::Int32, nonce::String)
 #     # returns TPixelTableRowResult
 #     # throws e::TMapDException
-# function get_frontend_view(session::TSessionId, view_name::String)
-#     # returns TFrontendView
-#     # throws e::TMapDException
-# function get_frontend_views(session::TSessionId)
-#     # returns Vector{TFrontendView}
-#     # throws e::TMapDException
-# function create_frontend_view(session::TSessionId, view_name::String, view_state::String, image_hash::String, view_metadata::String)
-#     # returns nothing
-#     # throws e::TMapDException
-# function delete_frontend_view(session::TSessionId, view_name::String)
-#     # returns nothing
-#     # throws e::TMapDException
 # function get_dashboard(session::TSessionId, dashboard_id::Int32)
 #     # returns TDashboard
 #     # throws e::TMapDException
@@ -2374,7 +2263,7 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function start_query(session::TSessionId, query_ra::String, just_explain::Bool)
 #     # returns TPendingQuery
 #     # throws e::TMapDException
-# function execute_first_step(pending_query::TPendingQuery)
+# function execute_query_step(pending_query::TPendingQuery)
 #     # returns TStepResult
 #     # throws e::TMapDException
 # function broadcast_serialized_rows(serialized_rows::TSerializedRows, row_desc::TRowDescriptor, query_id::TQueryId)
@@ -2392,12 +2281,6 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function checkpoint(session::TSessionId, db_id::Int32, table_id::Int32)
 #     # returns nothing
 #     # throws e::TMapDException
-# function get_table_descriptor(session::TSessionId, table_name::String)
-#     # returns TTableDescriptor
-#     # throws e::TMapDException
-# function get_row_descriptor(session::TSessionId, table_name::String)
-#     # returns TRowDescriptor
-#     # throws e::TMapDException
 # function get_roles(session::TSessionId)
 #     # returns Vector{String}
 #     # throws e::TMapDException
@@ -2410,6 +2293,9 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function get_all_roles_for_user(session::TSessionId, userName::String)
 #     # returns Vector{String}
 #     # throws e::TMapDException
+# function has_role(session::TSessionId, granteeName::String, roleName::String)
+#     # returns Bool
+#     # throws e::TMapDException
 # function has_object_privilege(session::TSessionId, granteeName::String, ObjectName::String, objectType::Int32, permissions::TDBObjectPermissions)
 #     # returns Bool
 #     # throws e::TMapDException
@@ -2419,10 +2305,10 @@ distribute(p::MapDProcessor) = distribute(p.tp)
 # function get_license_claims(session::TSessionId, nonce::String)
 #     # returns TLicenseInfo
 #     # throws e::TMapDException
-# function get_device_parameters()
+# function get_device_parameters(session::TSessionId)
 #     # returns Dict{String,String}
 #     # throws e::TMapDException
-# function register_runtime_udf(session::TSessionId, signatures::String, device_ir_map::Dict{String,String})
+# function register_runtime_extension_functions(session::TSessionId, udfs::Vector{TUserDefinedFunction}, udtfs::Vector{TUserDefinedTableFunction}, device_ir_map::Dict{String,String})
 #     # returns nothing
 #     # throws e::TMapDException
 
@@ -2456,6 +2342,28 @@ function connect(c::MapDClientBase, user::String, passwd::String, dbname::String
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function connect
+
+# Client callable method for krb5_connect
+function krb5_connect(c::MapDClientBase, inputToken::String, dbname::String)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "krb5_connect", Thrift.MessageType.CALL, c.seqid)
+  inp = krb5_connect_args()
+  Thrift.set_field!(inp, :inputToken, inputToken)
+  Thrift.set_field!(inp, :dbname, dbname)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, krb5_connect_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+end # function krb5_connect
 
 # Client callable method for disconnect
 function disconnect(c::MapDClientBase, session::TSessionId)
@@ -3219,94 +3127,6 @@ function get_result_row_for_pixel(c::MapDClientBase, session::TSessionId, widget
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_result_row_for_pixel
 
-# Client callable method for get_frontend_view
-function get_frontend_view(c::MapDClientBase, session::TSessionId, view_name::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_frontend_view", Thrift.MessageType.CALL, c.seqid)
-  inp = get_frontend_view_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :view_name, view_name)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-  
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_frontend_view_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_frontend_view
-
-# Client callable method for get_frontend_views
-function get_frontend_views(c::MapDClientBase, session::TSessionId)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_frontend_views", Thrift.MessageType.CALL, c.seqid)
-  inp = get_frontend_views_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-  
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_frontend_views_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_frontend_views
-
-# Client callable method for create_frontend_view
-function create_frontend_view(c::MapDClientBase, session::TSessionId, view_name::String, view_state::String, image_hash::String, view_metadata::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "create_frontend_view", Thrift.MessageType.CALL, c.seqid)
-  inp = create_frontend_view_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :view_name, view_name)
-  Thrift.set_field!(inp, :view_state, view_state)
-  Thrift.set_field!(inp, :image_hash, image_hash)
-  Thrift.set_field!(inp, :view_metadata, view_metadata)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-  
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, create_frontend_view_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function create_frontend_view
-
-# Client callable method for delete_frontend_view
-function delete_frontend_view(c::MapDClientBase, session::TSessionId, view_name::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "delete_frontend_view", Thrift.MessageType.CALL, c.seqid)
-  inp = delete_frontend_view_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :view_name, view_name)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-  
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, delete_frontend_view_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  nothing
-end # function delete_frontend_view
-
 # Client callable method for get_dashboard
 function get_dashboard(c::MapDClientBase, session::TSessionId, dashboard_id::Int32)
   p = c.p
@@ -3857,12 +3677,12 @@ function start_query(c::MapDClientBase, session::TSessionId, query_ra::String, j
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function start_query
 
-# Client callable method for execute_first_step
-function execute_first_step(c::MapDClientBase, pending_query::TPendingQuery)
+# Client callable method for execute_query_step
+function execute_query_step(c::MapDClientBase, pending_query::TPendingQuery)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "execute_first_step", Thrift.MessageType.CALL, c.seqid)
-  inp = execute_first_step_args()
+  Thrift.writeMessageBegin(p, "execute_query_step", Thrift.MessageType.CALL, c.seqid)
+  inp = execute_query_step_args()
   Thrift.set_field!(inp, :pending_query, pending_query)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
@@ -3870,13 +3690,13 @@ function execute_first_step(c::MapDClientBase, pending_query::TPendingQuery)
   
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, execute_first_step_result())
+  outp = Thrift.read(p, execute_query_step_result())
   Thrift.readMessageEnd(p)
   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
   Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function execute_first_step
+end # function execute_query_step
 
 # Client callable method for broadcast_serialized_rows
 function broadcast_serialized_rows(c::MapDClientBase, serialized_rows::TSerializedRows, row_desc::TRowDescriptor, query_id::TQueryId)
@@ -3989,50 +3809,6 @@ function checkpoint(c::MapDClientBase, session::TSessionId, db_id::Int32, table_
   nothing
 end # function checkpoint
 
-# Client callable method for get_table_descriptor
-function get_table_descriptor(c::MapDClientBase, session::TSessionId, table_name::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_table_descriptor", Thrift.MessageType.CALL, c.seqid)
-  inp = get_table_descriptor_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :table_name, table_name)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-  
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_table_descriptor_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_table_descriptor
-
-# Client callable method for get_row_descriptor
-function get_row_descriptor(c::MapDClientBase, session::TSessionId, table_name::String)
-  p = c.p
-  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "get_row_descriptor", Thrift.MessageType.CALL, c.seqid)
-  inp = get_row_descriptor_args()
-  Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :table_name, table_name)
-  Thrift.write(p, inp)
-  Thrift.writeMessageEnd(p)
-  Thrift.flush(p.t)
-  
-  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
-  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, get_row_descriptor_result())
-  Thrift.readMessageEnd(p)
-  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
-  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
-  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
-  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
-end # function get_row_descriptor
-
 # Client callable method for get_roles
 function get_roles(c::MapDClientBase, session::TSessionId)
   p = c.p
@@ -4121,6 +3897,29 @@ function get_all_roles_for_user(c::MapDClientBase, session::TSessionId, userName
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_all_roles_for_user
 
+# Client callable method for has_role
+function has_role(c::MapDClientBase, session::TSessionId, granteeName::String, roleName::String)
+  p = c.p
+  c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
+  Thrift.writeMessageBegin(p, "has_role", Thrift.MessageType.CALL, c.seqid)
+  inp = has_role_args()
+  Thrift.set_field!(inp, :session, session)
+  Thrift.set_field!(inp, :granteeName, granteeName)
+  Thrift.set_field!(inp, :roleName, roleName)
+  Thrift.write(p, inp)
+  Thrift.writeMessageEnd(p)
+  Thrift.flush(p.t)
+  
+  (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
+  (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
+  outp = Thrift.read(p, has_role_result())
+  Thrift.readMessageEnd(p)
+  (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
+  Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
+  Thrift.has_field(outp, :success) && (return Thrift.get_field(outp, :success))
+  throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
+end # function has_role
+
 # Client callable method for has_object_privilege
 function has_object_privilege(c::MapDClientBase, session::TSessionId, granteeName::String, ObjectName::String, objectType::Int32, permissions::TDBObjectPermissions)
   p = c.p
@@ -4192,11 +3991,12 @@ function get_license_claims(c::MapDClientBase, session::TSessionId, nonce::Strin
 end # function get_license_claims
 
 # Client callable method for get_device_parameters
-function get_device_parameters(c::MapDClientBase)
+function get_device_parameters(c::MapDClientBase, session::TSessionId)
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
   Thrift.writeMessageBegin(p, "get_device_parameters", Thrift.MessageType.CALL, c.seqid)
   inp = get_device_parameters_args()
+  Thrift.set_field!(inp, :session, session)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
   Thrift.flush(p.t)
@@ -4211,14 +4011,15 @@ function get_device_parameters(c::MapDClientBase)
   throw(Thrift.TApplicationException(Thrift.ApplicationExceptionType.MISSING_RESULT, "retrieve failed: unknown result"))
 end # function get_device_parameters
 
-# Client callable method for register_runtime_udf
-function register_runtime_udf(c::MapDClientBase, session::TSessionId, signatures::String, device_ir_map::Dict{String,String})
+# Client callable method for register_runtime_extension_functions
+function register_runtime_extension_functions(c::MapDClientBase, session::TSessionId, udfs::Vector{TUserDefinedFunction}, udtfs::Vector{TUserDefinedTableFunction}, device_ir_map::Dict{String,String})
   p = c.p
   c.seqid = (c.seqid < (2^31-1)) ? (c.seqid+1) : 0
-  Thrift.writeMessageBegin(p, "register_runtime_udf", Thrift.MessageType.CALL, c.seqid)
-  inp = register_runtime_udf_args()
+  Thrift.writeMessageBegin(p, "register_runtime_extension_functions", Thrift.MessageType.CALL, c.seqid)
+  inp = register_runtime_extension_functions_args()
   Thrift.set_field!(inp, :session, session)
-  Thrift.set_field!(inp, :signatures, signatures)
+  Thrift.set_field!(inp, :udfs, udfs)
+  Thrift.set_field!(inp, :udtfs, udtfs)
   Thrift.set_field!(inp, :device_ir_map, device_ir_map)
   Thrift.write(p, inp)
   Thrift.writeMessageEnd(p)
@@ -4226,10 +4027,10 @@ function register_runtime_udf(c::MapDClientBase, session::TSessionId, signatures
   
   (fname, mtype, rseqid) = Thrift.readMessageBegin(p)
   (mtype == Thrift.MessageType.EXCEPTION) && throw(Thrift.read(p, Thrift.TApplicationException()))
-  outp = Thrift.read(p, register_runtime_udf_result())
+  outp = Thrift.read(p, register_runtime_extension_functions_result())
   Thrift.readMessageEnd(p)
   (rseqid != c.seqid) && throw(Thrift.TApplicationException(ApplicationExceptionType.BAD_SEQUENCE_ID, "response sequence id $rseqid did not match request ($(c.seqid))"))
   Thrift.has_field(outp, :e) && throw(Thrift.get_field(outp, :e))
   nothing
-end # function register_runtime_udf
+end # function register_runtime_extension_functions
 
