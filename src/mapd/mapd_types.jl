@@ -76,9 +76,10 @@ const TDBObjectType = _enum_TDBObjectType(Int32(0), Int32(1), Int32(2), Int32(3)
 
 const TSessionId = String
 
-const TQueryId = Int64
+const TKrb5Token = String
 
 #const TRenderPassMap = Dict{Int32,TRawRenderPassDataResult}
+const TQueryId = Int64
 
 # const TRenderAggDataMap = Dict{String,Dict{String,Dict{String,Dict{String,Vector{TRenderDatum}}}}}
 
@@ -182,6 +183,12 @@ mutable struct TStringRow <: Thrift.TMsg
   cols::Vector{TStringValue}
   TStringRow() = (o=new(); fillunset(o); o)
 end # mutable struct TStringRow
+
+mutable struct TKrb5Session <: Thrift.TMsg
+  sessionId::TSessionId
+  krbToken::TKrb5Token
+  TKrb5Session() = (o=new(); fillunset(o); o)
+end # mutable struct TKrb5Session
 
 mutable struct TStepResult <: Thrift.TMsg
   serialized_rows::TSerializedRows
@@ -566,6 +573,7 @@ mutable struct TDBObject <: Thrift.TMsg
   objectType::Int32
   privs::Vector{Bool}
   grantee::String
+  privilegeObjectType::Int32
   TDBObject() = (o=new(); fillunset(o); o)
 end # mutable struct TDBObject
 
