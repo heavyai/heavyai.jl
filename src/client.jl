@@ -426,7 +426,7 @@ julia> create_table(conn, "test", df)
 ```
 
 """
-function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame;
+function create_table(conn::OmniSciConnection, table_name::String, tbl_obj;
                       dryrun::Bool = false, precision::Tuple{Int,Int} = (0,0))
 
     #Only assert if default value changed; check for decimal column in df later
@@ -439,14 +439,14 @@ function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame
         #TODO: check if Decimal column in dataframe and precision = (0,0), throw warning
         #Or throw error telling to set precision
         for x in [DecFP.Dec32, DecFP.Dec64, DecFP.Dec128, Decimals.Decimal]
-            @assert !(x in eltypes(df)) "Decimal column(s) detected. Please change 'precision' value from (0,0)"
+            @assert !(x in eltypes(tbl_obj)) "Decimal column(s) detected. Please change 'precision' value from (0,0)"
         end
     end
 
     io = IOBuffer()
     write(io, "create table $table_name ( \n")
 
-    for x in zip(names(df), eltypes(df))
+    for x in zip(names(tbl_obj), eltypes(tbl_obj))
         write(io, "  " * sanitizecolnames(x[1]) * " ") # function sanitizecolnames would need to
         write(io, "  " * getsqlcoltype(x[2], precision) * ",\n") # lookup to convert julia types to OmniSci types
     end
