@@ -237,7 +237,7 @@ function TStringRow(cols::Vector{TStringValue})
 end
 
 TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
-TStringRow(cols::DataFrameRow{DataFrame}) = TStringRow([TStringValue(x) for x in cols])
+TStringRow(cols) = TStringRow([TStringValue(x) for x in cols]) #Tables.jl method
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
 

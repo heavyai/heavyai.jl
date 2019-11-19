@@ -388,9 +388,9 @@ load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}
     load_table(conn.c, conn.session, table_name, rows)
 
 """
-    load_table(conn::OmniSciConnection, table_name::String, rows::DataFrame)
+    load_table(conn::OmniSciConnection, table_name::String, rows)
 
-Load a dataframe into OmniSci. This method loads data row-wise, converting data elements to string before upload.
+Load a Tables.jl table into OmniSci. This method loads data row-wise, converting data elements to string before upload.
 Currently, this method requires the table to already exist on OmniSci.
 
 # Examples
@@ -399,10 +399,10 @@ julia> load_table(conn, "test", df)
 ```
 
 """
-function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
+function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
-    df_to_array = [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]
-    load_table(conn, table_name, df_to_array)
+    tbl_to_array = [OmniSci.TStringRow(x) for x in Tables.rowtable(tbl_obj)]
+    load_table(conn, table_name, tbl_to_array)
 
 end
 
