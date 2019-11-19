@@ -401,7 +401,7 @@ julia> load_table(conn, "test", df)
 """
 function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
-    tbl_to_array = [OmniSci.TStringRow(x) for x in Tables.rowtable(tbl_obj)]
+    tbl_to_array = [OmniSci.TStringRow(x) for x in Tables.rows(tbl_obj)]
     load_table(conn, table_name, tbl_to_array)
 
 end
