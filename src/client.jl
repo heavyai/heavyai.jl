@@ -367,11 +367,15 @@ load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Ve
     load_table_binary_columnar(conn.c, conn.session, table_name, cols)
 
 """
-    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, df::DataFrame)
+    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
+
+Load a Tables.jl table into OmniSci. This method loads data column-wise, and should be
+used instead of `load_table` unless you encounter an error, as the load should be considerably faster.
+Currently, this method requires the table to already exist on OmniSci.
 
 """
-load_table_binary_columnar(conn::OmniSciConnection, table_name::String, df::DataFrame) =
-    load_table_binary_columnar(conn, table_name, TColumn.(eachcol(df)))
+load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj) =
+    load_table_binary_columnar(conn, table_name, TColumn.(Tables.eachcolumn(tbl_obj)))
 
 """
     load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
@@ -388,9 +392,9 @@ load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}
     load_table(conn.c, conn.session, table_name, rows)
 
 """
-    load_table(conn::OmniSciConnection, table_name::String, rows::DataFrame)
+    load_table(conn::OmniSciConnection, table_name::String, rows)
 
-Load a dataframe into OmniSci. This method loads data row-wise, converting data elements to string before upload.
+Load a Tables.jl table into OmniSci. This method loads data row-wise, converting data elements to string before upload.
 Currently, this method requires the table to already exist on OmniSci.
 
 # Examples
@@ -399,10 +403,10 @@ julia> load_table(conn, "test", df)
 ```
 
 """
-function load_table(conn::OmniSciConnection, table_name::String, df::DataFrame)
+function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
-    df_to_array = [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]
-    load_table(conn, table_name, df_to_array)
+    tbl_to_array = [OmniSci.TStringRow(x) for x in Tables.rows(tbl_obj)]
+    load_table(conn, table_name, tbl_to_array)
 
 end
 
@@ -422,7 +426,7 @@ julia> create_table(conn, "test", df)
 ```
 
 """
-function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame;
+function create_table(conn::OmniSciConnection, table_name::String, tbl_obj;
                       dryrun::Bool = false, precision::Tuple{Int,Int} = (0,0))
 
     #Only assert if default value changed; check for decimal column in df later
@@ -435,14 +439,14 @@ function create_table(conn::OmniSciConnection, table_name::String, df::DataFrame
         #TODO: check if Decimal column in dataframe and precision = (0,0), throw warning
         #Or throw error telling to set precision
         for x in [DecFP.Dec32, DecFP.Dec64, DecFP.Dec128, Decimals.Decimal]
-            @assert !(x in eltypes(df)) "Decimal column(s) detected. Please change 'precision' value from (0,0)"
+            @assert !(x in eltypes(tbl_obj)) "Decimal column(s) detected. Please change 'precision' value from (0,0)"
         end
     end
 
     io = IOBuffer()
     write(io, "create table $table_name ( \n")
 
-    for x in zip(names(df), eltypes(df))
+    for x in zip(names(tbl_obj), eltypes(tbl_obj))
         write(io, "  " * sanitizecolnames(x[1]) * " ") # function sanitizecolnames would need to
         write(io, "  " * getsqlcoltype(x[2], precision) * ",\n") # lookup to convert julia types to OmniSci types
     end
