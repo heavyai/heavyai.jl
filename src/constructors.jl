@@ -248,7 +248,6 @@ function TColumn(x::AbstractVector{<:AbstractVector{T}}) where T #array of array
 
     #Create TColumnData for the arr_col, which is a Vector{TColumn}
     tcd = TColumnData()
-
     Thrift.set_field!(tcd, :arr_col, TColumn.(x))
 
     #Complete TColumn
