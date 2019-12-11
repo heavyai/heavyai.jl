@@ -240,6 +240,23 @@ TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
 TStringRow(cols) = TStringRow([TStringValue(x) for x in Tables.eachcolumn(cols)]) #Tables.jl method
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
+function TColumn(x::AbstractVector{<:AbstractVector{T}}) where T #array of arrays
+
+    #Create TColumn, fill nulls column by checking for missingness
+    tc = TColumn()
+    Thrift.set_field!(tc, :nulls, convert(Vector{Bool}, ismissing.(x)))
+
+    #Create TColumnData for the arr_col, which is a Vector{TColumn}
+    tcd = TColumnData()
+
+    Thrift.set_field!(tcd, :arr_col, TColumn.(x))
+
+    #Complete TColumn
+    Thrift.set_field!(tc, :data, tcd)
+
+    return tc
+end
+
 
 function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{Int8, Int16, Int32, Int64}
 

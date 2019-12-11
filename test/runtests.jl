@@ -340,7 +340,13 @@ end
    #load data rowwise from Vector{TStringRow}
    @test load_table(conn, "test_array", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
 
-   #TODO: Write tests once https://github.com/omnisci/OmniSci.jl/issues/53 solved
+   #load arrays columnar
+   @test load_table_binary_columnar(conn, "test_array", df) == nothing
+
+   #Tests for arrays indirect due to issue querying. Test based on known properties
+   #Write proper tests once https://github.com/omnisci/OmniSci.jl/issues/53 solved
+   @test sql_execute(conn, "select count(*) as records from test_array")[!, :records][1] == 12
+
 end
 
 @testset "sql_execute with decimal column" begin
