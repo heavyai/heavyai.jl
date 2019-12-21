@@ -58,7 +58,7 @@ end
    se = sql_execute(conn, "select * from omnisci_counties")
    @test typeof(se) == DataFrame
    @test size(se) == (3250, 6)
-   @test eltypes(se) ==  [Union{Missing, String},
+   @test eltype.(eachcol(se)) ==  [Union{Missing, String},
                           Union{Missing, String},
                           Union{Missing, String},
                           Union{Missing, String},

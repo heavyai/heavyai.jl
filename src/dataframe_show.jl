@@ -11,7 +11,7 @@ function DataFrame(x::TQueryResult)
 
     #convert to DataFrame
     df = DataFrame(mergecols)
-    names!(df, Symbol.(colnames))
+    rename!(df, Symbol.(colnames))
 
     return df
 
