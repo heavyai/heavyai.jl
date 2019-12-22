@@ -7,7 +7,7 @@ Connect to an OmniSci database.
 
 # Examples
 ```julia-repl
-julia> conn = connect("localhost", 6274, "mapd", "HyperInteractive", "mapd")
+julia> conn = connect("localhost", 6274, "admin", "HyperInteractive", "omnisci")
 Connected to localhost:6274
 ```
 """

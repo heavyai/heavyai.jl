@@ -1,9 +1,9 @@
 module OmniSci
 
-using Thrift, Random, Sockets, Distributed, DataFrames, Dates, DecFP, GeoInterface, LibGEOS, Decimals, Tables
+using Thrift, Random, Sockets, Dates, DecFP, GeoInterface, LibGEOS, Decimals, Tables
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Base: show, convert
-import DataFrames: DataFrame
+import DataFrames: DataFrame, rename!
 
 #### types and enums ####
 export TDatum, TColumn, TExecuteMode
