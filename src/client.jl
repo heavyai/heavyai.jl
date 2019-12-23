@@ -23,9 +23,9 @@ function connect(host::String, port::Int, user::String, passwd::String, dbname::
     Thrift.set_field!(socket, :io, tcp)
     #transport = TBufferedTransport(socket) # https://github.com/tanmaykm/Thrift.jl/issues/12
     proto = TBinaryProtocol(socket, false, true)
-    c = OmniSci.MapDClient(proto)
+    c = MapDClient(proto)
 
-    session = OmniSci.connect(c, user, passwd, dbname)
+    session = connect(c, user, passwd, dbname)
 
     return OmniSciConnection(session, c)
 
@@ -405,7 +405,7 @@ julia> load_table(conn, "test", df)
 """
 function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
-    tbl_to_array = [OmniSci.TStringRow(x) for x in rows(tbl_obj)]
+    tbl_to_array = [TStringRow(x) for x in rows(tbl_obj)]
     load_table(conn, table_name, tbl_to_array)
 
 end
