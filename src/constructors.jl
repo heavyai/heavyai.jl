@@ -175,7 +175,7 @@ end
 #Left as keyword just in case my assumption incorrect
 
 # convert vectors to string representations for atomic types only
-function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Missing}}, is_null::Bool = false)
+function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Missing}})
   val = TStringValue()
 
   #Write values into buffer to avoid any weird display issues
@@ -196,29 +196,22 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
   p = String(take!(io))
 
   Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
+  Thrift.set_field!(val, :is_null, false)
   return val
 end
 
-function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{AbstractLineString, AbstractPoint, AbstractPolygon, AbstractMultiPolygon}
+function TStringValue(str_val::T) where T <: Union{AbstractLineString, AbstractPoint, AbstractPolygon, AbstractMultiPolygon}
   val = TStringValue()
   p = wkt(str_val)
   Thrift.set_field!(val, :str_val, p)
-  Thrift.set_field!(val, :is_null, is_null)
+  Thrift.set_field!(val, :is_null, false)
   return val
 end
 
-function TStringValue(str_val::Rational, is_null::Bool = false)
+function TStringValue(str_val::Rational)
   val = TStringValue()
   Thrift.set_field!(val, :str_val, string(convert(Float64, str_val)))
-  Thrift.set_field!(val, :is_null, is_null)
-  return val
-end
-
-function TStringValue(str_val::T, is_null::Bool = true) where T <: Union{Missing, Nothing}
-  val = TStringValue()
-  Thrift.set_field!(val, :str_val, string(str_val))
-  Thrift.set_field!(val, :is_null, is_null)
+  Thrift.set_field!(val, :is_null, false)
   return val
 end
 
@@ -229,6 +222,7 @@ function TStringValue(str_val, is_null::Bool = false)
   Thrift.set_field!(val, :is_null, is_null)
   return val
 end
+TStringValue(str_val::T) where T <: Union{Missing, Nothing} = TStringValue(str_val, true)
 
 function TStringRow(cols::Vector{TStringValue})
     tsr = TStringRow()
@@ -359,5 +353,4 @@ TColumn(x::AbstractVector{<:Union{Missing, DateTime}}) = TColumn(myInt64.(mydate
 TColumn(x::AbstractVector{<:Union{Missing, Time}}) = TColumn(seconds_since_midnight.(x))
 
 #Before OmniSci 4.4, Dates were specified in epoch seconds
-#TODO: consider making a warning about data loading?
 TColumn(x::AbstractVector{<:Union{Missing, Date}}) = TColumn(myDateTime.(x))
