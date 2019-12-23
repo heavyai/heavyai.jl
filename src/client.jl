@@ -16,7 +16,7 @@ function connect(host::String, port::Int, user::String, passwd::String, dbname::
     socket = TSocket(host, port)
 
     #create libuv socket and keep-alive
-    tcp = Sockets.connect(host, port)
+    tcp = connect(host, port) #connect from Sockets library
     err = ccall(:uv_tcp_keepalive, Cint, (Ptr{Nothing}, Cint, Cuint), tcp.handle, 1, 1)
     err != 0 && error("Error setting keepalive on socket")
 
@@ -375,7 +375,7 @@ Currently, this method requires the table to already exist on OmniSci.
 
 """
 load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj) =
-    load_table_binary_columnar(conn, table_name, TColumn.(Tables.eachcolumn(tbl_obj)))
+    load_table_binary_columnar(conn, table_name, TColumn.(eachcolumn(tbl_obj)))
 
 """
     load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
@@ -405,7 +405,7 @@ julia> load_table(conn, "test", df)
 """
 function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
-    tbl_to_array = [OmniSci.TStringRow(x) for x in Tables.rows(tbl_obj)]
+    tbl_to_array = [OmniSci.TStringRow(x) for x in rows(tbl_obj)]
     load_table(conn, table_name, tbl_to_array)
 
 end
@@ -438,15 +438,15 @@ function create_table(conn::OmniSciConnection, table_name::String, tbl_obj;
     else
         #TODO: check if Decimal column in dataframe and precision = (0,0), throw warning
         #Or throw error telling to set precision
-        for x in [DecFP.Dec32, DecFP.Dec64, DecFP.Dec128, Decimals.Decimal]
-            @assert !(x in Tables.schema(tbl_obj).types) "Decimal column(s) detected. Please change 'precision' value from (0,0)"
+        for x in [Dec32, Dec64, Dec128, Decimal]
+            @assert !(x in schema(tbl_obj).types) "Decimal column(s) detected. Please change 'precision' value from (0,0)"
         end
     end
 
     io = IOBuffer()
     write(io, "create table $table_name ( \n")
 
-    for x in zip(Tables.schema(tbl_obj).names, Tables.schema(tbl_obj).types)
+    for x in zip(schema(tbl_obj).names, schema(tbl_obj).types)
         write(io, "  " * sanitizecolnames(x[1]) * " ") # function sanitizecolnames would need to
         write(io, "  " * getsqlcoltype(x[2], precision) * ",\n") # lookup to convert julia types to OmniSci types
     end
