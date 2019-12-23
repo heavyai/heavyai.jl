@@ -38,7 +38,7 @@ myInt64(x::Missing) = missing
 myInt64(x) = Int64(x)
 
 #Find which field in the struct the data actually is
-function findvalues(x::OmniSci.TColumn)
+function findvalues(x::TColumn)
     for f in propertynames(x.data)
         n = length(getfield(x.data, f))
         if n > 0
@@ -176,7 +176,7 @@ end
 
 # convert vectors to string representations for atomic types only
 function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Missing}}, is_null::Bool = false)
-  val = OmniSci.TStringValue()
+  val = TStringValue()
 
   #Write values into buffer to avoid any weird display issues
   io = IOBuffer()
@@ -201,7 +201,7 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
 end
 
 function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{AbstractLineString, AbstractPoint, AbstractPolygon, AbstractMultiPolygon}
-  val = OmniSci.TStringValue()
+  val = TStringValue()
   p = wkt(str_val)
   Thrift.set_field!(val, :str_val, p)
   Thrift.set_field!(val, :is_null, is_null)
@@ -209,14 +209,14 @@ function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{Abstra
 end
 
 function TStringValue(str_val::Rational, is_null::Bool = false)
-  val = OmniSci.TStringValue()
+  val = TStringValue()
   Thrift.set_field!(val, :str_val, string(convert(Float64, str_val)))
   Thrift.set_field!(val, :is_null, is_null)
   return val
 end
 
 function TStringValue(str_val::T, is_null::Bool = true) where T <: Union{Missing, Nothing}
-  val = OmniSci.TStringValue()
+  val = TStringValue()
   Thrift.set_field!(val, :str_val, string(str_val))
   Thrift.set_field!(val, :is_null, is_null)
   return val
@@ -224,14 +224,14 @@ end
 
 #generic fallback for any type serializable with string()
 function TStringValue(str_val, is_null::Bool = false)
-  val = OmniSci.TStringValue()
+  val = TStringValue()
   Thrift.set_field!(val, :str_val, string(str_val))
   Thrift.set_field!(val, :is_null, is_null)
   return val
 end
 
 function TStringRow(cols::Vector{TStringValue})
-    tsr = OmniSci.TStringRow()
+    tsr = TStringRow()
     Thrift.set_field!(tsr, :cols, cols)
     return tsr
 end
