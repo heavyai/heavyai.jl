@@ -45,10 +45,10 @@ function getcolumntype(x::Int32)
              10 => Bool,  #BOOL
              11 => String,  #INTERVAL_DAY_TIME
              12 => String,  #INTERVAL_YEAR_MONTH
-             13 => GeoInterface.Point,  #POINT
-             14 => GeoInterface.LineString,  #LINESTRING
-             15 => GeoInterface.Polygon,  #POLYGON
-             16 => GeoInterface.MultiPolygon,  #MULTIPOLYGON
+             13 => Point,  #POINT
+             14 => LineString,  #LINESTRING
+             15 => Polygon,  #POLYGON
+             16 => MultiPolygon,  #MULTIPOLYGON
              17 => Int8,  #TINYINT
              18 => String,  #GEOMETRY
              19 => String  #GEOGRAPHY

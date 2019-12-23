@@ -7,21 +7,21 @@ mutable struct OmniSciConnection
 end
 
 #convert methods implicitly needed for squashbitmask
-convert(::Type{DateTime}, x::Int64) =  Dates.unix2datetime(x)
-convert(::Type{Date}, x::Int64) =  Date(Dates.unix2datetime(x))
+convert(::Type{DateTime}, x::Int64) = unix2datetime(x)
+convert(::Type{Date}, x::Int64) =  Date(unix2datetime(x))
 convert(::Type{Time}, x::Int64) = Time(x/3600, x % 3600)
 
 #conversions from WKT to GeoInterface types, to get typed df from sql_execute
-convert(::Type{GeoInterface.Point}, x::String) = GeoInterface.Point(LibGEOS.readgeom(x))
-convert(::Type{GeoInterface.LineString}, x::String) = GeoInterface.LineString(LibGEOS.readgeom(x))
-convert(::Type{GeoInterface.Polygon}, x::String) = GeoInterface.Polygon(LibGEOS.readgeom(x))
-convert(::Type{GeoInterface.MultiPolygon}, x::String) = GeoInterface.MultiPolygon(LibGEOS.readgeom(x))
+convert(::Type{Point}, x::String) = Point(readgeom(x))
+convert(::Type{LineString}, x::String) = LineString(readgeom(x))
+convert(::Type{Polygon}, x::String) = Polygon(readgeom(x))
+convert(::Type{MultiPolygon}, x::String) = MultiPolygon(readgeom(x))
 
 #WKT from LibGEOS types
-wkt(x::GeoInterface.AbstractPoint) =  writegeom(LibGEOS.Point(x))
-wkt(x::GeoInterface.AbstractLineString) = writegeom(LibGEOS.LineString(x))
-wkt(x::GeoInterface.AbstractPolygon) = writegeom(LibGEOS.Polygon(x))
-wkt(x::GeoInterface.AbstractMultiPolygon) = writegeom(LibGEOS.MultiPolygon(x))
+wkt(x::AbstractPoint) =  writegeom(LibGEOS.Point(x))
+wkt(x::AbstractLineString) = writegeom(LibGEOS.LineString(x))
+wkt(x::AbstractPolygon) = writegeom(LibGEOS.Polygon(x))
+wkt(x::AbstractMultiPolygon) = writegeom(LibGEOS.MultiPolygon(x))
 wkt(x::T) where T <: Union{String, Missing} = ""
 
 #Define these methods to avoid type piracy
@@ -29,10 +29,10 @@ myDateTime(x::Missing) = missing
 myDateTime(x) = DateTime(x)
 
 mydatetime2unix(x::Missing) = missing
-mydatetime2unix(x) = datetime2unix(floor(x, Dates.Second))
+mydatetime2unix(x) = datetime2unix(floor(x, Second))
 
 epochdays(x::Missing) = missing
-epochdays(x) = (x - Dates.Date("1970-01-01")).value
+epochdays(x) = (x - Date("1970-01-01")).value
 
 myInt64(x::Missing) = missing
 myInt64(x) = Int64(x)
@@ -120,14 +120,14 @@ function getsqlcoltype(x, precision::Tuple{Int, Int})
         Union{Missing, DateTime} => "TIMESTAMP",
         DateTime => "TIMESTAMP",
         #geospatial
-        Union{Missing, GeoInterface.Point} => "POINT",
-        GeoInterface.Point => "POINT",
-        Union{Missing, GeoInterface.LineString} => "LINESTRING",
-        GeoInterface.LineString => "LINESTRING",
-        Union{Missing, GeoInterface.Polygon} => "POLYGON",
-        GeoInterface.Polygon => "POLYGON",
-        Union{Missing, GeoInterface.MultiPolygon} => "MULTIPOLYGON",
-        GeoInterface.MultiPolygon => "MULTIPOLYGON",
+        Union{Missing, Point} => "POINT",
+        Point => "POINT",
+        Union{Missing, LineString} => "LINESTRING",
+        LineString => "LINESTRING",
+        Union{Missing, Polygon} => "POLYGON",
+        Polygon => "POLYGON",
+        Union{Missing, MultiPolygon} => "MULTIPOLYGON",
+        MultiPolygon => "MULTIPOLYGON",
         #arrays
         Array{Union{Missing, Int8},1} => "TINYINT[]",
         Array{Int8,1} => "TINYINT[]",
@@ -151,15 +151,15 @@ function getsqlcoltype(x, precision::Tuple{Int, Int})
         Array{Union{Missing, DateTime},1} => "TIMESTAMP[]",
         Array{DateTime,1} => "TIMESTAMP[]",
         #DecFP
-        Union{DecFP.Dec32, Missing} => dec,
-        DecFP.Dec32 => dec,
-        Union{DecFP.Dec64, Missing} => dec,
-        DecFP.Dec64 => dec,
-        Union{DecFP.Dec128, Missing} => dec,
-        DecFP.Dec128 => dec,
+        Union{Dec32, Missing} => dec,
+        Dec32 => dec,
+        Union{Dec64, Missing} => dec,
+        Dec64 => dec,
+        Union{Dec128, Missing} => dec,
+        Dec128 => dec,
         #Decimals.jl
-        Union{Decimals.Decimal, Missing} => dec,
-        Decimals.Decimal => dec,
+        Union{Decimal, Missing} => dec,
+        Decimal => dec,
         #missing: default to TEXT ENCODING DICT as design decision
         #https://github.com/omnisci/OmniSci.jl/issues/76
         Missing => "TEXT ENCODING DICT"
@@ -200,7 +200,7 @@ function TStringValue(str_val::Vector{<:Union{Real, String, Char, TimeType, Miss
   return val
 end
 
-function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{GeoInterface.AbstractLineString, GeoInterface.AbstractPoint, GeoInterface.AbstractPolygon, GeoInterface.AbstractMultiPolygon}
+function TStringValue(str_val::T, is_null::Bool = false) where T <: Union{AbstractLineString, AbstractPoint, AbstractPolygon, AbstractMultiPolygon}
   val = OmniSci.TStringValue()
   p = wkt(str_val)
   Thrift.set_field!(val, :str_val, p)
@@ -237,7 +237,7 @@ function TStringRow(cols::Vector{TStringValue})
 end
 
 TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
-TStringRow(cols) = TStringRow([TStringValue(x) for x in Tables.eachcolumn(cols)]) #Tables.jl method
+TStringRow(cols) = TStringRow([TStringValue(x) for x in eachcolumn(cols)]) #Tables.jl method
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
 function TColumn(x::AbstractVector{<:AbstractVector{T}}) where T #array of arrays
@@ -321,7 +321,7 @@ function TColumn(x::AbstractVector{<:Union{Missing, Bool}})
     return tc
 end
 
-function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{GeoInterface.AbstractPoint, GeoInterface.AbstractPolygon, GeoInterface.AbstractLineString, GeoInterface.AbstractMultiPolygon}
+function TColumn(x::AbstractVector{<:Union{Missing, T}}) where T <: Union{AbstractPoint, AbstractPolygon, AbstractLineString, AbstractMultiPolygon}
 
     #Create TColumn, fill nulls column by checking for missingness
     tc = TColumn()
