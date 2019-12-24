@@ -3,4 +3,5 @@ ignore: # ignore Thrift generated code
   - "src/common"
   - "src/completion_hints"
   - "src/mapd"
-  - "src/serialized_result_set"   
+  - "src/serialized_result_set"
+  - "src/extension_functions" 
