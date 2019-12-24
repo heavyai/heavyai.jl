@@ -31,9 +31,6 @@ myDateTime(x) = DateTime(x)
 mydatetime2unix(x::Missing) = missing
 mydatetime2unix(x) = datetime2unix(floor(x, Second))
 
-epochdays(x::Missing) = missing
-epochdays(x) = (x - Date("1970-01-01")).value
-
 myInt64(x::Missing) = missing
 myInt64(x) = Int64(x)
 
