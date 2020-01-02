@@ -360,13 +360,6 @@ get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer) =
 ######################################## import
 
 """
-    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn})
-
-"""
-load_table_binary_columnar(conn::OmniSciConnection, table_name::String, cols::Vector{TColumn}) =
-    load_table_binary_columnar(conn.c, conn.session, table_name, cols)
-
-"""
     load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
 
 Load a Tables.jl table into OmniSci. This method loads data column-wise, and should be
@@ -375,7 +368,7 @@ Currently, this method requires the table to already exist on OmniSci.
 
 """
 load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj) =
-    load_table_binary_columnar(conn, table_name, TColumn.(eachcolumn(tbl_obj)))
+    load_table_binary_columnar(conn.c, conn.session, table_name, TColumn.(eachcolumn(tbl_obj)))
 
 """
     load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
@@ -383,13 +376,6 @@ load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
 """
 load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8}) =
     load_table_binary_arrow(conn.c, conn.session, table_name, arrow_stream)
-
-"""
-    load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow})
-
-"""
-load_table(conn::OmniSciConnection, table_name::String, rows::Vector{TStringRow}) =
-    load_table(conn.c, conn.session, table_name, rows)
 
 """
     load_table(conn::OmniSciConnection, table_name::String, rows)
@@ -406,7 +392,7 @@ julia> load_table(conn, "test", df)
 function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
     tbl_to_array = [TStringRow(x) for x in rows(tbl_obj)]
-    load_table(conn, table_name, tbl_to_array)
+    load_table(conn.c, conn.session, table_name, tbl_to_array)
 
 end
 
