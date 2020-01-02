@@ -154,23 +154,17 @@ end
    #load data rowwise from dataframe
    @test load_table(conn, "test_int_float", df) == nothing
 
-   #load data rowwise from Vector{TStringRow}
-   @test load_table(conn, "test_int_float", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
-
    #load data colwise from dataframe
    @test load_table_binary_columnar(conn, "test_int_float", df) == nothing
-
-   #load data colwise from Vector{TColumn}
-   @test load_table_binary_columnar(conn, "test_int_float", TColumn.(eachcol(df))) == nothing
 
    #test roundtrip of data
    #NOTE: These tests implicitly rely on having the missing values for numeric
    #Column types almost always returned from OmniSci with a Missing type component
    #So isequal will likely fail if missings removed, as column types won't match
    tbldb = sql_execute(conn, "select * from test_int_float")
-   @test size(tbldb) == (16,11)
+   @test size(tbldb) == (8,11)
    @test isequal(df, tbldb[1:4, :])
-   @test isequal(vcat(df, df, df, df), tbldb)
+   @test isequal(vcat(df, df), tbldb)
 end
 
 @testset "create and load: geospatial" begin
@@ -232,41 +226,23 @@ end
    #load data rowwise from dataframe: GeoInterface
    @test load_table(conn, "test_geo_native", df) == nothing
 
-   #load data rowwise from Vector{TStringRow}: GeoInterface
-   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
-
    #load data rowwise from dataframe: WKT
    @test load_table(conn, "test_geo_native", df2) == nothing
-
-   #load data rowwise from Vector{TStringRow}: WKT
-   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df2)]) == nothing
 
    #load data rowwise from dataframe: LibGEOS
    @test load_table(conn, "test_geo_native", df3) == nothing
 
-   #load data rowwise from Vector{TStringRow}: LibGEOS
-   @test load_table(conn, "test_geo_native", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df3)]) == nothing
-
    #load data colwise from dataframe: GeoInterface
    @test load_table_binary_columnar(conn, "test_geo_native", df) == nothing
-
-   #load data colwise from Vector{TColumn}: GeoInterface
-   @test load_table_binary_columnar(conn, "test_geo_native", TColumn.(eachcol(df))) == nothing
 
    #load data colwise from dataframe: WKT
    @test load_table_binary_columnar(conn, "test_geo_native", df2) == nothing
 
-   #load data colwise from Vector{TColumn}: WKT
-   @test load_table_binary_columnar(conn, "test_geo_native", TColumn.(eachcol(df2))) == nothing
-
    #load data colwise from dataframe: LibGEOS
    @test load_table_binary_columnar(conn, "test_geo_native", df3) == nothing
 
-   #load data colwise from Vector{TColumn}: LibGEOS
-   @test load_table_binary_columnar(conn, "test_geo_native", TColumn.(eachcol(df3))) == nothing
-
    tbldb = sql_execute(conn, "select * from test_geo_native")
-   @test size(tbldb) == (48,4)
+   @test size(tbldb) == (24,4)
 
    # test roundtrip of data, isequal on dataframe doesn't seem to work
    # WKT and GEOS test a bit hacky, since comparison is converted GeoInterface from WKT against what OmniSci returns
@@ -280,10 +256,6 @@ end
          @test isequal(df[i,j].coordinates, tbldb[i + 12,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 16,j].coordinates)
          @test isequal(df[i,j].coordinates, tbldb[i + 20,j].coordinates)
-         @test isequal(df[i,j].coordinates, tbldb[i + 24,j].coordinates)
-         @test isequal(df[i,j].coordinates, tbldb[i + 28,j].coordinates)
-         @test isequal(df[i,j].coordinates, tbldb[i + 32,j].coordinates)
-         @test isequal(df[i,j].coordinates, tbldb[i + 36,j].coordinates)
       end
    end
 
@@ -337,15 +309,12 @@ end
    #load data rowwise from dataframe
    @test load_table(conn, "test_array", df) == nothing
 
-   #load data rowwise from Vector{TStringRow}
-   @test load_table(conn, "test_array", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
-
    #load arrays columnar
    @test load_table_binary_columnar(conn, "test_array", df) == nothing
 
    #Tests for arrays indirect due to issue querying. Test based on known properties
    #Write proper tests once https://github.com/omnisci/OmniSci.jl/issues/53 solved
-   @test sql_execute(conn, "select count(*) as records from test_array")[!, :records][1] == 12
+   @test sql_execute(conn, "select count(*) as records from test_array")[!, :records][1] == 8
 
 end
 
@@ -417,15 +386,12 @@ end
    #load data rowwise from dataframe
    @test load_table(conn, "test_decimals_createload", df) == nothing
 
-   #load data rowwise from Vector{TStringRow}
-   @test load_table(conn, "test_decimals_createload", [OmniSci.TStringRow(x) for x in DataFrames.eachrow(df)]) == nothing
-
    tbldb = sql_execute(conn, "select * from test_decimals_createload")
 
-   @test size(tbldb) == (8,4)
+   @test size(tbldb) == (4,4)
 
    #Since data are returned as Dec64,
-   @test isequal(tbldb[!, :x1], vcat(df[!, :x2], df[!, :x2]))
+   @test isequal(tbldb[!, :x1], df[!, :x2])
 
 end
 
