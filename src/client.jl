@@ -382,7 +382,7 @@ load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_strea
     load_table_binary_arrow(conn.c, conn.session, table_name, arrow_stream)
 
 """
-    load_table(conn::OmniSciConnection, table_name::String, rows)
+    load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
 Load a Tables.jl table into OmniSci. This method loads data row-wise, converting data elements to string before upload.
 Currently, this method requires the table to already exist on OmniSci; use `create_table` to create
