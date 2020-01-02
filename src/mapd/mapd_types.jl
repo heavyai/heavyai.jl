@@ -221,6 +221,8 @@ mutable struct TDataFrame <: Thrift.TMsg
   sm_size::Int64
   df_handle::Vector{UInt8}
   df_size::Int64
+  execution_time_ms::Int64
+  arrow_conversion_time_ms::Int64
   TDataFrame() = (o=new(); fillunset(o); o)
 end # mutable struct TDataFrame
 
