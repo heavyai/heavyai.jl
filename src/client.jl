@@ -364,11 +364,15 @@ get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer) =
 
 Load a Tables.jl table into OmniSci. This method loads data column-wise, and should be
 used instead of `load_table` unless you encounter an error, as the load should be considerably faster.
-Currently, this method requires the table to already exist on OmniSci.
+Currently, this method requires the table to already exist on OmniSci; use `create_table` to create
+a table from a Table object.
 
 """
-load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj) =
+function load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
+
     load_table_binary_columnar(conn.c, conn.session, table_name, TColumn.(eachcolumn(tbl_obj)))
+
+end
 
 """
     load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_stream::Vector{UInt8})
@@ -381,7 +385,8 @@ load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_strea
     load_table(conn::OmniSciConnection, table_name::String, rows)
 
 Load a Tables.jl table into OmniSci. This method loads data row-wise, converting data elements to string before upload.
-Currently, this method requires the table to already exist on OmniSci.
+Currently, this method requires the table to already exist on OmniSci; use `create_table` to create
+a table from a Table object.
 
 # Examples
 ```julia-repl
