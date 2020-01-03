@@ -12,7 +12,7 @@ import LibGEOS: readgeom, writegeom
 import GeoInterface:  Point, LineString, Polygon, MultiPolygon, AbstractPoint, AbstractLineString, AbstractPolygon, AbstractMultiPolygon
 import DecFP: Dec32, Dec64, Dec128
 import Decimals: Decimal
-import Tables: eachcolumn, rows, schema
+import Tables: eachcolumn, rows, schema, columns
 
 #### types and enums ####
 export TDatum, TColumn, TExecuteMode

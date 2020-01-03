@@ -360,7 +360,7 @@ get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer) =
 ######################################## import
 
 """
-    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
+    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
 
 Load a Tables.jl table into OmniSci. This method loads data column-wise, and should be
 used instead of `load_table` unless you encounter an error, as the load should be considerably faster.
@@ -368,9 +368,16 @@ Currently, this method requires the table to already exist on OmniSci; use `crea
 a table from a Table object.
 
 """
-function load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
+function load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
 
-    load_table_binary_columnar(conn.c, conn.session, table_name, TColumn.(eachcolumn(tbl_obj)))
+    #iterate row-wise first to take `chunksize` number of rows
+    for chunk in Iterators.partition(rows(tbl_obj), chunksize)
+
+        #create `table` that we can iterate over column-wise, the create Vector{TColumn}
+        table = columns(chunk)
+        tcolarr = [TColumn(getproperty(table, c)) for c in propertynames(table)]
+        load_table_binary_columnar(conn.c, conn.session, table_name, tcolarr)
+    end
 
 end
 
