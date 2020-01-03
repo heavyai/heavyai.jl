@@ -382,7 +382,7 @@ load_table_binary_arrow(conn::OmniSciConnection, table_name::String, arrow_strea
     load_table_binary_arrow(conn.c, conn.session, table_name, arrow_stream)
 
 """
-    load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
+    load_table(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
 
 Load a Tables.jl table into OmniSci. This method loads data row-wise, converting data elements to string before upload.
 Currently, this method requires the table to already exist on OmniSci; use `create_table` to create
@@ -394,10 +394,12 @@ julia> load_table(conn, "test", df)
 ```
 
 """
-function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
+function load_table(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
 
-    tbl_to_array = [TStringRow(x) for x in rows(tbl_obj)]
-    load_table(conn.c, conn.session, table_name, tbl_to_array)
+    for iter in Iterators.partition(rows(tbl_obj), chunksize)
+        tbl_to_array = [TStringRow(x) for x in rows(iter)]
+        load_table(conn.c, conn.session, table_name, tbl_to_array)
+    end
 
 end
 
