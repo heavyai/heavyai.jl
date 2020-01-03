@@ -377,6 +377,7 @@ function load_table_binary_columnar(conn::OmniSciConnection, table_name::String,
         table = columns(chunk)
         tcolarr = [TColumn(getproperty(table, c)) for c in propertynames(table)]
         load_table_binary_columnar(conn.c, conn.session, table_name, tcolarr)
+        
     end
 
 end
