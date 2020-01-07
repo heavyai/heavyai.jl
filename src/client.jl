@@ -377,7 +377,7 @@ function load_table_binary_columnar(conn::OmniSciConnection, table_name::String,
         table = columns(chunk)
         tcolarr = [TColumn(getproperty(table, c)) for c in propertynames(table)]
         load_table_binary_columnar(conn.c, conn.session, table_name, tcolarr)
-        
+
     end
 
 end
@@ -405,7 +405,7 @@ julia> load_table(conn, "test", df)
 function load_table(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
 
     for iter in Iterators.partition(rows(tbl_obj), chunksize)
-        tbl_to_array = [TStringRow(x) for x in rows(iter)]
+        tbl_to_array = [TStringRow(x) for x in iter]
         load_table(conn.c, conn.session, table_name, tbl_to_array)
     end
 
