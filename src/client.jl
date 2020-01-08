@@ -360,18 +360,28 @@ get_dashboard_grantees(conn::OmniSciConnection, dashboard_id::Integer) =
 ######################################## import
 
 """
-    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
+    load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
 
 Load a Tables.jl table into OmniSci. This method loads data column-wise, and should be
-used instead of `load_table` unless you encounter an error, as the load should be considerably faster.
+used instead of `load_table` unless you encounter an error, as the load should be 4-6x faster.
 Currently, this method requires the table to already exist on OmniSci; use `create_table` to create
 a table from a Table object.
 
+Tables are 'chunked' into 100,000 records chunks before uploading, to allow for loading large datasets
+without Julia RAM issues or sending oversized Thrift messages to the OmniSci backend.
+
+# Examples
+```julia-repl
+julia> load_table_binary_columnar(conn, "test", df)
+```
+
 """
-function load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
+function load_table_binary_columnar(conn::OmniSciConnection, table_name::String, tbl_obj)
 
     #iterate row-wise first to take `chunksize` number of rows
-    for chunk in Iterators.partition(rows(tbl_obj), chunksize)
+    #2020-01-08: Testing during development indicated that above 10,000 row chunks, no real performance
+    #improvement. Use 100,000 for cunk size as reasonable middle ground of "enough" data to be worth uploading
+    for chunk in Iterators.partition(rows(tbl_obj), 100_000)
 
         #create `table` that we can iterate over column-wise, the create Vector{TColumn}
         table = columns(chunk)
@@ -396,15 +406,20 @@ Load a Tables.jl table into OmniSci. This method loads data row-wise, converting
 Currently, this method requires the table to already exist on OmniSci; use `create_table` to create
 a table from a Table object.
 
+Tables are 'chunked' into 100,000 records chunks before uploading, to allow for loading large datasets
+without Julia RAM issues or sending oversized Thrift messages to the OmniSci backend.
+
 # Examples
 ```julia-repl
 julia> load_table(conn, "test", df)
 ```
 
 """
-function load_table(conn::OmniSciConnection, table_name::String, tbl_obj; chunksize::Int = 10000)
+function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
-    for iter in Iterators.partition(rows(tbl_obj), chunksize)
+    #2020-01-08: Testing during development indicated that above 10,000 row chunks, no real performance
+    #improvement. Use 100,000 for cunk size as reasonable middle ground of "enough" data to be worth uploading
+    for iter in Iterators.partition(rows(tbl_obj), 100_000)
         tbl_to_array = [TStringRow(x) for x in iter]
         load_table(conn.c, conn.session, table_name, tbl_to_array)
     end
