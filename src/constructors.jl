@@ -227,8 +227,7 @@ function TStringRow(cols::Vector{TStringValue})
     return tsr
 end
 
-TStringRow(cols::AbstractVector) = TStringRow(TStringValue.(cols))
-TStringRow(cols) = TStringRow([TStringValue(x) for x in eachcolumn(cols)]) #Tables.jl method
+TStringRow(cols) = TStringRow(TStringValue.(eachcolumn(cols)))
 
 ########################### Typedefs for load_table_binary_columnar method ###########################
 function TColumn(x::AbstractVector{<:AbstractVector{T}}) where T #array of arrays

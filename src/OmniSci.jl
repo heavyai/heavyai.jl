@@ -1,6 +1,6 @@
 module OmniSci
 
-using Thrift, LibGEOS
+using Thrift, LibGEOS, Base.Threads
 
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
 import Base: show, convert
