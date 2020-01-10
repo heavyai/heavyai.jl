@@ -421,9 +421,9 @@ function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
     #improvement. Use 100,000 for chunk size as reasonable middle ground of "enough" data to be worth uploading
     for iter in Iterators.partition(rows(tbl_obj), 100_000)
 
-        tbl_to_array = TStringRow[]
-        for x in iter
-            push!(tbl_to_array, TStringRow(TStringValue.(eachcolumn(x))))
+        tbl_to_array = Vector{TStringRow}(undef, length(iter))
+        Threads.@threads for i in 1:length(iter)
+            tbl_to_array[i] = TStringRow(TStringValue.(eachcolumn(iter[i])))
         end
 
         load_table(conn.c, conn.session, table_name, tbl_to_array)
