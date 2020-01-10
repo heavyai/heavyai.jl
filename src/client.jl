@@ -380,7 +380,7 @@ function load_table_binary_columnar(conn::OmniSciConnection, table_name::String,
 
     #iterate row-wise first to take `chunksize` number of rows
     #2020-01-08: Testing during development indicated that above 10,000 row chunks, no real performance
-    #improvement. Use 100,000 for cunk size as reasonable middle ground of "enough" data to be worth uploading
+    #improvement. Use 100,000 for chunk size as reasonable middle ground of "enough" data to be worth uploading
     for chunk in Iterators.partition(rows(tbl_obj), 100_000)
 
         #create `table` that we can iterate over column-wise, the create Vector{TColumn}
@@ -418,9 +418,9 @@ julia> load_table(conn, "test", df)
 function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
 
     #2020-01-08: Testing during development indicated that above 10,000 row chunks, no real performance
-    #improvement. Use 100,000 for cunk size as reasonable middle ground of "enough" data to be worth uploading
+    #improvement. Use 100,000 for chunk size as reasonable middle ground of "enough" data to be worth uploading
     for iter in Iterators.partition(rows(tbl_obj), 100_000)
-        tbl_to_array = [TStringRow(x) for x in iter]
+        tbl_to_array = [TStringRow(TStringValue.(eachcolumn(x))) for x in iter]
         load_table(conn.c, conn.session, table_name, tbl_to_array)
     end
 

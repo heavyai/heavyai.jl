@@ -227,8 +227,6 @@ function TStringRow(cols::Vector{TStringValue})
     return tsr
 end
 
-TStringRow(cols) = TStringRow(TStringValue.(eachcolumn(cols)))
-
 ########################### Typedefs for load_table_binary_columnar method ###########################
 function TColumn(x::AbstractVector{<:AbstractVector{T}}) where T #array of arrays
 
