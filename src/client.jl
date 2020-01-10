@@ -420,8 +420,14 @@ function load_table(conn::OmniSciConnection, table_name::String, tbl_obj)
     #2020-01-08: Testing during development indicated that above 10,000 row chunks, no real performance
     #improvement. Use 100,000 for chunk size as reasonable middle ground of "enough" data to be worth uploading
     for iter in Iterators.partition(rows(tbl_obj), 100_000)
-        tbl_to_array = [TStringRow(TStringValue.(eachcolumn(x))) for x in iter]
+
+        tbl_to_array = TStringRow[]
+        for x in iter
+            push!(tbl_to_array, TStringRow(TStringValue.(eachcolumn(x))))
+        end
+
         load_table(conn.c, conn.session, table_name, tbl_to_array)
+
     end
 
 end
