@@ -96,7 +96,7 @@ mutable struct TDatumVal <: Thrift.TMsg
   int_val::Int64
   real_val::Float64
   str_val::String
-  arr_val::Vector{Any}
+  arr_val::Vector{T} where T <: Any
   TDatumVal() = (o=new(); fillunset(o); o)
 end # mutable struct TDatumVal
 
@@ -160,7 +160,7 @@ mutable struct TColumnData <: Thrift.TMsg
   int_col::Vector{Int64}
   real_col::Vector{Float64}
   str_col::Vector{String}
-  arr_col::Vector{Any}
+  arr_col::Vector{T} where T <: Any
   TColumnData() = (o=new(); fillunset(o); o)
 end # mutable struct TColumnData
 
