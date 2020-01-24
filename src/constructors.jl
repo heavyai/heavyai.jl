@@ -6,6 +6,10 @@ mutable struct OmniSciConnection
     c::MapDClient
 end
 
+#Needed to parse arrays in sql_execute, due to circular struct definitions
+#https://github.com/tanmaykm/Thrift.jl/issues/52
+read(p::TProtocol, ::Type{Any}) = read(p, TColumn())
+
 #convert methods implicitly needed for squashbitmask
 convert(::Type{DateTime}, x::Int64) = unix2datetime(x)
 convert(::Type{Date}, x::Int64) =  Date(unix2datetime(x))

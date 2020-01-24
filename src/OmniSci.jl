@@ -2,7 +2,7 @@ module OmniSci
 
 using Thrift, LibGEOS
 
-import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs
+import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs, read
 import Base: show, convert
 import DataFrames: DataFrame, rename!
 import Random: randstring
