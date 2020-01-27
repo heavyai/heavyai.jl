@@ -240,7 +240,13 @@ function sql_execute(conn::OmniSciConnection, query::String; first_n::Int = -1, 
 
     #test if query string expected to return a df-like result
     #minimizes returning 0x0 dataframe
-    as_df && startswith(lowercase(lstrip(query)), "select") ? DataFrame(result) : nothing
+    if as_df && startswith(lowercase(lstrip(query)), "select")
+        return DataFrame(result)
+    elseif startswith(lowercase(lstrip(query)), "select")
+        return result
+    else
+        return nothing
+    end
 
 end
 
