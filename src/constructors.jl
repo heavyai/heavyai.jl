@@ -40,19 +40,43 @@ myInt64(x) = Int64(x)
 
 #Take two vectors, values and nulls, make into a single vector
 function squashbitmask(col::TColumn, dataloc::Val{:int_col}, nullable::Bool)
-    col.data.int_col
+
+    if nullable  #TODO
+        return allowmissing(col.data.int_col)
+    else
+        return col.data.int_col
+    end
+
 end
 
 function squashbitmask(col::TColumn, dataloc::Val{:real_col}, nullable::Bool)
-    col.data.real_col
+
+    if nullable  #TODO
+        return allowmissing(col.data.real_col)
+    else
+        return col.data.real_col
+    end
+
 end
 
 function squashbitmask(col::TColumn, dataloc::Val{:str_col}, nullable::Bool)
-    col.data.str_col
+
+    if nullable  #TODO
+        return allowmissing(col.data.str_col)
+    else
+        return col.data.str_col
+    end
+
 end
 
 function squashbitmask(col::TColumn, dataloc::Val{:arr_col}, nullable::Bool)
-    col.data.arr_col
+
+    if nullable  #TODO
+        return allowmissing(col.data.arr_col)
+    else
+        return col.data.arr_col
+    end
+
 end
 
 seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)

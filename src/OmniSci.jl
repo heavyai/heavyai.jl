@@ -4,7 +4,7 @@ using Thrift, LibGEOS
 
 import Thrift: process, meta, distribute, ThriftMeta, ThriftMetaAttribs, read
 import Base: show, convert
-import DataFrames: DataFrame, rename!
+import DataFrames: DataFrame, rename!, allowmissing
 import Random: randstring
 import Dates: DateTime, Date, Time, TimeType, datetime2unix, Second, unix2datetime, hour, minute, second
 import Sockets: connect
