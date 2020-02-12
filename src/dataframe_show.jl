@@ -1,17 +1,21 @@
-function DataFrame(x::TQueryResult)
+function DataFrame(x::OmniSci.TQueryResult)
 
-    #get column name
-    colnames = [desc.col_name for desc in x.row_set.row_desc]
+    #pull out column field and names from struct just for convenience
+    columns = x.row_set.columns
+    colnames = [y.col_name for y in x.row_set.row_desc]
 
-    #get column types and nullable
-    coltypes = [(getcolumntype(desc.col_type._type), desc.col_type.nullable) for desc in x.row_set.row_desc]
+    tmp = []
+    for (i, col) in enumerate(columns)
 
-    #collapse vectors into a single Vector{T, Missing} vector
-    mergecols = [squashbitmask(y, tup) for (y, tup) in zip(x.row_set.columns, coltypes)]
+        col_type, col_loc = OmniSci.getcolumntype(x.row_set.row_desc[i].col_type._type)
+        nullable = x.row_set.row_desc[i].col_type.nullable
 
-    #convert to DataFrame
-    df = DataFrame(mergecols)
-    rename!(df, Symbol.(colnames))
+        push!(tmp, squashbitmask(col, Val(col_loc), nullable))
+
+    end
+
+    df = DataFrame(tmp, copycols = true)
+    rename!(df) = colnames
 
     return df
 

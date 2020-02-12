@@ -32,24 +32,24 @@ end
 #this function used to translate enum to Julia types
 #if a Julia type isn't defined, mark as String
 function getcolumntype(x::Int32)
-    d = Dict(0 => Int16,  #SMALLINT
-             1 => Int32,  #INT
-             2 => Int64,  #BIGINT
-             3 => Float32, #FLOAT
+    d = Dict(0 => (Int16, :int_col),  #SMALLINT
+             1 => (Int32, :int_col),  #INT
+             2 => (Int64, :int_col),  #BIGINT
+             3 => (Float32, :real_col), #FLOAT
              4 => Dec64,  #DECIMAL
-             5 => Float64, #DOUBLE
-             6 => String,  #STR
-             7 => Time,  #TIME
-             8 => DateTime,  #TIMESTAMP
-             9 => Date,  #DATE
-             10 => Bool,  #BOOL
+             5 => (Float64, :real_col), #DOUBLE
+             6 => (String, :str_col),  #STR
+             7 => (Time, :int_col),  #TIME
+             8 => (DateTime, :int_col),  #TIMESTAMP
+             9 => (Date, :int_col),  #DATE
+             10 => (Bool, :int_col),  #BOOL
              11 => String,  #INTERVAL_DAY_TIME
              12 => String,  #INTERVAL_YEAR_MONTH
              13 => Point,  #POINT
              14 => LineString,  #LINESTRING
              15 => Polygon,  #POLYGON
              16 => MultiPolygon,  #MULTIPOLYGON
-             17 => Int8,  #TINYINT
+             17 => (Int8, :int_col),  #TINYINT
              18 => String,  #GEOMETRY
              19 => String  #GEOGRAPHY
     )

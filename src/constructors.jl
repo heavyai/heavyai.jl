@@ -38,40 +38,21 @@ mydatetime2unix(x) = datetime2unix(floor(x, Second))
 myInt64(x::Missing) = missing
 myInt64(x) = Int64(x)
 
-#Find which field in the struct the data actually is
-function findvalues(x::TColumn)
-    for f in propertynames(x.data)
-        n = length(getfield(x.data, f))
-        if n > 0
-            return (f, n)
-        end
-    end
+#Take two vectors, values and nulls, make into a single vector
+function squashbitmask(col::TColumn, dataloc::Val{:int_col}, nullable::Bool)
+    col.data.int_col
 end
 
-#Take two vectors, values and nulls, make into a single vector
-#TODO: Figure out if its possible to further minimize allocations
-function squashbitmask(x::TColumn, typeinfo::Tuple{DataType, Bool})
+function squashbitmask(col::TColumn, dataloc::Val{:real_col}, nullable::Bool)
+    col.data.real_col
+end
 
-    #Get location of data from struct, eltype of vector and its length
-    valuescol, n = findvalues(x)
+function squashbitmask(col::TColumn, dataloc::Val{:str_col}, nullable::Bool)
+    col.data.str_col
+end
 
-    #unpack type info
-    ltype, nullable = typeinfo
-
-    #Build/fill new vector based on missingness
-    if nullable
-        A = Vector{Union{ltype, Missing}}(undef, n)
-        @simd for i = 1:n
-            @inbounds A[i] = ifelse(x.nulls[i], missing, getfield(x.data, valuescol)[i])
-        end
-    else
-        #Assumption here is that for columns without nulls, can cast directly
-        #Since whatever is in the x.data column should be valid values
-        #And appropriate convert methods defined
-        A = convert(Vector{ltype}, getfield(x.data, valuescol))
-    end
-
-    return A
+function squashbitmask(col::TColumn, dataloc::Val{:arr_col}, nullable::Bool)
+    col.data.arr_col
 end
 
 seconds_since_midnight(x::Time) = (hour(x) * 3600) + (minute(x) * 60) + second(x)
