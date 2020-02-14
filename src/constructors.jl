@@ -42,7 +42,8 @@ myInt64(x) = Int64(x)
 function squashbitmask(col::TColumn, dataloc::Val{:int_col}, nullable::Bool)
 
     if nullable  #TODO
-        return allowmissing(col.data.int_col)
+        data = allowmissing(col.data.int_col)
+        return data
     else
         return col.data.int_col
     end
@@ -52,7 +53,8 @@ end
 function squashbitmask(col::TColumn, dataloc::Val{:real_col}, nullable::Bool)
 
     if nullable  #TODO
-        return allowmissing(col.data.real_col)
+        data = allowmissing(col.data.real_col)
+        return data
     else
         return col.data.real_col
     end
@@ -62,7 +64,8 @@ end
 function squashbitmask(col::TColumn, dataloc::Val{:str_col}, nullable::Bool)
 
     if nullable  #TODO
-        return allowmissing(col.data.str_col)
+        data = allowmissing(col.data.str_col)
+        return data
     else
         return col.data.str_col
     end
@@ -72,7 +75,8 @@ end
 function squashbitmask(col::TColumn, dataloc::Val{:arr_col}, nullable::Bool)
 
     if nullable  #TODO
-        return allowmissing(col.data.arr_col)
+        data = allowmissing(col.data.arr_col)
+        return data
     else
         return col.data.arr_col
     end
