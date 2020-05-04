@@ -213,8 +213,11 @@ mutable struct TQueryResult <: Thrift.TMsg
   execution_time_ms::Int64
   total_time_ms::Int64
   nonce::String
+  debug::String
+  success::Bool
   TQueryResult() = (o=new(); fillunset(o); o)
 end # mutable struct TQueryResult
+meta(t::Type{TQueryResult}) = meta(t, Symbol[:debug,:success], Int[], Dict{Symbol,Any}(:success => true))
 
 mutable struct TDataFrame <: Thrift.TMsg
   sm_handle::Vector{UInt8}
