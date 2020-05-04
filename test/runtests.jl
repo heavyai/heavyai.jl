@@ -63,7 +63,7 @@ end
                           Union{Missing, String},
                           Union{Missing, String},
                           Union{Missing, String},
-                          Union{Missing, GeoInterface.MultiPolygon}
+                          GeoInterface.MultiPolygon
                           ]
 end
 
